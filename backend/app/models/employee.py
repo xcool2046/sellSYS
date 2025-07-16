@@ -17,6 +17,7 @@ class Employee(Base):
     员工模型
     """
     __tablename__ = "employees"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)
@@ -30,3 +31,16 @@ class Employee(Base):
     # 关联部门
     department_id = Column(Integer, ForeignKey("departments.id"))
     department = relationship("Department", back_populates="employees")
+
+    # 反向关联到客户，一个销售可以有多个客户
+    sales_customers = relationship(
+        "Customer",
+        foreign_keys="[Customer.sales_owner_id]",
+        back_populates="sales_owner"
+    )
+    # 反向关联到客户，一个客服可以负责多个客户
+    service_customers = relationship(
+        "Customer",
+        foreign_keys="[Customer.service_owner_id]",
+        back_populates="service_owner"
+    )

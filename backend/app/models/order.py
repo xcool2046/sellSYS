@@ -7,6 +7,7 @@ from ..database import Base
 class Product(Base):
     """产品模型"""
     __tablename__ = "products"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
@@ -27,6 +28,7 @@ class OrderStatus(str, enum.Enum):
 class Order(Base):
     """订单模型"""
     __tablename__ = "orders"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     order_number = Column(String, unique=True, nullable=False, index=True)
@@ -51,6 +53,7 @@ class Order(Base):
 class OrderItem(Base):
     """订单项模型"""
     __tablename__ = "order_items"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     quantity = Column(Integer, nullable=False)

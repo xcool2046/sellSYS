@@ -1,7 +1,8 @@
 import sys
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit,
-    QPushButton, QTableView, QHeaderView, QLineEdit, QComboBox, QDateTimeEdit
+    QPushButton, QTableView, QHeaderView, QLineEdit, QComboBox, QDateTimeEdit,
+    QMessageBox
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from ..api.sales_follows import get_sales_follows_by_customer, create_sales_follow
@@ -50,15 +51,24 @@ class SalesFollowView(QWidget):
     def load_data(self):
         self.model.removeRows(0, self.model.rowCount())
         follows = get_sales_follows_by_customer(self.customer_id)
-        if not follows:
+        
+        if isinstance(follows, dict) and "error" in follows:
+            error_detail = follows.get("detail", "无详细信息")
+            QMessageBox.critical(self, "加载错误", f"无法加载销售跟进记录: {error_detail}")
             return
+
+        if not isinstance(follows, list):
+            QMessageBox.warning(self, "无数据", "未找到该客户的销售跟进记录或数据格式错误。")
+            return
+
         for follow in follows:
+            if not isinstance(follow, dict): continue # Skip if an item in the list is not a dictionary
             row = [
-                QStandardItem(str(follow.get("id"))),
-                QStandardItem(follow.get("content")),
-                QStandardItem(follow.get("follow_type")),
+                QStandardItem(str(follow.get("id", ""))),
+                QStandardItem(follow.get("content", "")),
+                QStandardItem(follow.get("follow_type", "")),
                 QStandardItem(follow.get("follow_date", "").split("T")[0]),
-                QStandardItem(follow.get("intention_level")),
+                QStandardItem(follow.get("intention_level", "")),
                 QStandardItem(follow.get("next_follow_date", "").split("T")[0]),
             ]
             self.model.appendRow(row)

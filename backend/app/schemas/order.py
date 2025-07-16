@@ -8,14 +8,17 @@ from ..models.order import OrderStatus
 class OrderItemBase(BaseModel):
     product_id: int
     quantity: int
-    unit_price: Decimal
 
 class OrderItemCreate(OrderItemBase):
+    # unit_price is removed as it should be fetched from the database
     pass
 
 class OrderItem(OrderItemBase):
     id: int
     order_id: int
+    unit_price: Decimal # The actual price is stored and returned
+
+
 
     class Config:
         from_attributes = True

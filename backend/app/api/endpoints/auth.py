@@ -3,7 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 
-from app import models, schemas, crud
+from app import models, schemas
+from app.crud import crud_employee
 from app.core import security
 from app.database import get_db
 
@@ -14,7 +15,7 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
     """
     用户登录获取Token
     """
-    user = crud.crud_employee.get_employee_by_username(db, username=form_data.username)
+    user = crud_employee.get_employee_by_username(db, username=form_data.username)
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

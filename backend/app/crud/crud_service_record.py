@@ -10,7 +10,7 @@ def get_all_service_records(db: Session, skip: int = 0, limit: int = 100) -> Lis
     return db.query(models.ServiceRecord).offset(skip).limit(limit).all()
 
 def create_service_record(db: Session, record: schemas.ServiceRecordCreate) -> models.ServiceRecord:
-    db_record = models.ServiceRecord(**record.dict())
+    db_record = models.ServiceRecord(**record.model_dump())
     db.add(db_record)
     db.commit()
     db.refresh(db_record)
@@ -19,7 +19,7 @@ def create_service_record(db: Session, record: schemas.ServiceRecordCreate) -> m
 def update_service_record(db: Session, record_id: int, record_update: schemas.ServiceRecordUpdate) -> models.ServiceRecord:
     db_record = get_service_record(db, record_id)
     if db_record:
-        update_data = record_update.dict(exclude_unset=True)
+        update_data = record_update.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_record, key, value)
         db.commit()

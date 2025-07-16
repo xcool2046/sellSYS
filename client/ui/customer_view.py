@@ -1,7 +1,8 @@
 import sys
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QTableView, QComboBox, QDateEdit, QHeaderView, QFrame
+    QPushButton, QTableView, QComboBox, QDateEdit, QHeaderView, QFrame,
+    QMessageBox
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QStandardItemModel, QStandardItem
@@ -102,15 +103,23 @@ class CustomerView(QWidget):
         self.model.removeRows(0, self.model.rowCount()) # Clear existing data
         
         customers = get_customers() # In a real app, you'd handle pagination
-        if not customers:
-            print("Failed to load customer data or no customers found.")
+        
+        if isinstance(customers, dict) and "error" in customers:
+            error_detail = customers.get("detail", "无详细信息")
+            QMessageBox.critical(self, "加载错误", f"无法加载客户数据: {error_detail}")
+            return
+
+        if not isinstance(customers, list):
+            QMessageBox.warning(self, "无数据", "未找到客户数据或数据格式错误。")
             return
 
         # NOTE: This is a placeholder mapping. The actual data structure from
         # the API needs to be mapped to the table columns correctly.
         for i, customer in enumerate(customers):
+            if not isinstance(customer, dict): continue
+
             row = [
-                QStandardItem(str(customer.get("id", i + 1))),
+                QStandardItem(str(customer.get("id", ""))),
                 QStandardItem(customer.get("company_name", "N/A")),
                 QStandardItem("产品待定"), # Placeholder
                 QStandardItem("规格待定"), # Placeholder

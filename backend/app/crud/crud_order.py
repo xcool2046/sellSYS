@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from .. import models
 from ..schemas import order as order_schema
 import uuid
@@ -24,10 +25,27 @@ def update_order_financials(db: Session, order_id: int, financials: order_schema
     return db_order
 
 def create_order(db: Session, order: order_schema.OrderCreate):
-    """创建新订单"""
+    """创建新订单，并从数据库中获取真实价格"""
     
-    total_amount = sum(item.quantity * item.unit_price for item in order.order_items)
-    
+    total_amount = Decimal('0.0')
+    order_items_to_create = []
+
+    # 1. 验证产品存在并获取真实价格
+    for item_data in order.order_items:
+        product = db.query(models.Product).filter(models.Product.id == item_data.product_id).first()
+        if not product:
+            raise HTTPException(status_code=404, detail=f"Product with id {item_data.product_id} not found")
+        
+        # 使用数据库中的价格，忽略客户端提交的价格
+        unit_price = product.price
+        total_amount += item_data.quantity * unit_price
+        
+        # 准备要创建的订单项，使用真实价格
+        item_dict = item_data.model_dump()
+        item_dict['unit_price'] = unit_price
+        order_items_to_create.append(item_dict)
+
+    # 2. 创建订单主体
     db_order = models.Order(
         order_number=str(uuid.uuid4()),
         customer_id=order.customer_id,
@@ -36,11 +54,12 @@ def create_order(db: Session, order: order_schema.OrderCreate):
         status=order.status
     )
     db.add(db_order)
-    db.flush() # 使用 flush 来获取订单ID，以便创建订单项
+    db.flush() # 获取订单ID
 
-    for item_data in order.order_items:
+    # 3. 创建订单项
+    for item_dict in order_items_to_create:
         db_item = models.OrderItem(
-            **item_data.model_dump(),
+            **item_dict,
             order_id=db_order.id
         )
         db.add(db_item)

@@ -15,6 +15,7 @@ class CustomerStatus(str, enum.Enum):
 class Customer(Base):
     """客户模型"""
     __tablename__ = "customers"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
@@ -28,11 +29,11 @@ class Customer(Base):
     
     # 关联销售负责人
     sales_owner_id = Column(Integer, ForeignKey("employees.id"))
-    sales_owner = relationship("Employee", foreign_keys=[sales_owner_id])
+    sales_owner = relationship("Employee", foreign_keys=[sales_owner_id], back_populates="sales_customers")
     
     # 关联客服负责人
     service_owner_id = Column(Integer, ForeignKey("employees.id"))
-    service_owner = relationship("Employee", foreign_keys=[service_owner_id])
+    service_owner = relationship("Employee", foreign_keys=[service_owner_id], back_populates="service_customers")
 
     # 关联联系人
     contacts = relationship("Contact", back_populates="customer")
@@ -43,6 +44,7 @@ class Customer(Base):
 class Contact(Base):
     """联系人模型"""
     __tablename__ = "contacts"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)

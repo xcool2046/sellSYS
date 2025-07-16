@@ -14,7 +14,7 @@ def init_db():
     admin_user = EmployeeCreate(
         username="admin",
         email="admin@sellsys.com",
-        password="adminpassword",
+        password="admin",
         full_name="Administrator",
         role=EmployeeRole.ADMIN
     )

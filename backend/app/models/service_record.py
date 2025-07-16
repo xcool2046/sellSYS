@@ -5,6 +5,7 @@ import datetime
 
 class ServiceRecord(Base):
     __tablename__ = "service_records"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     customer_id = Column(Integer, ForeignKey("customers.id"))

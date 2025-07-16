@@ -1,1 +1,3 @@
-from . import crud_employee, crud_customer, crud_contact, crud_product, crud_order
+# This file is intentionally left blank to prevent implicit imports.
+# Individual CRUD modules should be imported directly, e.g.,
+# from app.crud import crud_customer

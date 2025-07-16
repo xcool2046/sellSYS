@@ -1,9 +1,11 @@
 import requests
 
 class ApiClient:
-    def __init__(self, base_url="http://127.0.0.1:8000/api/v1"):
+    def __init__(self, base_url="http://8.156.69.42:8000/api/v1"):
         self.base_url = base_url
         self.session = requests.Session()
+        # 显式禁用代理，以解决潜在的本地环境问题
+        self.session.proxies = {"http": None, "https": None}
         self.token = None
 
     def set_token(self, token):
@@ -42,18 +44,23 @@ class ApiClient:
             return response.json()
         except requests.exceptions.HTTPError as errh:
             print(f"Http Error: {errh}")
-            # Here you could add more sophisticated error handling
-            # e.g., show a dialog to the user
-            return None
+            error_details = {"error": "HttpError", "status_code": errh.response.status_code}
+            try:
+                # FastAPI often returns error details in JSON
+                error_details.update(errh.response.json())
+            except ValueError:
+                # If the response is not JSON, use the raw text
+                error_details["detail"] = errh.response.text or "An unknown HTTP error occurred."
+            return error_details
         except requests.exceptions.ConnectionError as errc:
             print(f"Error Connecting: {errc}")
-            return None
+            return {"error": "ConnectionError", "detail": "无法连接到服务器。请检查您的网络连接和服务器地址。"}
         except requests.exceptions.Timeout as errt:
             print(f"Timeout Error: {errt}")
-            return None
+            return {"error": "Timeout", "detail": "服务器连接超时。"}
         except requests.exceptions.RequestException as err:
             print(f"OOps: Something Else: {err}")
-            return None
+            return {"error": "RequestException", "detail": f"发生未知网络错误: {err}"}
 
 # Global API client instance to be used across the application
 api_client = ApiClient()

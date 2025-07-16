@@ -1,0 +1,113 @@
+/* ==========================================================================
+   Global Styles
+   ========================================================================== */
+QWidget {
+    font-family: 'Microsoft YaHei UI', 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+/* ==========================================================================
+   Login Window
+   ========================================================================== */
+#LoginWindow {
+    background-color: #f0f2f5;
+}
+
+#loginFormContainer {
+    background-color: #ffffff;
+    border: 1px solid #dcdfe6;
+    border-radius: 8px;
+    max-width: 400px;
+}
+
+#imagePlaceholder {
+    background-color: #0099ff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    min-height: 180px;
+}
+
+/* ==========================================================================
+   Form Elements
+   ========================================================================== */
+QLineEdit {
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    padding: 10px 12px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+QLineEdit:focus {
+    border-color: #0099ff;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+QPushButton {
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: 1px solid #dcdfe6;
+    background-color: #fff;
+    min-width: 80px;
+}
+
+QPushButton:hover {
+    background-color: #f5f7fa;
+    border-color: #c0c4cc;
+}
+
+QPushButton#primaryButton {
+    background-color: #66cccc;
+    color: #ffffff;
+    border-color: #66cccc;
+    font-weight: 500;
+}
+
+QPushButton#primaryButton:hover {
+    background-color: #5bb8b8;
+    border-color: #5bb8b8;
+}
+
+/* ==========================================================================
+   Main Window
+   ========================================================================== */
+#titleBar {
+    background-color: #0066cc;
+}
+
+#titleLabel {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+#navPanel {
+    background-color: #a8d0e6;
+    border-right: 1px solid #8fbdd3;
+}
+
+QPushButton#navButton {
+    background-color: transparent;
+    border: none;
+    color: #000000;
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 16px;
+    border-radius: 0px;
+    font-weight: 500;
+}
+
+QPushButton#navButton:hover {
+    background-color: #8fbdd3;
+}
+
+QPushButton#navButton:checked {
+    background-color: #7fb5d5;
+    font-weight: bold;
+    border-left: 4px solid #0066cc;
+}

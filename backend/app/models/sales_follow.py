@@ -5,6 +5,7 @@ import datetime
 
 class SalesFollow(Base):
     __tablename__ = "sales_follows"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     customer_id = Column(Integer, ForeignKey("customers.id"))

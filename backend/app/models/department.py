@@ -7,6 +7,7 @@ class DepartmentGroup(Base):
     部门分组模型
     """
     __tablename__ = "department_groups"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
@@ -18,6 +19,7 @@ class Department(Base):
     部门模型
     """
     __tablename__ = "departments"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
