@@ -1,10 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from ..models.customer import CustomerStatus
+from .contact import Contact, ContactCreateForCustomer
 
 # 基础模型
 class CustomerBase(BaseModel):
-    name: str
+    company: str
     industry: Optional[str] = None
     province: Optional[str] = None
     city: Optional[str] = None
@@ -15,11 +16,11 @@ class CustomerBase(BaseModel):
 
 # 创建模型
 class CustomerCreate(CustomerBase):
-    pass
+    contacts: List[ContactCreateForCustomer] = []
 
 # 更新模型
 class CustomerUpdate(BaseModel):
-    name: Optional[str] = None
+    company: Optional[str] = None
     industry: Optional[str] = None
     province: Optional[str] = None
     city: Optional[str] = None
@@ -35,6 +36,8 @@ class Customer(CustomerBase):
     id: int
     sales_owner_id: Optional[int] = None
     service_owner_id: Optional[int] = None
-
-    class Config:
-        from_attributes = True
+    sales_owner_name: Optional[str] = None
+    service_owner_name: Optional[str] = None
+    contacts: List[Contact] = []
+    
+    model_config = ConfigDict(from_attributes=True)

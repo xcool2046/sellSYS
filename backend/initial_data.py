@@ -1,4 +1,10 @@
+import sys
+import os
 import logging
+
+# Ensure the app module can be found by adding the script's directory to the path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from app.database import SessionLocal
 from app.crud.crud_employee import create_employee
 from app.schemas.employee import EmployeeCreate
@@ -15,7 +21,7 @@ def init_db():
         username="admin",
         email="admin@sellsys.com",
         password="admin",
-        full_name="Administrator",
+        name="管理员",
         role=EmployeeRole.ADMIN
     )
     

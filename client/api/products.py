@@ -1,26 +1,82 @@
-from .client import api_client
+import requests
+from config import API_BASE_URL, API_TIMEOUT
 
-def get_products(params=None):
+BASE_URL = API_BASE_URL
+
+def get_products():
     """
-    Fetches a list of products.
-    Supports optional query parameters for filtering, sorting, and pagination.
+    获取所有产品信息
     """
     try:
-        products = api_client.get("/products/", params=params)
-        return products
-    except Exception as e:
-        print(f"An error occurred while fetching products: {e}")
-        return None
+        response = requests.get(f"{BASE_URL}/products/", timeout=API_TIMEOUT)
+        response.raise_for_status()  # 如果请求失败，则引发HTTPError
+        data = response.json()
+        if isinstance(data, list):
+            return data
+        else:
+            print(f"获取产品列表时收到意外的非列表类型响应: {type(data)}")
+            return []
+    except requests.exceptions.RequestException as e:
+        print(f"获取产品列表失败: {e}")
+        return []
 
 def create_product(product_data):
     """
-    Creates a new product.
+    创建新产品
+    
+    Args:
+        product_data: 包含产品信息的字典
+    
+    Returns:
+        创建的产品信息，如果失败返回None
     """
     try:
-        product = api_client.post("/products/", json=product_data)
-        return product
-    except Exception as e:
-        print(f"An error occurred while creating a product: {e}")
+        response = requests.post(f"{BASE_URL}/products/", json=product_data, timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"创建产品失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
         return None
 
-# Add other product-related API functions (update, delete, get by id) here as needed.
+def update_product(product_id, product_data):
+    """
+    更新产品信息
+    
+    Args:
+        product_id: 产品ID
+        product_data: 包含更新信息的字典
+    
+    Returns:
+        更新后的产品信息，如果失败返回None
+    """
+    try:
+        response = requests.put(f"{BASE_URL}/products/{product_id}", json=product_data, timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"更新产品失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
+        return None
+
+def delete_product(product_id):
+    """
+    删除产品
+    
+    Args:
+        product_id: 产品ID
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        response = requests.delete(f"{BASE_URL}/products/{product_id}", timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        print(f"删除产品失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
+        return False

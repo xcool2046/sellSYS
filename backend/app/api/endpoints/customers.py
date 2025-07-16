@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app import models, schemas
-from app.crud import crud_customer
-from app.database import get_db
+from ... import models, schemas
+from ...crud import crud_customer
+from ...database import get_db
 
 router = APIRouter()
 
@@ -12,19 +12,23 @@ router = APIRouter()
 def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
     return crud_customer.create_customer(db=db, customer=customer)
 
-from app.models.customer import CustomerStatus
+from ...models.customer import CustomerStatus
 
 @router.get("/", response_model=List[schemas.Customer])
 def read_customers(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
+    company_name: str = None,
     industry: str = None,
     province: str = None,
     city: str = None,
     status: CustomerStatus = None,
+    sales_owner_id: int = None,
 ):
     query = db.query(models.Customer)
+    if company_name:
+        query = query.filter(models.Customer.company.contains(company_name))
     if industry:
         query = query.filter(models.Customer.industry == industry)
     if province:
@@ -33,6 +37,8 @@ def read_customers(
         query = query.filter(models.Customer.city == city)
     if status:
         query = query.filter(models.Customer.status == status)
+    if sales_owner_id:
+        query = query.filter(models.Customer.sales_owner_id == sales_owner_id)
     
     customers = query.offset(skip).limit(limit).all()
     return customers

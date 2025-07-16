@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTableView, QHeaderView
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
-from ..api.orders import get_orders, update_order_financials
+from api.orders import get_orders, update_order_financials
 from datetime import datetime
 
 class FinanceView(QWidget):

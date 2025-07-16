@@ -5,11 +5,15 @@ def get_orders(params=None):
     Fetches a list of orders.
     """
     try:
-        orders = api_client.get("/orders/", params=params)
-        return orders
+        response = api_client.get("/orders/", params=params)
+        if isinstance(response, list):
+            return response
+        else:
+            print(f"获取订单列表时收到意外的非列表类型响应: {type(response)}")
+            return []
     except Exception as e:
         print(f"An error occurred while fetching orders: {e}")
-        return None
+        return []
 
 def create_order(order_data):
     """

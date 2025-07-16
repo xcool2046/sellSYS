@@ -13,6 +13,6 @@ class AuditLog(Base):
 
     # 关联操作人
     employee_id = Column(Integer, ForeignKey("employees.id"))
-    employee = relationship("Employee")
+    employee = relationship("Employee", back_populates="audit_logs")
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())

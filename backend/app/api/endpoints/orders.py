@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app import models, schemas
-from app.crud import crud_order
-from app.database import get_db
+from ... import models, schemas
+from ...crud import crud_order
+from ...database import get_db
 
 router = APIRouter()
 
@@ -14,10 +14,30 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     return crud_order.create_order(db=db, order=order)
 
 @router.get("/", response_model=List[schemas.Order])
-def read_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """读取订单列表"""
-    orders = crud_order.get_orders(db, skip=skip, limit=limit)
-    return orders
+def read_orders(
+   db: Session = Depends(get_db),
+   skip: int = 0,
+   limit: int = 100,
+   customer_name: str = None,
+   product_name: str = None,
+   start_date: schemas.order.datetime = None,
+   end_date: schemas.order.datetime = None,
+   status: schemas.order.OrderStatus = None,
+   sales_id: int = None
+):
+   """读取订单列表（支持筛选）"""
+   orders = crud_order.get_orders(
+       db,
+       customer_name=customer_name,
+       product_name=product_name,
+       start_date=start_date,
+       end_date=end_date,
+       status=status,
+       sales_id=sales_id,
+       skip=skip,
+       limit=limit
+   )
+   return orders
 
 @router.put("/{order_id}/financials", response_model=schemas.Order)
 def update_order_financials(

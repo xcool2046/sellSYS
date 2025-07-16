@@ -1,8 +1,9 @@
 import requests
-
+from config import API_BASE_URL
+ 
 class ApiClient:
-    def __init__(self, base_url="http://8.156.69.42:8000/api/v1"):
-        self.base_url = base_url
+    def __init__(self, base_url=None):
+        self.base_url = base_url or API_BASE_URL
         self.session = requests.Session()
         # 显式禁用代理，以解决潜在的本地环境问题
         self.session.proxies = {"http": None, "https": None}

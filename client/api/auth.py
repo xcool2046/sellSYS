@@ -6,9 +6,12 @@ def login(username, password):
     Returns the user data dict on success.
     Returns a dict with error details on failure.
     """
+    # The backend expects form data, not JSON, for OAuth2.
+    # The `data` parameter in requests with a dict will send it as
+    # `application/x-www-form-urlencoded` by default.
     response = api_client.post(
         "/auth/login",
-        data={"username": username, "password": password}
+        data={"username": username, "password": password},
     )
 
     # If successful, the response will contain the access token.

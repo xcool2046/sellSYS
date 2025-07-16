@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTableView, QHeaderView
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
-from ..api.service_records import get_service_records, create_service_record
+from api.service_records import get_service_records, create_service_record
 
 class ServiceRecordView(QWidget):
     def __init__(self, parent=None):
@@ -47,7 +47,7 @@ class ServiceRecordView(QWidget):
     def load_data(self):
         self.model.removeRows(0, self.model.rowCount())
         records = get_service_records()
-        if not records:
+        if not records or not isinstance(records, list):
             return
         for record in records:
             row = [

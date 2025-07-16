@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app import models, schemas
-from app.crud import crud_employee
-from app.database import get_db
+from ... import models, schemas
+from ...crud import crud_employee
+from ...database import get_db
 
 router = APIRouter()
 
@@ -23,6 +23,24 @@ def read_employees(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
 @router.get("/{employee_id}", response_model=schemas.Employee)
 def read_employee(employee_id: int, db: Session = Depends(get_db)):
     db_employee = db.query(models.Employee).filter(models.Employee.id == employee_id).first()
+    if db_employee is None:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return db_employee
+
+@router.put("/{employee_id}", response_model=schemas.Employee)
+def update_employee(
+    employee_id: int,
+    employee_in: schemas.EmployeeUpdate,
+    db: Session = Depends(get_db)
+):
+    db_employee = crud_employee.update_employee(db, employee_id=employee_id, employee_in=employee_in)
+    if db_employee is None:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return db_employee
+
+@router.delete("/{employee_id}", response_model=schemas.Employee)
+def delete_employee(employee_id: int, db: Session = Depends(get_db)):
+    db_employee = crud_employee.delete_employee(db, employee_id=employee_id)
     if db_employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
     return db_employee

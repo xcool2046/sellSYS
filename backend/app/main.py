@@ -38,7 +38,7 @@ app = FastAPI(
 
 from .api.api_router import api_router
 
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 async def root():

@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Text, DateTime
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from ..database import Base
@@ -18,8 +18,8 @@ class Customer(Base):
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, index=True)
-    industry = Column(String) # 行业
+    company = Column(String, nullable=False, index=True) # 客户单位名称
+    industry = Column(String) # 行业类别
     province = Column(String) # 省份
     city = Column(String) # 城市
     address = Column(String) # 详细地址
@@ -36,23 +36,10 @@ class Customer(Base):
     service_owner = relationship("Employee", foreign_keys=[service_owner_id], back_populates="service_customers")
 
     # 关联联系人
-    contacts = relationship("Contact", back_populates="customer")
+    contacts = relationship("Contact", back_populates="customer", cascade="all, delete-orphan")
+    sales_follows = relationship("SalesFollow", back_populates="customer", cascade="all, delete-orphan")
+    orders = relationship("Order", back_populates="customer", cascade="all, delete-orphan")
+    service_records = relationship("ServiceRecord", back_populates="customer", cascade="all, delete-orphan")
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
-class Contact(Base):
-    """联系人模型"""
-    __tablename__ = "contacts"
-    __table_args__ = {'extend_existing': True}
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    title = Column(String) # 职位
-    phone = Column(String, nullable=False)
-    email = Column(String)
-    notes = Column(Text) # 备注
-
-    # 关联客户
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    customer = relationship("Customer", back_populates="contacts")

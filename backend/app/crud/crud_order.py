@@ -9,9 +9,40 @@ def get_order(db: Session, order_id: int):
     """获取单个订单"""
     return db.query(models.Order).filter(models.Order.id == order_id).first()
 
-def get_orders(db: Session, skip: int = 0, limit: int = 100):
-    """获取订单列表"""
-    return db.query(models.Order).offset(skip).limit(limit).all()
+def get_orders(
+   db: Session,
+   customer_name: str = None,
+   product_name: str = None,
+   start_date: order_schema.datetime = None,
+   end_date: order_schema.datetime = None,
+   status: order_schema.OrderStatus = None,
+   sales_id: int = None,
+   skip: int = 0,
+   limit: int = 100
+):
+   """获取订单列表（带筛选）"""
+   query = db.query(models.Order).join(models.Customer)
+
+   if customer_name:
+       query = query.filter(models.Customer.company.ilike(f"%{customer_name}%"))
+   
+   if product_name:
+       # This requires joining through OrderItem to Product
+       query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{product_name}%"))
+
+   if start_date:
+       query = query.filter(models.Order.start_date >= start_date)
+   
+   if end_date:
+       query = query.filter(models.Order.end_date <= end_date)
+
+   if status:
+       query = query.filter(models.Order.status == status)
+
+   if sales_id:
+       query = query.filter(models.Order.sales_id == sales_id)
+
+   return query.offset(skip).limit(limit).all()
 
 def update_order_financials(db: Session, order_id: int, financials: order_schema.OrderFinancialUpdate):
     """更新订单的财务信息"""

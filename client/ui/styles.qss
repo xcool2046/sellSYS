@@ -1,82 +1,21 @@
 /* ==========================================================================
-   Global Styles
+   Global Styles - Light Theme
    ========================================================================== */
 QWidget {
     font-family: 'Microsoft YaHei UI', 'Segoe UI', Arial, sans-serif;
     font-size: 14px;
-    color: #333;
+    color: #333333; /* Default text color */
+}
+
+QMainWindow, QDialog {
+    background-color: #f5f7fa; /* Light grey background for windows */
 }
 
 /* ==========================================================================
-   Login Window
-   ========================================================================== */
-#LoginWindow {
-    background-color: #f0f2f5;
-}
-
-#loginFormContainer {
-    background-color: #ffffff;
-    border: 1px solid #dcdfe6;
-    border-radius: 8px;
-    max-width: 400px;
-}
-
-#imagePlaceholder {
-    background-color: #0099ff;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    min-height: 180px;
-}
-
-/* ==========================================================================
-   Form Elements
-   ========================================================================== */
-QLineEdit {
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    padding: 10px 12px;
-    background-color: #fff;
-    font-size: 14px;
-}
-
-QLineEdit:focus {
-    border-color: #0099ff;
-}
-
-/* ==========================================================================
-   Buttons
-   ========================================================================== */
-QPushButton {
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    border: 1px solid #dcdfe6;
-    background-color: #fff;
-    min-width: 80px;
-}
-
-QPushButton:hover {
-    background-color: #f5f7fa;
-    border-color: #c0c4cc;
-}
-
-QPushButton#primaryButton {
-    background-color: #66cccc;
-    color: #ffffff;
-    border-color: #66cccc;
-    font-weight: 500;
-}
-
-QPushButton#primaryButton:hover {
-    background-color: #5bb8b8;
-    border-color: #5bb8b8;
-}
-
-/* ==========================================================================
-   Main Window
+   Main Window Structure
    ========================================================================== */
 #titleBar {
-    background-color: #0066cc;
+    background-color: #2b70d8; /* Blue title bar */
 }
 
 #titleLabel {
@@ -87,15 +26,18 @@ QPushButton#primaryButton:hover {
 }
 
 #navPanel {
-    background-color: #a8d0e6;
-    border-right: 1px solid #8fbdd3;
+    background-color: #eaf2ff; /* Light blue navigation panel */
+    border-right: 1px solid #dcdfe6;
 }
 
+/* ==========================================================================
+   Navigation Buttons
+   ========================================================================== */
 QPushButton#navButton {
     background-color: transparent;
     border: none;
-    color: #000000;
-    padding: 15px 20px;
+    color: #303133;
+    padding: 15px 25px;
     text-align: left;
     font-size: 16px;
     border-radius: 0px;
@@ -103,11 +45,455 @@ QPushButton#navButton {
 }
 
 QPushButton#navButton:hover {
-    background-color: #8fbdd3;
+    background-color: #dceaff;
 }
 
 QPushButton#navButton:checked {
-    background-color: #7fb5d5;
+    background-color: #ffffff;
+    color: #2b70d8;
     font-weight: bold;
-    border-left: 4px solid #0066cc;
+    border-right: 3px solid #2b70d8;
+}
+
+/* ==========================================================================
+   Content Area & General Widgets
+   ========================================================================== */
+/* Set all content views to have a white background */
+QStackedWidget > QWidget {
+    background-color: #ffffff;
+}
+
+/* Ensure view containers within pages are also white */
+#customerView, #productView, #orderView, #salesFollowView, #serviceRecordView, #financeView, QWidget {
+    background-color: #ffffff;
+}
+
+QLabel {
+    color: #606266;
+    padding: 2px;
+}
+
+QLineEdit, QComboBox, QDateEdit {
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    padding: 8px 10px;
+    background-color: #fff;
+    min-height: 22px;
+}
+
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
+    border-color: #409eff;
+}
+
+QComboBox::drop-down {
+    border-left: 1px solid #dcdfe6;
+    width: 20px;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+QPushButton {
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 14px;
+    border: 1px solid #dcdfe6;
+    background-color: #ffffff;
+    color: #606266;
+    min-width: 70px;
+}
+
+QPushButton:hover {
+    background-color: #ecf5ff;
+    color: #409eff;
+    border-color: #c6e2ff;
+}
+
+QPushButton:pressed {
+    background-color: #d9ecff;
+}
+
+/* Primary buttons - blue background */
+QPushButton#primaryButton {
+    background-color: #1890ff;
+    color: #ffffff;
+    border-color: #1890ff;
+}
+
+QPushButton#primaryButton:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+QPushButton#primaryButton:pressed {
+    background-color: #096dd9;
+    border-color: #096dd9;
+}
+
+/* Success buttons - green */
+QPushButton[text="添加客户"], QPushButton[text="分配给客服"] {
+    background-color: #52c41a;
+    color: #ffffff;
+    border-color: #52c41a;
+}
+
+QPushButton[text="添加客户"]:hover, QPushButton[text="分配给客服"]:hover {
+    background-color: #73d13d;
+    border-color: #73d13d;
+}
+
+/* Warning buttons - orange */
+QPushButton[text="分配销售"] {
+    background-color: #fa8c16;
+    color: #ffffff;
+    border-color: #fa8c16;
+}
+
+QPushButton[text="分配销售"]:hover {
+    background-color: #ffa940;
+    border-color: #ffa940;
+}
+
+/* Table action buttons */
+#tableEditButton, QPushButton[text="编辑"] {
+    background-color: #1976d2;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 15px;
+    min-width: 60px;
+    font-size: 13px;
+}
+
+#tableEditButton:hover, QPushButton[text="编辑"]:hover {
+    background-color: #1565c0;
+}
+
+#tableEditButton:pressed, QPushButton[text="编辑"]:pressed {
+    background-color: #0d47a1;
+}
+
+#tableDeleteButton, QPushButton[text="删除"] {
+    background-color: #ffffff;
+    color: #666666;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 5px 15px;
+    min-width: 60px;
+    font-size: 13px;
+}
+
+#tableDeleteButton:hover, QPushButton[text="删除"]:hover {
+    background-color: #f5f5f5;
+    border-color: #999999;
+}
+
+#tableDeleteButton:pressed, QPushButton[text="删除"]:pressed {
+    background-color: #e0e0e0;
+}
+
+/* ==========================================================================
+   Table View
+   ========================================================================== */
+QTableView {
+    border: 1px solid #e0e0e0;
+    gridline-color: #e0e0e0;
+    background-color: #ffffff;
+    selection-background-color: #e3f2fd;
+    selection-color: #333333;
+    alternate-background-color: #f5f5f5;
+}
+
+QTableView::item {
+    padding: 12px 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Table headers with blue background */
+QHeaderView::section {
+    background-color: #1976d2;
+    color: #ffffff;
+    padding: 12px 8px;
+    border: none;
+    border-right: 1px solid #1565c0;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+QHeaderView::section:last {
+    border-right: none;
+}
+
+QTableCornerButton::section {
+    background-color: #1976d2;
+    border: none;
+}
+
+/* Checkbox in table */
+QTableView::indicator {
+    width: 18px;
+    height: 18px;
+}
+
+QTableView::indicator:unchecked {
+    border: 1px solid #d0d0d0;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+QTableView::indicator:checked {
+    background-color: #1976d2;
+    border: 1px solid #1976d2;
+    border-radius: 2px;
+    image: url(checkmark.png); /* You'll need to provide a checkmark image */
+}
+
+/* Table row styling */
+QTableView::item:selected {
+    background-color: #e3f2fd;
+    color: #333333;
+}
+
+QTableView::item:hover {
+    background-color: #f5f5f5;
+}
+
+/* ==========================================================================
+   Tab Widget
+   ========================================================================== */
+QTabWidget::pane {
+    border: 1px solid #dcdfe6;
+    border-top: none;
+    background: #ffffff;
+    padding: 10px;
+}
+
+QTabBar::tab {
+    background: #f5f7fa;
+    border: 1px solid #dcdfe6;
+    border-bottom: none;
+    padding: 8px 20px;
+    margin-right: 2px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    color: #909399;
+    font-weight: 500;
+}
+
+QTabBar::tab:selected {
+    background: #ffffff;
+    color: #409eff;
+}
+
+QTabBar::tab:hover {
+    color: #409eff;
+}
+
+/* ==========================================================================
+   Dialogs
+   ========================================================================== */
+QDialog {
+    background-color: #ffffff;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+}
+
+QDialog QLabel {
+    color: #606266;
+}
+
+/* Dialog titles */
+QDialog QLabel[objectName="dialogTitle"] {
+    font-size: 18px;
+    font-weight: bold;
+    color: #303133;
+    padding: 10px 0;
+}
+
+/* Form labels in dialogs */
+QFormLayout QLabel {
+    color: #606266;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Special Styles
+   ========================================================================== */
+/* Link-style buttons (for contact count) */
+QPushButton[flat="true"] {
+    background-color: transparent;
+    border: none;
+    color: #409eff;
+    text-decoration: underline;
+    padding: 0;
+    min-width: 20px;
+}
+
+QPushButton[flat="true"]:hover {
+    color: #66b1ff;
+}
+
+/* Status labels */
+QLabel[status="active"] {
+    color: #52c41a;
+}
+
+QLabel[status="inactive"] {
+    color: #f5222d;
+}
+
+QLabel[status="pending"] {
+    color: #fa8c16;
+}
+
+/* TextEdit in dialogs */
+QTextEdit {
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #ffffff;
+}
+
+QTextEdit:focus {
+    border-color: #409eff;
+}
+
+/* Scrollbar styling */
+QScrollBar:vertical {
+    background-color: #f5f7fa;
+    width: 10px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #dcdfe6;
+    border-radius: 5px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #c0c4cc;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+/* Error message styling */
+QMessageBox {
+    background-color: #ffffff;
+}
+
+QMessageBox QLabel {
+    color: #606266;
+    font-size: 14px;
+}
+
+/* Separator lines */
+QFrame[frameShape="4"] { /* QFrame::HLine = 4 */
+    background-color: #ebeef5;
+    max-height: 1px;
+    border: none;
+}
+
+/* ==========================================================================
+   Filter Section Styles - High Fidelity Design
+   ========================================================================== */
+#filterSection {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Filter input field */
+#filterInput {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 6px 12px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+#filterInput:focus {
+    border-color: #1890ff;
+    outline: none;
+}
+
+/* Filter combo boxes */
+#filterCombo {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 6px 12px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 14px;
+    min-width: 110px;
+}
+
+#filterCombo:hover {
+    border-color: #40a9ff;
+}
+
+#filterCombo:focus {
+    border-color: #1890ff;
+}
+
+#filterCombo::drop-down {
+    border: none;
+    width: 20px;
+}
+
+#filterCombo::down-arrow {
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #8c8c8c;
+    margin-right: 5px;
+}
+
+/* Search button - blue style */
+#searchButton {
+    background-color: #1890ff;
+    color: #ffffff;
+    border: 1px solid #1890ff;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-size: 14px;
+    min-width: 70px;
+}
+
+#searchButton:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+#searchButton:pressed {
+    background-color: #096dd9;
+    border-color: #096dd9;
+}
+
+/* Reset button - outline style */
+#resetButton {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-size: 14px;
+    min-width: 70px;
+}
+
+#resetButton:hover {
+    color: #1890ff;
+    border-color: #40a9ff;
+}
+
+#resetButton:pressed {
+    color: #096dd9;
+    border-color: #096dd9;
+    background-color: #f5f5f5;
 }

@@ -11,8 +11,15 @@ def get_customers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Customer).offset(skip).limit(limit).all()
 
 def create_customer(db: Session, customer: customer_schema.CustomerCreate):
-    """创建新客户"""
-    db_customer = models.Customer(**customer.model_dump())
+    """创建新客户（包括联系人）"""
+    customer_data = customer.model_dump(exclude={"contacts"})
+    db_customer = models.Customer(**customer_data)
+    
+    # 创建联系人
+    for contact_data in customer.contacts:
+        db_contact = models.Contact(**contact_data.model_dump())
+        db_customer.contacts.append(db_contact)
+        
     db.add(db_customer)
     db.commit()
     db.refresh(db_customer)

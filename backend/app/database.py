@@ -3,11 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from .config import settings
 
-engine = create_engine(
-    settings.DATABASE_URL, 
-    # SQLite需要这个参数来允许多线程访问
-    connect_args={"check_same_thread": False} 
-)
+# Use the DATABASE_URL from the central settings file.
+engine = create_engine(settings.DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

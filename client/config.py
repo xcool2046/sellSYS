@@ -13,11 +13,11 @@ ENV = os.environ.get('SELLSYS_ENV', 'development')
 # API配置
 API_CONFIGS = {
     'development': {
-        'base_url': 'http://127.0.0.1:8000/api/v1',
+        'base_url': 'http://127.0.0.1:8000/api',
         'timeout': 30
     },
     'production': {
-        'base_url': 'http://YOUR_SERVER_IP:8000/api/v1',  # 替换为您的服务器IP
+        'base_url': 'http://8.156.69.42:8000/api',  # 生产服务器IP
         'timeout': 60
     }
 }

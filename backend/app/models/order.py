@@ -4,17 +4,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from ..database import Base
 
-class Product(Base):
-    """产品模型"""
-    __tablename__ = "products"
-    __table_args__ = {'extend_existing': True}
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, index=True)
-    description = Column(Text)
-    price = Column(Numeric(10, 2), nullable=False)
-    commission_rate = Column(Numeric(5, 2), default=0) # 佣金率
-
 class OrderStatus(str, enum.Enum):
     """订单状态"""
     PENDING = "待付款"
@@ -36,14 +25,16 @@ class Order(Base):
     paid_amount = Column(Numeric(10, 2), default=0.0)
     payment_date = Column(DateTime, nullable=True)
     status = Column(Enum(OrderStatus), nullable=False, default=OrderStatus.PENDING)
+    start_date = Column(DateTime, nullable=True) # 服务开始日期
+    end_date = Column(DateTime, nullable=True) # 服务结束日期
     
     # 关联客户
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    customer = relationship("Customer")
+    customer = relationship("Customer", back_populates="orders")
     
     # 关联销售
     sales_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
-    sales = relationship("Employee")
+    sales = relationship("Employee", back_populates="orders")
     
     order_items = relationship("OrderItem", back_populates="order")
     
@@ -65,4 +56,4 @@ class OrderItem(Base):
     
     # 关联产品
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    product = relationship("Product")
+    product = relationship("Product", back_populates="order_items")

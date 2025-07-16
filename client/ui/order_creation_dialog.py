@@ -7,10 +7,10 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, Slot
 
-from ..api.customers import get_customers
-from ..api.products import get_products
+from api.customers import get_customers
+from api.products import get_products
 # We will need employees later, let's assume an API exists
-# from ..api.employees import get_employees
+# from api.employees import get_employees
 
 class OrderCreationDialog(QDialog):
     def __init__(self, parent=None):

@@ -5,11 +5,13 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, QSize
 from .customer_view import CustomerView
-from .product_view import ProductView
+from .products_view import ProductsView
 from .order_view import OrderView
 from .sales_follow_view import SalesFollowView
 from .service_record_view import ServiceRecordView
 from .finance_view import FinanceView
+from .settings_view import SettingsView
+from .sales_management_view import SalesManagementView
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -47,21 +49,19 @@ class MainWindow(QMainWindow):
         nav_layout.setContentsMargins(0, 10, 0, 10)
         nav_layout.setSpacing(5)
 
-        nav_buttons_text = [
-            "数据视窗", "客户管理", "销售管理", "订单管理",
-            "售后服务", "产品管理", "财务管理", "系统设置"
-        ]
-        
-        self.nav_buttons = []
-        for i, text in enumerate(nav_buttons_text):
-            button = QPushButton(text)
-            button.setObjectName("navButton")
-            button.setCheckable(True) # Make button checkable
-            if i == 0: button.setChecked(True) # Set first button as default checked
-            
-            nav_layout.addWidget(button)
-            self.nav_buttons.append(button)
+        self.nav_buttons = {}
 
+        # --- 导航按钮 ---
+        self._create_nav_button("数据视窗", 0, nav_layout)
+        self._create_nav_button("客户管理", 1, nav_layout)
+        self._create_nav_button("销售管理", 2, nav_layout)
+        self._create_nav_button("订单管理", 3, nav_layout)
+        self._create_nav_button("售后服务", 4, nav_layout)
+        self._create_nav_button("产品管理", 5, nav_layout)
+        self._create_nav_button("财务管理", 6, nav_layout)
+        self._create_nav_button("系统设置", 7, nav_layout)
+        
+        nav_layout.addStretch() # Pushes everything to the top
         content_area_layout.addWidget(nav_panel)
         
         # --- 2.2 Right Content Panel ---
@@ -74,15 +74,26 @@ class MainWindow(QMainWindow):
         self.setup_pages()
         
         # Connect buttons
-        for i, button in enumerate(self.nav_buttons):
-            button.clicked.connect(lambda checked=False, index=i: self.on_nav_button_clicked(index))
+    def _create_nav_button(self, text, index, layout):
+        button = QPushButton(text)
+        button.setObjectName("navButton")
+        button.setCheckable(True)
+        button.clicked.connect(lambda: self.on_nav_button_clicked(index))
+        layout.addWidget(button)
+        self.nav_buttons[index] = button
+        # Set first button as default checked
+        if index == 0:
+            button.setChecked(True)
 
     def on_nav_button_clicked(self, index):
         # Set the current page
         self.content_stack.setCurrentIndex(index)
-        # Ensure only the clicked button is checked
-        for i, button in enumerate(self.nav_buttons):
-            button.setChecked(i == index)
+
+        # Uncheck all other main buttons
+        for i, button in self.nav_buttons.items():
+            if i != index:
+                button.setChecked(False)
+        self.nav_buttons[index].setChecked(True)
 
     def setup_pages(self):
         """Creates and adds pages to the QStackedWidget."""
@@ -96,20 +107,15 @@ class MainWindow(QMainWindow):
         
         self.content_stack.addWidget(data_view)             # Index 0
         self.content_stack.addWidget(CustomerView())         # Index 1
-        self.content_stack.addWidget(SalesFollowView())      # Index 2
+        self.content_stack.addWidget(SalesManagementView())  # Index 2 (was SalesFollowView)
         self.content_stack.addWidget(OrderView())            # Index 3
         self.content_stack.addWidget(ServiceRecordView())    # Index 4
-        self.content_stack.addWidget(ProductView())          # Index 5
+        self.content_stack.addWidget(ProductsView())          # Index 5
         self.content_stack.addWidget(FinanceView())          # Index 6
         
-        # Placeholder for "系统设置"
-        settings_view = QWidget()
-        settings_layout = QVBoxLayout(settings_view)
-        settings_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        settings_label = QLabel("系统设置 页面")
-        settings_label.setStyleSheet("font-size: 24px; color: #999;")
-        settings_layout.addWidget(settings_label)
-        self.content_stack.addWidget(settings_view)          # Index 7
+        # "系统设置" Page
+        self.content_stack.addWidget(SettingsView())          # Index 7
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

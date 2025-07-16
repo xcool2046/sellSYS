@@ -10,5 +10,6 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 if __name__ == "__main__":
-    # 直接运行client/main.py
-    from client import main
+    # 导入并执行真正的启动函数
+    from client.main import main
+    main()

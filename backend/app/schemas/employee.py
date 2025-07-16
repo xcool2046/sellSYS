@@ -6,9 +6,12 @@ from ..models.employee import EmployeeRole
 class EmployeeBase(BaseModel):
     username: str
     email: EmailStr
-    full_name: Optional[str] = None
+    name: Optional[str] = None
+    position: Optional[str] = None
     phone: Optional[str] = None
     role: EmployeeRole
+    department_id: Optional[int] = None
+    group_id: Optional[int] = None
 
 # 创建模型
 class EmployeeCreate(EmployeeBase):
@@ -17,16 +20,20 @@ class EmployeeCreate(EmployeeBase):
 # 更新模型
 class EmployeeUpdate(BaseModel):
     email: Optional[EmailStr] = None
-    full_name: Optional[str] = None
+    name: Optional[str] = None
+    position: Optional[str] = None
     phone: Optional[str] = None
     role: Optional[EmployeeRole] = None
     is_active: Optional[bool] = None
+    department_id: Optional[int] = None
+    group_id: Optional[int] = None
 
 # 数据库返回模型
 class Employee(EmployeeBase):
     id: int
     is_active: bool
     department_id: Optional[int] = None
+    group_id: Optional[int] = None
 
     class Config:
         from_attributes = True # Pydantic v2 orm_mode is now from_attributes

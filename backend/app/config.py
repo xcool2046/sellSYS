@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     应用配置
     """
     # 数据库配置
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./sellsys.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///../sellsys.db")
 
     # JWT 认证配置
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key")

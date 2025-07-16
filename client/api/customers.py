@@ -1,33 +1,46 @@
-from .client import api_client
+import requests
+from config import API_BASE_URL, API_TIMEOUT
 
-def get_customers(params=None):
+def get_customers(company_name=None, industry=None, province=None, city=None, status=None, sales_owner_id=None):
     """
-    Fetches a list of customers.
-    Supports optional query parameters for filtering, sorting, and pagination.
-    
-    :param params: A dictionary of query parameters.
-                   e.g., {"skip": 0, "limit": 10, "status": "active"}
-    :return: A list of customer dictionaries or None on failure.
+    获取所有客户信息（支持筛选）
     """
     try:
-        customers = api_client.get("/customers/", params=params)
-        return customers
-    except Exception as e:
-        print(f"An error occurred while fetching customers: {e}")
-        return None
+        params = {}
+        if company_name:
+            params['company_name'] = company_name
+        if industry:
+            params['industry'] = industry
+        if province:
+            params['province'] = province
+        if city:
+            params['city'] = city
+        if status:
+            params['status'] = status
+        if sales_owner_id:
+            params['sales_owner_id'] = sales_owner_id
+            
+        response = requests.get(f"{API_BASE_URL}/customers/", params=params, timeout=API_TIMEOUT)
+        response.raise_for_status()  # If the request fails, this will raise an HTTPError
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"获取客户列表失败: {e}")
+        return [] # ALWAYS return a list
 
-def create_customer(customer_data):
+def create_customer(customer_data: dict, contacts_data: list):
     """
-    Creates a new customer.
+    创建新客户及其联系人
+    """
+    # 合并客户数据和联系人数据
+    payload = customer_data.copy()
+    payload["contacts"] = contacts_data
     
-    :param customer_data: A dictionary containing the new customer's info.
-    :return: The created customer's data or None on failure.
-    """
     try:
-        customer = api_client.post("/customers/", json=customer_data)
-        return customer
-    except Exception as e:
-        print(f"An error occurred while creating a customer: {e}")
+        response = requests.post(f"{API_BASE_URL}/customers/", json=payload, timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"创建客户失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
         return None
-
-# Add other customer-related API functions (update, delete, get by id) here as needed.

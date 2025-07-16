@@ -1,60 +1,64 @@
 import sys
-from PySide6.QtWidgets import QApplication
-from .ui.main_window import MainWindow
-from .ui.login import LoginDialog
-from .api.auth import login
-from .api.client import api_client # Import the global instance
-from .config import API_BASE_URL  # Import configuration
+import os
+import traceback
+from PySide6.QtWidgets import QApplication, QMessageBox
+from ui.main_window import MainWindow
+from ui.login import LoginDialog
+from api.auth import login
+from api.client import api_client # Import the global instance
+from config import API_BASE_URL  # Import configuration
 
-if __name__ == "__main__":
+def main():
+    """Main function to initialize and run the application."""
     app = QApplication(sys.argv)
 
-    # Load global stylesheet
     try:
-        with open("client/ui/styles.qss", "r", encoding="utf-8") as f:
-            app.setStyleSheet(f.read())
-    except FileNotFoundError:
-        print("Warning: styles.qss not found. The UI will not be fully styled.")
+        # Load global stylesheet using an absolute path to be robust
+        try:
+            # Get the directory where this main.py script is located
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            # Construct the full path to the stylesheet
+            stylesheet_path = os.path.join(script_dir, "ui", "styles.qss")
+            with open(stylesheet_path, "r", encoding="utf-8") as f:
+                app.setStyleSheet(f.read())
+                print(f"Successfully loaded stylesheet from: {stylesheet_path}")
+        except FileNotFoundError:
+            # This is not a fatal error, just a warning
+            print(f"Warning: styles.qss not found. The UI will not be fully styled.")
 
-    # Configure the global API client instance using config
-    api_client.base_url = API_BASE_URL
+        # Configure the global API client instance using config
+        api_client.base_url = API_BASE_URL
 
-    login_dialog = LoginDialog()
-    
-    # Loop to allow login retries
-    while True:
-        # Show the dialog. If the user cancels, exec() returns False.
-        if login_dialog.exec():
-            username, password = login_dialog.get_credentials()
-            login_result = login(username, password)
+        # --- Development: Skip Login ---
+        print("--- [开发模式] 跳过登录流程 ---")
+        placeholder_token = "DEV_MODE_TOKEN_--_SKIP_LOGIN"
+        api_client.set_token(placeholder_token)
 
-            if login_result and login_result.get("access_token"):
-                # Login successful, break the loop to proceed
-                break
-            else:
-                # Login failed, prepare and show error message
-                error_detail = "登录失败，发生未知错误。"
-                if login_result and "detail" in login_result:
-                    error_detail = login_result["detail"]
-                
-                if isinstance(error_detail, str):
-                    if "incorrect" in error_detail.lower():
-                        error_detail = "用户名或密码不正确。"
-                    elif "not found" in error_detail.lower():
-                        error_detail = "用户不存在。"
-                
-                login_dialog.set_error_message(error_detail)
-        else:
-            # User cancelled the login dialog, exit application
-            sys.exit(0)
+        main_window = MainWindow()
+        main_window.show()
+        
+        # Start the main event loop
+        sys.exit(app.exec())
 
-    # If the loop is broken, login was successful.
-    # Set the token and show the main window.
-    token = login_result["access_token"]
-    api_client.set_token(token)
-    
-    main_window = MainWindow()
-    main_window.show()
-    
-    # Start the main event loop
-    sys.exit(app.exec())
+    except Exception as e:
+        # Catch any unhandled exception
+        print("CRITICAL ERROR: An unhandled exception occurred.")
+        # Get the full traceback
+        error_details = traceback.format_exc()
+        print(error_details)
+        
+        # Display an error message box to the user
+        error_box = QMessageBox()
+        error_box.setIcon(QMessageBox.Critical)
+        error_box.setText("发生了一个致命错误，应用即将关闭。")
+        error_box.setInformativeText("详细的错误信息已经打印到控制台，请将此信息提供给开发人员进行问题排查。")
+        error_box.setWindowTitle("应用崩溃")
+        error_box.setDetailedText(str(error_details))
+        error_box.setStandardButtons(QMessageBox.Ok)
+        error_box.exec()
+        
+        # Exit with a non-zero code to indicate an error
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
