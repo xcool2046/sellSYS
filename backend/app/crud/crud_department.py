@@ -9,7 +9,12 @@ def get_departments(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Department).offset(skip).limit(limit).all()
 
 def create_department(db: Session, department: department_schema.DepartmentCreate):
-    db_department = models.Department(**department.model_dump())
+    department_data = department.model_dump()
+    # 确保 group_id 存在，即使是 None
+    if 'group_id' not in department_data:
+        department_data['group_id'] = None
+        
+    db_department = models.Department(**department_data)
     db.add(db_department)
     db.commit()
     db.refresh(db_department)

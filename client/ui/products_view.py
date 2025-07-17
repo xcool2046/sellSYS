@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt
 
-from api import products as products_api
+from ..api import products as products_api
 from .product_dialog import ProductDialog
 
 class ProductsView(QWidget):

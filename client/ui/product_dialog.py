@@ -8,8 +8,8 @@ from PySide6.QtGui import QDoubleValidator
 from decimal import Decimal
 from typing import Optional
 
-from api.products import create_product, update_product
-from schemas.product import Product
+from ..api.products import create_product, update_product
+from ..schemas.product import Product
 
 
 class ProductDialog(QDialog):

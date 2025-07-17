@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QMessageBox
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
-from api.sales_follows import get_sales_follows_by_customer, create_sales_follow
+from ..api.sales_follows import get_sales_follows_by_customer, create_sales_follow
 
 class SalesFollowView(QWidget):
     def __init__(self, customer_id=1, parent=None): # Assume customer_id is passed

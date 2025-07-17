@@ -69,3 +69,13 @@ def read_unassigned_customers(db: Session = Depends(get_db)):
     """获取未分配销售的客户列表"""
     customers = db.query(models.Customer).filter(models.Customer.sales_owner_id == None).all()
     return customers
+
+from ...crud import crud_contact
+
+@router.get("/{customer_id}/contacts/", response_model=List[schemas.Contact])
+def read_customer_contacts(customer_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve contacts for a specific customer.
+    """
+    contacts = crud_contact.get_contacts_by_customer(db, customer_id=customer_id)
+    return contacts

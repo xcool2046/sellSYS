@@ -5,17 +5,19 @@ QWidget {
     font-family: 'Microsoft YaHei UI', 'Segoe UI', Arial, sans-serif;
     font-size: 14px;
     color: #333333; /* Default text color */
+    background-color: #ffffff; /* Ensure default background is white */
 }
 
 QMainWindow, QDialog {
-    background-color: #f5f7fa; /* Light grey background for windows */
+    background-color: #ffffff; /* Pure white background for windows */
 }
 
 /* ==========================================================================
    Main Window Structure
    ========================================================================== */
 #titleBar {
-    background-color: #2b70d8; /* Blue title bar */
+    background-color: #0078D4; /* Blue title bar from prototype */
+    border-bottom: 1px solid #005a9e;
 }
 
 #titleLabel {
@@ -26,17 +28,17 @@ QMainWindow, QDialog {
 }
 
 #navPanel {
-    background-color: #eaf2ff; /* Light blue navigation panel */
-    border-right: 1px solid #dcdfe6;
+    background-color: #e4f0f9; /* Lighter blue side panel from prototype */
+    border-right: 1px solid #cccccc;
 }
 
 /* ==========================================================================
-   Navigation Buttons
+   Navigation Buttons (Left Sidebar)
    ========================================================================== */
 QPushButton#navButton {
     background-color: transparent;
     border: none;
-    color: #303133;
+    color: #333333;
     padding: 15px 25px;
     text-align: left;
     font-size: 16px;
@@ -45,26 +47,67 @@ QPushButton#navButton {
 }
 
 QPushButton#navButton:hover {
-    background-color: #dceaff;
+    background-color: #d4e8f7;
 }
 
 QPushButton#navButton:checked {
     background-color: #ffffff;
-    color: #2b70d8;
+    color: #0078D4;
     font-weight: bold;
-    border-right: 3px solid #2b70d8;
+    border-right: 3px solid #0078D4;
+}
+
+/* ==========================================================================
+   Settings View Specific Styles
+   ========================================================================== */
+#settingsView {
+    background-color: #F5F5F5;
+}
+
+#settingsNavBar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+QPushButton#settingsNavButton {
+    background-color: transparent;
+    border: none;
+    padding: 10px 15px;
+    text-align: left;
+    border-bottom: 3px solid transparent; /* Default transparent border */
+}
+
+QPushButton#settingsNavButton:hover {
+    background-color: #f5f5f5;
+}
+
+QPushButton#settingsNavButton:checked {
+    color: #0078D4;
+    font-weight: bold;
+    border-bottom: 3px solid #0078D4; /* Blue underline when checked */
+}
+
+/* Style for the text label inside the button */
+QLabel#settingsNavLabel {
+    color: #333333;
+    font-size: 14px;
+}
+
+QPushButton#settingsNavButton:checked QLabel#settingsNavLabel {
+    color: #0078D4;
+    font-weight: bold;
 }
 
 /* ==========================================================================
    Content Area & General Widgets
    ========================================================================== */
-/* Set all content views to have a white background */
-QStackedWidget > QWidget {
+/* Set all content views to have a white background, except settings */
+QStackedWidget > QWidget:not(#settingsView) {
     background-color: #ffffff;
 }
 
 /* Ensure view containers within pages are also white */
-#customerView, #productView, #orderView, #salesFollowView, #serviceRecordView, #financeView, QWidget {
+#customerView, #productView, #orderView, #salesFollowView, #serviceRecordView, #financeView {
     background-color: #ffffff;
 }
 
@@ -114,20 +157,22 @@ QPushButton:pressed {
 }
 
 /* Primary buttons - blue background */
-QPushButton#primaryButton {
-    background-color: #1890ff;
+/* General Add Button in Settings Tabs */
+QPushButton#addButton {
+    background-color: #0078D4;
     color: #ffffff;
-    border-color: #1890ff;
+    border: 1px solid #0078D4;
+    padding: 8px 20px;
 }
 
-QPushButton#primaryButton:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
+QPushButton#addButton:hover {
+    background-color: #005a9e;
+    border-color: #005a9e;
 }
 
-QPushButton#primaryButton:pressed {
-    background-color: #096dd9;
-    border-color: #096dd9;
+QPushButton#addButton:pressed {
+    background-color: #004578;
+    border-color: #004578;
 }
 
 /* Success buttons - green */
@@ -156,52 +201,62 @@ QPushButton[text="分配销售"]:hover {
 
 /* Table action buttons */
 #tableEditButton, QPushButton[text="编辑"] {
-    background-color: #1976d2;
+    background-color: #0078D4; /* Blue background */
     color: #ffffff;
-    border: none;
+    border: 1px solid #0078D4;
     border-radius: 4px;
     padding: 5px 15px;
     min-width: 60px;
-    font-size: 13px;
+    font-size: 14px;
+    text-decoration: none;
 }
 
 #tableEditButton:hover, QPushButton[text="编辑"]:hover {
-    background-color: #1565c0;
+    background-color: #005a9e;
+    border-color: #005a9e;
+    text-decoration: none;
 }
 
 #tableEditButton:pressed, QPushButton[text="编辑"]:pressed {
-    background-color: #0d47a1;
+    background-color: #004578;
+    border-color: #004578;
+    text-decoration: none;
 }
 
 #tableDeleteButton, QPushButton[text="删除"] {
-    background-color: #ffffff;
-    color: #666666;
-    border: 1px solid #d0d0d0;
+    background-color: #6c757d; /* Dark grey background */
+    color: #ffffff;
+    border: 1px solid #6c757d;
     border-radius: 4px;
     padding: 5px 15px;
     min-width: 60px;
-    font-size: 13px;
+    font-size: 14px;
+    text-decoration: none;
 }
 
 #tableDeleteButton:hover, QPushButton[text="删除"]:hover {
-    background-color: #f5f5f5;
-    border-color: #999999;
+    background-color: #5a6268;
+    border-color: #545b62;
+    text-decoration: none;
 }
 
 #tableDeleteButton:pressed, QPushButton[text="删除"]:pressed {
-    background-color: #e0e0e0;
+    background-color: #545b62;
+    border-color: #4e555b;
+    text-decoration: none;
 }
 
 /* ==========================================================================
    Table View
    ========================================================================== */
-QTableView {
-    border: 1px solid #e0e0e0;
-    gridline-color: #e0e0e0;
+QTableView, #contentTable {
+    border: 1px solid #DDDDDD;
+    gridline-color: #DDDDDD;
     background-color: #ffffff;
-    selection-background-color: #e3f2fd;
+    selection-background-color: #E5F3FF;
     selection-color: #333333;
-    alternate-background-color: #f5f5f5;
+    alternate-background-color: #F9F9F9;
+    border-radius: 0;
 }
 
 QTableView::item {
@@ -211,14 +266,14 @@ QTableView::item {
 
 /* Table headers with blue background */
 QHeaderView::section {
-    background-color: #1976d2;
-    color: #ffffff;
+    background-color: #0078D4; /* Blue background */
+    color: #ffffff; /* White text */
     padding: 12px 8px;
     border: none;
-    border-right: 1px solid #1565c0;
-    font-weight: 600;
+    border-bottom: 1px solid #005a9e;
+    font-weight: bold;
     font-size: 14px;
-    text-align: center;
+    text-align: left;
 }
 
 QHeaderView::section:last {
@@ -226,8 +281,9 @@ QHeaderView::section:last {
 }
 
 QTableCornerButton::section {
-    background-color: #1976d2;
+    background-color: #F0F0F0;
     border: none;
+    border-bottom: 1px solid #DDDDDD;
 }
 
 /* Checkbox in table */
@@ -243,10 +299,17 @@ QTableView::indicator:unchecked {
 }
 
 QTableView::indicator:checked {
-    background-color: #1976d2;
     border: 1px solid #1976d2;
+    background-color: #ffffff;
     border-radius: 2px;
-    image: url(checkmark.png); /* You'll need to provide a checkmark image */
+    image: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'><path fill='%231976d2' d='M7 14l-5-5 1.4-1.4L7 11.2 14.6 3.6 16 5z'/></svg>);
+}
+
+QTableView::indicator:indeterminate {
+    border: 1px solid #1976d2;
+    background-color: #ffffff;
+    border-radius: 2px;
+    image: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'><rect fill='%231976d2' x='4' y='8' width='10' height='2'/></svg>);
 }
 
 /* Table row styling */
@@ -295,20 +358,39 @@ QTabBar::tab:hover {
    ========================================================================== */
 QDialog {
     background-color: #ffffff;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-QDialog QLabel {
-    color: #606266;
+QFrame#dialogTitleBar {
+    background-color: #0078D4;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 10px 20px;
 }
 
-/* Dialog titles */
-QDialog QLabel[objectName="dialogTitle"] {
-    font-size: 18px;
+QLabel#dialogTitleLabel {
+    color: #ffffff;
+    font-size: 16px;
     font-weight: bold;
-    color: #303133;
-    padding: 10px 0;
+}
+
+/* Primary button in dialogs */
+QPushButton#primaryDialogButton {
+    background-color: #0078D4;
+    color: #ffffff;
+    border: 1px solid #0078D4;
+}
+
+QPushButton#primaryDialogButton:hover {
+    background-color: #005a9e;
+    border-color: #005a9e;
+}
+
+QPushButton#primaryDialogButton:pressed {
+    background-color: #004578;
+    border-color: #004578;
 }
 
 /* Form labels in dialogs */
@@ -496,4 +578,295 @@ QFrame[frameShape="4"] { /* QFrame::HLine = 4 */
     color: #096dd9;
     border-color: #096dd9;
     background-color: #f5f5f5;
+}
+
+/* ==========================================================================
+   Finance View Specific Styles - 财务管理界面专用样式
+   ========================================================================== */
+
+/* Finance Tab Widget */
+#financeTabWidget {
+    background-color: #ffffff;
+    border: none;
+}
+
+#financeTabWidget::pane {
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+}
+
+#financeTabWidget::tab-bar {
+    left: 5px;
+}
+
+#financeTabWidget QTabBar::tab {
+    background-color: #f5f5f5;
+    color: #333333;
+    border: 1px solid #d9d9d9;
+    border-bottom: none;
+    padding: 8px 20px;
+    margin-right: 2px;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+#financeTabWidget QTabBar::tab:selected {
+    background-color: #ffffff;
+    color: #0078D4;
+    border-color: #0078D4;
+    border-bottom: 2px solid #0078D4;
+    font-weight: bold;
+}
+
+#financeTabWidget QTabBar::tab:hover:!selected {
+    background-color: #e6f3ff;
+}
+
+/* Filter Frame */
+#filterFrame {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Finance Table */
+#financeTable {
+    background-color: #ffffff;
+    alternate-background-color: #fafafa;
+    gridline-color: #e0e0e0;
+    border: 1px solid #d9d9d9;
+    selection-background-color: #e6f3ff;
+    font-size: 13px;
+}
+
+#financeTable::item {
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#financeTable::item:selected {
+    background-color: #e6f3ff;
+    color: #333333;
+}
+
+#financeTable QHeaderView::section {
+    background-color: #fafafa;
+    color: #333333;
+    border: none;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #d9d9d9;
+    padding: 10px 8px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#financeTable QHeaderView::section:hover {
+    background-color: #f0f0f0;
+}
+
+/* Summary Frame */
+#summaryFrame {
+    background-color: #f8f9fa;
+    border: 1px solid #d9d9d9;
+    border-top: 2px solid #0078D4;
+    margin-top: 5px;
+}
+
+#summaryValue {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 5px;
+    font-weight: bold;
+    color: #0078D4;
+    font-size: 13px;
+}
+
+/* Action Button in Table */
+#actionButton {
+    background-color: #0078D4;
+    color: #ffffff;
+    border: 1px solid #0078D4;
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-size: 12px;
+    min-width: 80px;
+}
+
+#actionButton:hover {
+    background-color: #106ebe;
+    border-color: #106ebe;
+}
+
+#actionButton:pressed {
+    background-color: #005a9e;
+    border-color: #005a9e;
+}
+
+#actionButton:disabled {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    color: #666666;
+}
+
+/* Finance View Labels */
+QLabel {
+    color: #333333;
+    font-size: 13px;
+}
+
+/* Specific styling for input fields in finance view */
+FinanceView QLineEdit {
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    padding: 6px 8px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 13px;
+}
+
+FinanceView QLineEdit:focus {
+    border-color: #0078D4;
+    outline: none;
+}
+
+FinanceView QComboBox {
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    padding: 6px 8px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 13px;
+}
+
+FinanceView QComboBox:hover {
+    border-color: #0078D4;
+}
+
+FinanceView QComboBox:focus {
+    border-color: #0078D4;
+}
+
+FinanceView QComboBox::drop-down {
+    border: none;
+    width: 18px;
+    margin-right: 2px;
+}
+
+FinanceView QComboBox::down-arrow {
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #666666;
+}
+
+/* Search and Reset buttons in Finance View */
+FinanceView #searchButton {
+    background-color: #0078D4;
+    color: #ffffff;
+    border: 1px solid #0078D4;
+    border-radius: 3px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+FinanceView #searchButton:hover {
+    background-color: #106ebe;
+    border-color: #106ebe;
+}
+
+FinanceView #resetButton {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+FinanceView #resetButton:hover {
+    color: #0078D4;
+    border-color: #0078D4;
+}
+
+/* ==========================================================================
+   Window Resize and Layout Improvements
+   ========================================================================== */
+
+/* Ensure tables resize properly */
+QTableWidget, QTableView {
+    selection-behavior: select-rows;
+}
+
+QTableWidget::item, QTableView::item {
+    height: 28px;
+    padding: 4px 8px;
+}
+
+/* Splitter handles for resizing */
+QSplitter::handle {
+    background-color: #e0e0e0;
+    border: 1px solid #cccccc;
+}
+
+QSplitter::handle:horizontal {
+    width: 6px;
+    margin: 0px 2px;
+}
+
+QSplitter::handle:vertical {
+    height: 6px;  
+    margin: 2px 0px;
+}
+
+QSplitter::handle:hover {
+    background-color: #0078D4;
+}
+
+/* Scrollbar improvements */
+QScrollBar:vertical {
+    background-color: #f5f5f5;
+    border: none;
+    width: 12px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #cccccc;
+    border-radius: 6px;
+    min-height: 20px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #0078D4;
+}
+
+QScrollBar:horizontal {
+    background-color: #f5f5f5;
+    border: none;
+    height: 12px;
+    margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #cccccc;
+    border-radius: 6px;
+    min-width: 20px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: #0078D4;
+}
+
+/* Size grip for window resizing */
+QSizeGrip {
+    background-color: transparent;
+    width: 16px;
+    height: 16px;
 }

@@ -2,11 +2,11 @@ import sys
 import os
 import traceback
 from PySide6.QtWidgets import QApplication, QMessageBox
-from ui.main_window import MainWindow
-from ui.login import LoginDialog
-from api.auth import login
-from api.client import api_client # Import the global instance
-from config import API_BASE_URL  # Import configuration
+from .ui.main_window import MainWindow
+from .ui.login import LoginDialog
+from .api.auth import login
+from .api.client import api_client # Import the global instance
+from .config import API_BASE_URL  # Import configuration
 
 def main():
     """Main function to initialize and run the application."""

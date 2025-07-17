@@ -18,6 +18,16 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("巨伟科技客户管理信息系统")
         self.setGeometry(100, 100, 1200, 800)
+        
+        # 设置窗口可调整大小
+        self.setMinimumSize(800, 600)  # 设置最小尺寸
+        self.setMaximumSize(1920, 1080)  # 设置最大尺寸
+        
+        # 设置窗口属性，允许拖拽边框调整大小
+        from PySide6.QtCore import Qt
+        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.WindowTitleHint | 
+                           Qt.WindowType.WindowSystemMenuHint | Qt.WindowType.WindowMinMaxButtonsHint |
+                           Qt.WindowType.WindowCloseButtonHint)
 
         # --- Main Layout ---
         central_widget = QWidget()
@@ -115,15 +125,12 @@ class MainWindow(QMainWindow):
         
         # "系统设置" Page
         self.content_stack.addWidget(SettingsView())          # Index 7
+        
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    try:
-        with open("client/ui/styles.qss", "r", encoding="utf-8") as f:
-            app.setStyleSheet(f.read())
-    except FileNotFoundError:
-        print("Warning: styles.qss not found.")
+    # Note: Styles are loaded in the main entry point (client/main.py)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

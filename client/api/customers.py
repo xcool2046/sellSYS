@@ -1,5 +1,5 @@
 import requests
-from config import API_BASE_URL, API_TIMEOUT
+from ..config import API_BASE_URL, API_TIMEOUT
 
 def get_customers(company_name=None, industry=None, province=None, city=None, status=None, sales_owner_id=None):
     """
@@ -44,3 +44,31 @@ def create_customer(customer_data: dict, contacts_data: list):
         if hasattr(e, 'response') and e.response is not None:
             print(f"错误详情: {e.response.text}")
         return None
+
+def update_customer(customer_id: int, customer_data: dict):
+    """
+    更新客户信息
+    """
+    try:
+        response = requests.put(f"{API_BASE_URL}/customers/{customer_id}", json=customer_data, timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"更新客户失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
+        return None
+
+def delete_customer(customer_id: int):
+    """
+    删除客户
+    """
+    try:
+        response = requests.delete(f"{API_BASE_URL}/customers/{customer_id}", timeout=API_TIMEOUT)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        print(f"删除客户失败: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"错误详情: {e.response.text}")
+        return False

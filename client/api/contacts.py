@@ -1,5 +1,5 @@
 import requests
-from config import API_BASE_URL, API_TIMEOUT
+from ..config import API_BASE_URL, API_TIMEOUT
 
 def get_contacts_for_customer(customer_id: int):
     """

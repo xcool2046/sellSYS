@@ -1,11 +1,12 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableView, QLineEdit,
-    QComboBox, QSpacerItem, QSizePolicy, QHeaderView, QMessageBox, QLabel
+    QComboBox, QSpacerItem, QSizePolicy, QHeaderView, QMessageBox, QLabel,
+    QCheckBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor
-from PySide6.QtCore import Qt
+from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor, QIcon
+from PySide6.QtCore import Qt, QModelIndex
 
-from api import customers as customers_api, contacts as contacts_api, employees as employees_api
+from ..api import customers as customers_api, contacts as contacts_api, employees as employees_api
 from .customer_dialog import CustomerDialog
 from .assign_sales_dialog import AssignSalesDialog
 from .assign_service_dialog import AssignServiceDialog
@@ -21,6 +22,7 @@ class CustomerView(QWidget):
         self.employees_map = {}
         self.all_customers_data = []  # 用于获取所有可能的筛选值
         self.checkbox_items = []  # 存储复选框项
+        self.select_all_checkbox = None  # 全选复选框
 
         # --- Layouts ---
         main_layout = QVBoxLayout(self)
@@ -102,6 +104,9 @@ class CustomerView(QWidget):
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table_view.clicked.connect(self._on_table_clicked)
         self.table_view.setAlternatingRowColors(True)  # 启用斑马纹
+        
+        # 连接模型数据变化信号
+        self.model.itemChanged.connect(self._on_item_changed)
 
         # --- Content Widget ---
         content_widget = QWidget()
@@ -123,6 +128,7 @@ class CustomerView(QWidget):
 
         # --- Initialization ---
         self.setup_table_headers()
+        self.setup_header_checkbox()
         self.load_filter_options()
         self.refresh_data()
 
@@ -202,10 +208,11 @@ class CustomerView(QWidget):
         for i, customer in enumerate(self.customers_data):
             contacts_count = customer.get("contacts_count", 0)
             
-            # Create checkbox item
+            # Create checkbox item with custom style
             checkbox_item = QStandardItem()
             checkbox_item.setCheckable(True)
             checkbox_item.setCheckState(Qt.CheckState.Unchecked)
+            checkbox_item.setData(Qt.AlignmentFlag.AlignCenter, Qt.ItemDataRole.TextAlignmentRole)
             self.checkbox_items.append(checkbox_item)
             
             # Create a clickable item for contacts
@@ -234,10 +241,12 @@ class CustomerView(QWidget):
             delete_button = QPushButton("删除")
             edit_button.setProperty("customer_id", customer["id"])
             delete_button.setProperty("customer_id", customer["id"])
+            edit_button.setProperty("customer_row", i)
+            delete_button.setProperty("customer_row", i)
             edit_button.setObjectName("tableEditButton")
             delete_button.setObjectName("tableDeleteButton")
-            # edit_button.clicked.connect(self._on_edit_customer_clicked)
-            # delete_button.clicked.connect(self._on_delete_customer_clicked)
+            edit_button.clicked.connect(self._on_edit_customer_clicked)
+            delete_button.clicked.connect(self._on_delete_customer_clicked)
 
             button_layout = QHBoxLayout()
             button_layout.setSpacing(5)
@@ -304,6 +313,143 @@ class CustomerView(QWidget):
                 # TODO: Add API call to assign service
                 print(f"Assigning service {service_id} to customers {customer_ids}")
                 self.refresh_data()
+    
+    def setup_header_checkbox(self):
+        """设置表头的全选复选框"""
+        self.select_all_checkbox = QCheckBox()
+        self.select_all_checkbox.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 16px;
+                height: 16px;
+            }
+            QCheckBox::indicator:unchecked {
+                border: 1px solid #d0d0d0;
+                background-color: #ffffff;
+                border-radius: 2px;
+            }
+            QCheckBox::indicator:checked {
+                border: 1px solid #1976d2;
+                background-color: #ffffff;
+                border-radius: 2px;
+                image: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><path fill='%231976d2' d='M6.5 11.5l-3.5-3.5 1.4-1.4 2.1 2.1 5.1-5.1 1.4 1.4z'/></svg>);
+            }
+            QCheckBox::indicator:indeterminate {
+                border: 1px solid #1976d2;
+                background-color: #ffffff;
+                border-radius: 2px;
+                image: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><rect fill='%231976d2' x='4' y='7' width='8' height='2'/></svg>);
+            }
+        """)
+        self.select_all_checkbox.stateChanged.connect(self._on_select_all_changed)
+        
+        # 将全选复选框放在表头
+        header = self.table_view.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        
+        # 创建一个容器来居中放置复选框
+        container = QWidget()
+        layout = QHBoxLayout(container)
+        layout.setContentsMargins(10, 0, 0, 0)
+        layout.addWidget(self.select_all_checkbox)
+        layout.addStretch()
+        
+        # 使用自定义widget作为表头的第一列
+        self.table_view.horizontalHeader().setDefaultAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        # 添加到视口的左上角
+        container.setParent(self.table_view.viewport())
+        container.move(0, 0)
+        container.resize(40, header.height())
+        container.show()
+    
+    def _on_select_all_changed(self, state):
+        """全选/取消全选处理"""
+        # 断开信号连接，避免递归
+        self.model.itemChanged.disconnect(self._on_item_changed)
+        
+        for checkbox_item in self.checkbox_items:
+            if state == Qt.CheckState.Checked.value:
+                checkbox_item.setCheckState(Qt.CheckState.Checked)
+            else:
+                checkbox_item.setCheckState(Qt.CheckState.Unchecked)
+        
+        # 重新连接信号
+        self.model.itemChanged.connect(self._on_item_changed)
+    
+    def _on_item_changed(self, item):
+        """处理单个复选框状态变化"""
+        if item in self.checkbox_items:
+            # 检查是否所有复选框都被选中
+            all_checked = all(cb.checkState() == Qt.CheckState.Checked for cb in self.checkbox_items)
+            # 检查是否有任何复选框被选中
+            any_checked = any(cb.checkState() == Qt.CheckState.Checked for cb in self.checkbox_items)
+            
+            if self.select_all_checkbox:
+                # 断开信号以避免递归
+                self.select_all_checkbox.stateChanged.disconnect(self._on_select_all_changed)
+                
+                if all_checked:
+                    self.select_all_checkbox.setCheckState(Qt.CheckState.Checked)
+                elif any_checked:
+                    self.select_all_checkbox.setCheckState(Qt.CheckState.PartiallyChecked)
+                else:
+                    self.select_all_checkbox.setCheckState(Qt.CheckState.Unchecked)
+                
+                # 重新连接信号
+                self.select_all_checkbox.stateChanged.connect(self._on_select_all_changed)
+    
+    def _on_edit_customer_clicked(self):
+        """处理编辑按钮点击"""
+        sender = self.sender()
+        customer_id = sender.property("customer_id")
+        customer_row = sender.property("customer_row")
+        
+        # 从当前数据中获取客户信息
+        customer_data = self.customers_data[customer_row]
+        
+        # 获取客户的联系人信息
+        contacts = contacts_api.get_contacts_for_customer(customer_id)
+        
+        # 打开编辑对话框
+        dialog = CustomerDialog(self, customer_data, contacts)
+        if dialog.exec():
+            updated_customer_data, updated_contacts_data = dialog.get_data()
+            
+            # 调用API更新客户
+            result = customers_api.update_customer(customer_id, updated_customer_data)
+            
+            if result:
+                QMessageBox.information(self, "成功", "客户信息更新成功！")
+                self.refresh_data()
+            else:
+                QMessageBox.warning(self, "失败", "客户信息更新失败，请重试。")
+    
+    def _on_delete_customer_clicked(self):
+        """处理删除按钮点击"""
+        sender = self.sender()
+        customer_id = sender.property("customer_id")
+        customer_row = sender.property("customer_row")
+        
+        # 从当前数据中获取客户名称
+        customer_name = self.customers_data[customer_row].get("company_name", "")
+        
+        # 确认删除
+        reply = QMessageBox.question(
+            self,
+            "确认删除",
+            f'确定要删除客户 "{customer_name}" 吗？\n此操作不可撤销。',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            # 调用API删除客户
+            result = customers_api.delete_customer(customer_id)
+            
+            if result:
+                QMessageBox.information(self, "成功", "客户删除成功！")
+                self.refresh_data()
+            else:
+                QMessageBox.warning(self, "失败", "客户删除失败，请重试。")
 
     def _on_table_clicked(self, index):
         # Check if the "Contacts" column was clicked

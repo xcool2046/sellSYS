@@ -4,10 +4,14 @@ from PySide6.QtWidgets import (
 )
 
 class CustomerDialog(QDialog):
-    def __init__(self, parent=None, customer_data=None):
+    def __init__(self, parent=None, customer_data=None, contacts_data=None):
         super().__init__(parent)
-        self.setWindowTitle("添加客户" if customer_data is None else "编辑客户")
+        self.is_edit_mode = customer_data is not None
+        self.setWindowTitle("添加客户" if not self.is_edit_mode else "编辑客户")
         self.setMinimumWidth(500)
+        
+        self.customer_data = customer_data
+        self.contacts_data = contacts_data or []
 
         # 省份城市数据
         self.province_city_data = {
@@ -88,7 +92,12 @@ class CustomerDialog(QDialog):
 
         # --- Initial State ---
         self.contact_rows = []
-        self.add_contact_row() # Start with one contact
+        
+        # 如果是编辑模式，填充现有数据
+        if self.is_edit_mode:
+            self._populate_customer_data()
+        else:
+            self.add_contact_row() # Start with one contact for new customer
         
     def on_province_changed(self):
         """省份选择变化时更新城市列表"""
@@ -204,3 +213,52 @@ class CustomerDialog(QDialog):
             return
             
         super().accept()
+    
+    def _populate_customer_data(self):
+        """填充现有客户数据（编辑模式）"""
+        if not self.customer_data:
+            return
+            
+        # 设置行业类别
+        industry = self.customer_data.get("industry", "")
+        if industry == "应急":
+            self.rb_emergency.setChecked(True)
+        elif industry == "人社":
+            self.rb_hr.setChecked(True)
+        elif industry == "住建":
+            self.rb_construction.setChecked(True)
+        elif industry == "其它":
+            self.rb_other.setChecked(True)
+            
+        # 设置基本信息
+        self.company_name_edit.setText(self.customer_data.get("company_name", "") or self.customer_data.get("company", ""))
+        
+        # 设置省份
+        province = self.customer_data.get("province", "")
+        for i in range(self.province_combo.count()):
+            if self.province_combo.itemData(i) == province:
+                self.province_combo.setCurrentIndex(i)
+                break
+        
+        # 设置城市
+        self.on_province_changed()  # 先更新城市列表
+        city = self.customer_data.get("city", "")
+        for i in range(self.city_combo.count()):
+            if self.city_combo.itemData(i) == city:
+                self.city_combo.setCurrentIndex(i)
+                break
+                
+        self.address_edit.setText(self.customer_data.get("address", ""))
+        self.customer_notes_edit.setText(self.customer_data.get("notes", ""))
+        
+        # 添加联系人
+        for contact in self.contacts_data:
+            self.add_contact_row(
+                name=contact.get("name", ""),
+                phone=contact.get("phone", ""),
+                is_primary=contact.get("is_primary", False)
+            )
+        
+        # 如果没有联系人，至少添加一个空行
+        if not self.contacts_data:
+            self.add_contact_row()

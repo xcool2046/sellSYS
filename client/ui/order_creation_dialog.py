@@ -7,10 +7,10 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt, Slot
 
-from api.customers import get_customers
-from api.products import get_products
-# We will need employees later, let's assume an API exists
-# from api.employees import get_employees
+from ..api.customers import get_customers
+from ..api.products import get_products
+from ..api.employees import get_employees
+from ..api.orders import create_order
 
 class OrderCreationDialog(QDialog):
     def __init__(self, parent=None):
@@ -106,10 +106,13 @@ class OrderCreationDialog(QDialog):
             
             self.products_data = get_products()
             if self.products_data and not isinstance(self.products_data, dict):
-                 for product in self.products_data:
+                for product in self.products_data:
                     self.product_combo.addItem(product['name'], userData=product['id'])
             
-            # TODO: Load employees for the sales_combo
+            employees = get_employees()
+            if employees:
+                for employee in employees:
+                    self.sales_combo.addItem(employee['name'], userData=employee['id'])
         except Exception as e:
             QMessageBox.critical(self, "加载错误", f"无法加载初始化数据: {e}")
 
@@ -159,14 +162,47 @@ class OrderCreationDialog(QDialog):
 
     def get_order_data(self):
         """Constructs the final order data for API submission."""
-        # To be implemented
-        return {}
+        customer_id = self.customer_combo.currentData()
+        sales_id = self.sales_combo.currentData()
+
+        if not customer_id:
+            QMessageBox.warning(self, "输入错误", "请选择一个客户。")
+            return None
+        
+        if not sales_id:
+            QMessageBox.warning(self, "输入错误", "请选择一个销售负责人。")
+            return None
+
+        if self.items_model.rowCount() == 0:
+            QMessageBox.warning(self, "输入错误", "请至少添加一个产品到订单。")
+            return None
+
+        order_items = []
+        for row in range(self.items_model.rowCount()):
+            product_id = self.items_model.item(row, 0).text()
+            quantity = self.items_model.item(row, 2).text()
+            order_items.append({"product_id": int(product_id), "quantity": int(quantity)})
+
+        order_data = {
+            "customer_id": customer_id,
+            "sales_id": sales_id,
+            "order_items": order_items
+        }
+        return order_data
 
     def accept(self):
         """Handle the order creation logic."""
-        # Logic to get data and call API will be here.
-        QMessageBox.information(self, "成功", "订单创建逻辑待实现。")
-        super().accept()
+        order_data = self.get_order_data()
+        if not order_data:
+            return # Don't close the dialog if data is invalid
+
+        result = create_order(order_data)
+
+        if result and 'id' in result:
+            QMessageBox.information(self, "成功", f"订单创建成功！订单号: {result.get('order_number')}")
+            super().accept()
+        else:
+            QMessageBox.critical(self, "失败", f"订单创建失败: {result}")
         
 # --- For testing purposes ---
 if __name__ == '__main__':

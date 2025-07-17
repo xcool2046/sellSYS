@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QPushButton, QTableView, QHeaderView
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
-from api.products import get_products
+from ..api.products import get_products
 
 class ProductView(QWidget):
     def __init__(self, parent=None):

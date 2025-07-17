@@ -4,12 +4,12 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QComboBox, QPushButton, QTableView,
     QHeaderView, QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor, QFont
 from PySide6.QtCore import Qt
 
-from api import sales_view as sales_view_api
-from api import employees as employees_api
-from api import contacts as contacts_api
+from ..api import sales_view as sales_view_api
+from ..api import employees as employees_api
+from ..api import contacts as contacts_api
 from .sales_contact_view_dialog import SalesContactViewDialog
 
 class SalesManagementView(QWidget):
@@ -111,11 +111,10 @@ class SalesManagementView(QWidget):
 
     def setup_table_headers(self):
         headers = [
-            "ID", "省份", "城市", "客户单位", "联系人", "联系状态", 
+            "序号", "省份", "城市", "客户单位", "联系人", "联系状态",
             "客户意向", "联系记录", "订单", "下次预约日期", "销售人", "更新时间", "操作"
         ]
         self.model.setHorizontalHeaderLabels(headers)
-        self.table_view.setColumnHidden(0, True) # Hide ID
 
     def load_data(self):
         """加载主数据"""
@@ -129,19 +128,49 @@ class SalesManagementView(QWidget):
         self.table_data = sales_data
 
         for row, record in enumerate(self.table_data):
+            # 序号
+            seq_item = QStandardItem(str(row + 1))
+            seq_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 联系人（红色数字）
+            contact_item = QStandardItem(str(record.get('contact_count', 0)))
+            contact_item.setForeground(QColor("#d32f2f"))
+            contact_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 联系记录（红色数字，带下划线）
+            follow_item = QStandardItem(str(record.get('sales_follow_count', 0)))
+            follow_item.setForeground(QColor("#d32f2f"))
+            follow_item.setTextAlignment(Qt.AlignCenter)
+            font = follow_item.font()
+            font.setUnderline(True)
+            follow_item.setFont(font)
+            
+            # 订单
+            order_item = QStandardItem(str(record.get('order_count', 0)))
+            order_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 下次预约日期（红色文字）
+            next_follow_item = QStandardItem("从联系记录更新")
+            next_follow_item.setForeground(QColor("#d32f2f"))
+            
+            # 更新时间（只显示日期）
+            updated_date = record.get('updated_at', '')
+            if updated_date:
+                updated_date = updated_date.split('T')[0]  # 只取日期部分
+            
             items = [
-                QStandardItem(str(record.get('id', ''))),
+                seq_item,
                 QStandardItem(record.get('province', '')),
                 QStandardItem(record.get('city', '')),
                 QStandardItem(record.get('company', '')),
-                QStandardItem(str(record.get('contact_count', 0))),
+                contact_item,
                 QStandardItem(record.get('status', '')),
                 QStandardItem(record.get('intention_level', '')),
-                QStandardItem(str(record.get('sales_follow_count', 0))),
-                QStandardItem(str(record.get('order_count', 0))),
-                QStandardItem(record.get('next_follow_date', '') or 'N/A'),
+                follow_item,
+                order_item,
+                next_follow_item,
                 QStandardItem(record.get('sales_owner_name', '') or '未分配'),
-                QStandardItem(record.get('updated_at', '').split('.')[0] if record.get('updated_at') else ''),
+                QStandardItem(updated_date),
             ]
             self.model.appendRow(items)
             self.add_action_buttons(row)
@@ -151,11 +180,41 @@ class SalesManagementView(QWidget):
         contact_button = QPushButton("联系记录")
         order_button = QPushButton("订单记录")
         
+        # 设置按钮样式
+        contact_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+        """)
+        
+        order_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2196F3;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 3px;
+                font-size: 12px;
+            }
+            QPushButton:hover {
+                background-color: #1976D2;
+            }
+        """)
+        
         buttons_widget = QWidget()
         buttons_layout = QHBoxLayout(buttons_widget)
         buttons_layout.addWidget(contact_button)
         buttons_layout.addWidget(order_button)
-        buttons_layout.setContentsMargins(5, 0, 5, 0)
+        buttons_layout.setContentsMargins(5, 2, 5, 2)
+        buttons_layout.setSpacing(5)
         buttons_layout.setAlignment(Qt.AlignCenter)
 
         contact_button.clicked.connect(lambda: self.view_contacts(row))
@@ -283,19 +342,49 @@ class SalesManagementView(QWidget):
         # 显示过滤后的数据
         self.table_data = filtered_data
         for row, record in enumerate(self.table_data):
+            # 序号
+            seq_item = QStandardItem(str(row + 1))
+            seq_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 联系人（红色数字）
+            contact_item = QStandardItem(str(record.get('contact_count', 0)))
+            contact_item.setForeground(QColor("#d32f2f"))
+            contact_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 联系记录（红色数字，带下划线）
+            follow_item = QStandardItem(str(record.get('sales_follow_count', 0)))
+            follow_item.setForeground(QColor("#d32f2f"))
+            follow_item.setTextAlignment(Qt.AlignCenter)
+            font = follow_item.font()
+            font.setUnderline(True)
+            follow_item.setFont(font)
+            
+            # 订单
+            order_item = QStandardItem(str(record.get('order_count', 0)))
+            order_item.setTextAlignment(Qt.AlignCenter)
+            
+            # 下次预约日期（红色文字）
+            next_follow_item = QStandardItem("从联系记录更新")
+            next_follow_item.setForeground(QColor("#d32f2f"))
+            
+            # 更新时间（只显示日期）
+            updated_date = record.get('updated_at', '')
+            if updated_date:
+                updated_date = updated_date.split('T')[0]  # 只取日期部分
+            
             items = [
-                QStandardItem(str(record.get('id', ''))),
+                seq_item,
                 QStandardItem(record.get('province', '')),
                 QStandardItem(record.get('city', '')),
                 QStandardItem(record.get('company', '')),
-                QStandardItem(str(record.get('contact_count', 0))),
+                contact_item,
                 QStandardItem(record.get('status', '')),
                 QStandardItem(record.get('intention_level', '')),
-                QStandardItem(str(record.get('sales_follow_count', 0))),
-                QStandardItem(str(record.get('order_count', 0))),
-                QStandardItem(record.get('next_follow_date', '') or 'N/A'),
+                follow_item,
+                order_item,
+                next_follow_item,
                 QStandardItem(record.get('sales_owner_name', '') or '未分配'),
-                QStandardItem(record.get('updated_at', '').split('.')[0] if record.get('updated_at') else ''),
+                QStandardItem(updated_date),
             ]
             self.model.appendRow(items)
             self.add_action_buttons(row)

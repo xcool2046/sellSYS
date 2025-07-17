@@ -1,5 +1,5 @@
 import requests
-from config import API_BASE_URL
+from ..config import API_BASE_URL
  
 class ApiClient:
     def __init__(self, base_url=None):
@@ -44,15 +44,13 @@ class ApiClient:
             response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
             return response.json()
         except requests.exceptions.HTTPError as errh:
-            print(f"Http Error: {errh}")
-            error_details = {"error": "HttpError", "status_code": errh.response.status_code}
+            print(f"Http Error: {errh.response.status_code} {errh.response.reason} for url: {errh.response.url}")
             try:
-                # FastAPI often returns error details in JSON
-                error_details.update(errh.response.json())
+                # 打印详细的错误内容
+                print(f"Error details: {errh.response.json()}")
             except ValueError:
-                # If the response is not JSON, use the raw text
-                error_details["detail"] = errh.response.text or "An unknown HTTP error occurred."
-            return error_details
+                print(f"Error details: {errh.response.text}")
+            return None
         except requests.exceptions.ConnectionError as errc:
             print(f"Error Connecting: {errc}")
             return {"error": "ConnectionError", "detail": "无法连接到服务器。请检查您的网络连接和服务器地址。"}
