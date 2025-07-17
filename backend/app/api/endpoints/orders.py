@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
-
 from ... import models, schemas
 from ...crud import crud_order
 from ...database import get_db
+
 
 router = APIRouter()
 
@@ -19,8 +19,8 @@ def read_orders(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    customer_name: Optional[str] = None,
-    product_name: Optional[str] = None,
+    company: Optional[str] = None,
+    name: Optional[str] = None,
     status: Optional[schemas.order.OrderStatus] = None,
     sales_id: Optional[int] = None,
     sign_date_start: Optional[date] = None,
@@ -33,8 +33,8 @@ def read_orders(
     """读取订单列表（支持更全面的筛选，包括日期范围）"""
     orders = crud_order.get_orders(
         db,
-        customer_name=customer_name,
-        product_name=product_name,
+        company=company,
+        name=name,
         status=status,
         sales_id=sales_id,
         sign_date_start=sign_date_start,

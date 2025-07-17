@@ -1,9 +1,9 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtCore import Qt
     QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QComboBox, QFormLayout, QCheckBox, QGridLayout, QFrame
 )
-from PySide6.QtCore import Qt
 
 class PermissionDialog(QDialog):
     """添加或编辑用户权限的对话框（根据截图重构）"""

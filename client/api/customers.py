@@ -1,7 +1,7 @@
 import requests
-from ..config import API_BASE_URL, API_TIMEOUT
+from config import API_BASE_URL, API_TIMEOUT
 
-def get_customers(company=None, industry=None, province=None, city=None, status=None, sales_id=None):
+def get_customeromers(company=None, industry=None, province=None, city=None, status=None, sales_id=None):
     """
     获取所有客户信息（支持筛选）
     """
@@ -27,7 +27,7 @@ def get_customers(company=None, industry=None, province=None, city=None, status=
         print(f"获取客户列表失败: {e}")
         return [] # ALWAYS return a list
 
-def create_customer(customer_data: dict, contacts_data: list):
+def create_customeromer(customer_data: dict, contacts_data: list):
     """
     创建新客户及其联系人
     """
@@ -45,7 +45,7 @@ def create_customer(customer_data: dict, contacts_data: list):
             print(f"错误详情: {e.response.text}")
         return None
 
-def update_customer(customer_id: int, customer_data: dict):
+def update_customeromer(customer_id: int, customer_data: dict):
     """
     更新客户信息
     """
@@ -59,7 +59,7 @@ def update_customer(customer_id: int, customer_data: dict):
             print(f"错误详情: {e.response.text}")
         return None
 
-def delete_customer(customer_id: int):
+def delete_customeromer(customer_id: int):
     """
     删除客户
     """

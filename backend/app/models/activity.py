@@ -8,7 +8,7 @@ class AuditLog(Base):
     __tablename__ = "audit_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    action = Column(String, nullable=False) # 操作，如 create_customer
+    action = Column(String, nullable=False) # 操作，如 create_customeromer
     details = Column(Text) # 操作详情
 
     # 关联操作人

@@ -11,8 +11,8 @@ def get_order(db: Session, order_id: int):
 
 def get_orders(
     db: Session,
-    customer_name: str = None,
-    product_name: str = None,
+    company: str = None,
+    name: str = None,
     status: order_schema.OrderStatus = None,
     sales_id: int = None,
     sign_date_start: order_schema.datetime = None,
@@ -27,11 +27,11 @@ def get_orders(
     """获取订单列表（支持更全面的筛选，包括日期范围）"""
     query = db.query(models.Order).join(models.Customer)
 
-    if customer_name:
-        query = query.filter(models.Customer.company.ilike(f"%{customer_name}%"))
+    if company:
+        query = query.filter(models.Customer.company.ilike(f"%{company}%"))
 
-    if product_name:
-        query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{product_name}%"))
+    if name:
+        query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{name}%"))
 
     if sign_date_start:
         query = query.filter(db.func.date(models.Order.created_at) >= sign_date_start.date())

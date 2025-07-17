@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, Boolean, Enum, ForeignKey, DateT
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from ..database import Base
-from .customer import Customer # Import Customer to reference its columns
 
 class EmployeeRole(str, enum.Enum):
     """
@@ -43,13 +42,13 @@ class Employee(Base):
     # 反向关联到客户，一个销售可以有多个客户
     sales_customers = relationship(
         "Customer",
-        foreign_keys=[Customer.sales_id],
+        foreign_keys="Customer.sales_id",
         back_populates="sales"
     )
     # 反向关联到客户，一个客服可以负责多个客户
     service_customers = relationship(
         "Customer",
-        foreign_keys=[Customer.service_id],
+        foreign_keys="Customer.service_id", 
         back_populates="service",
         post_update=True
     )

@@ -3,6 +3,7 @@ import sys
 import importlib
 import inspect
 from sqlalchemy.orm import class_mapper, RelationshipProperty
+from backend.app.database import Base
 
 # --- Path Setup ---
 # This allows the script to be run from the root directory (e.g., `python backend/relationship_audit.py`)
@@ -11,7 +12,6 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 # --- End Path Setup ---
 
-from backend.app.database import Base
 
 def find_and_import_models():
     """

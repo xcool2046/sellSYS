@@ -1,15 +1,15 @@
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
-    QLineEdit, QTextEdit, QPushButton, QMessageBox,
-    QDialogButtonBox
-)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QDoubleValidator
 from decimal import Decimal
 from typing import Optional
+from api.products import create_product, update_product
+from schemas.product import Product
+    QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
+    QLineEdit, QTextEdit, QPushButton, QMessageBox,
+    QDialogButtonBox
+)
 
-from ..api.products import create_product, update_product
-from ..schemas.product import Product
 
 
 class ProductDialog(QDialog):

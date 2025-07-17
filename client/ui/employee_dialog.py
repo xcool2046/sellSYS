@@ -1,9 +1,9 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtCore import Qt
     QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QComboBox, QFormLayout, QMessageBox
 )
-from PySide6.QtCore import Qt
 
 class EmployeeDialog(QDialog):
     """添加或编辑员工的对话框（根据截图重构）"""

@@ -1,3 +1,6 @@
+from typing import Sequence, Union
+from alembic import op
+import sqlalchemy as sa
 """Fixed circular dependency
 
 Revision ID: 20c085f564f6
@@ -5,10 +8,7 @@ Revises:
 Create Date: 2025-07-17 10:34:05.348504
 
 """
-from typing import Sequence, Union
 
-from alembic import op
-import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.

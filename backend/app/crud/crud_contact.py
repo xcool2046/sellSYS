@@ -7,7 +7,7 @@ def get_contacts_by_customer(db: Session, customer_id: int, skip: int = 0, limit
     """获取指定客户的联系人列表"""
     return db.query(models.Contact).filter(models.Contact.customer_id == customer_id).offset(skip).limit(limit).all()
 
-def create_customer_contact(db: Session, contact: contact_schema.ContactCreate, customer_id: int) -> models.Contact:
+def create_customeromer_contact(db: Session, contact: contact_schema.ContactCreate, customer_id: int) -> models.Contact:
     """为客户创建新联系人"""
     db_contact = models.Contact(**contact.model_dump(), customer_id=customer_id)
     db.add(db_contact)

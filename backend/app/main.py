@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from .database import engine, Base, SessionLocal
 from . import models
-# from .crud import crud_employee  # This import causes circular dependencies and model redefinition.
-# from .schemas.employee import EmployeeCreate, EmployeeRole # This should be handled in a separate script.
+from .api.api_router import api_router
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -36,7 +35,6 @@ app = FastAPI(
     version="0.1.0",
 )
 
-from .api.api_router import api_router
 
 app.include_router(api_router, prefix="/api")
 

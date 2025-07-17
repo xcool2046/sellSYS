@@ -1,19 +1,19 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor
+from PySide6.QtCore import Qt
+from api import service_records as service_records_api
+from api import customers as customers_api
+from api import employees as employees_api
+from api import contacts as contacts_api
+from .contact_view_dialog import ContactViewDialog
+from .service_record_dialog import ServiceRecordDialog
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QTableView, QHeaderView, QLineEdit, QComboBox,
     QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor
-from PySide6.QtCore import Qt
 
-from ..api import service_records as service_records_api
-from ..api import customers as customers_api
-from ..api import employees as employees_api
-from ..api import contacts as contacts_api
 
-from .contact_view_dialog import ContactViewDialog
-from .service_record_dialog import ServiceRecordDialog
 
 class ServiceRecordView(QWidget):
     def __init__(self, parent=None):
@@ -49,10 +49,10 @@ class ServiceRecordView(QWidget):
         toolbar_layout.setSpacing(10)
 
         # 客户单位名称输入框
-        self.customer_name_filter = QLineEdit()
-        self.customer_name_filter.setPlaceholderText("客户单位名称")
-        self.customer_name_filter.setObjectName("filterInput")
-        toolbar_layout.addWidget(self.customer_name_filter)
+        self.company_filter = QLineEdit()
+        self.company_filter.setPlaceholderText("客户单位名称")
+        self.company_filter.setObjectName("filterInput")
+        toolbar_layout.addWidget(self.company_filter)
         
         # 客服下拉框
         self.service_employee_filter = QComboBox()
@@ -139,7 +139,7 @@ class ServiceRecordView(QWidget):
                     self.service_employee_filter.addItem(emp['name'], emp['id'])
             
             # 加载客户数据
-            self.customers_data = customers_api.get_customers() or []
+            self.customers_data = customers_api.get_customeromers() or []
             
             # 加载售后服务数据
             self.load_service_data()
@@ -248,7 +248,7 @@ class ServiceRecordView(QWidget):
         """筛选数据"""
         try:
             # 获取筛选条件
-            customer_name = self.customer_name_filter.text().strip()
+            company = self.company_filter.text().strip()
             service_employee_id = self.service_employee_filter.currentData()
             status = self.status_filter.currentData()
             
@@ -268,7 +268,7 @@ class ServiceRecordView(QWidget):
                     customer = customers_map[customer_id]
                     
                     # 应用筛选条件
-                    if customer_name and customer_name.lower() not in customer.get('company', '').lower():
+                    if company and company.lower() not in customer.get('company', '').lower():
                         continue
                         
                     if service_employee_id and customer.get('service_owner_id') != service_employee_id:
@@ -350,7 +350,7 @@ class ServiceRecordView(QWidget):
             
     def reset_filters(self):
         """重置筛选条件"""
-        self.customer_name_filter.clear()
+        self.company_filter.clear()
         self.service_employee_filter.setCurrentIndex(0)
         self.status_filter.setCurrentIndex(0)
         self.load_service_data()

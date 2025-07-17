@@ -1,16 +1,16 @@
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableView, QLineEdit,
-    QComboBox, QSpacerItem, QSizePolicy, QHeaderView, QMessageBox, QLabel,
-    QCheckBox
-)
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor, QIcon
 from PySide6.QtCore import Qt, QModelIndex
-
-from ..api import customers as customers_api, contacts as contacts_api, employees as employees_api
+from api import customers as customers_api, contacts as contacts_api, employees as employees_api
 from .customer_dialog import CustomerDialog
 from .assign_sales_dialog import AssignSalesDialog
 from .assign_service_dialog import AssignServiceDialog
 from .contact_view_dialog import ContactViewDialog
+    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableView, QLineEdit,
+    QComboBox, QSpacerItem, QSizePolicy, QHeaderView, QMessageBox, QLabel,
+    QCheckBox
+)
+
 
 class CustomerView(QWidget):
     def __init__(self, parent=None):
@@ -37,10 +37,10 @@ class CustomerView(QWidget):
         toolbar_layout.setSpacing(10)
 
         # --- Filter Widgets ---
-        self.customer_name_filter = QLineEdit()
-        self.customer_name_filter.setPlaceholderText("客户名称")
-        self.customer_name_filter.setObjectName("filterInput")
-        toolbar_layout.addWidget(self.customer_name_filter)
+        self.company_filter = QLineEdit()
+        self.company_filter.setPlaceholderText("客户名称")
+        self.company_filter.setObjectName("filterInput")
+        toolbar_layout.addWidget(self.company_filter)
 
         self.industry_filter = QComboBox()
         self.industry_filter.addItem("行业类别", None)
@@ -171,11 +171,11 @@ class CustomerView(QWidget):
         self.employees_map = {emp['id']: emp['name'] for emp in all_employees}
         
         # 填充销售筛选下拉框
-        for emp_id, emp_name in self.employees_map.items():
-            self.sales_filter.addItem(emp_name, emp_id)
+        for employee_id, emp_name in self.employees_map.items():
+            self.sales_filter.addItem(emp_name, employee_id)
         
         # 获取所有客户数据以提取唯一的行业、省份、城市值
-        self.all_customers_data = customers_api.get_customers() or []
+        self.all_customers_data = customers_api.get_customeromers() or []
         
         if self.all_customers_data:
             # 提取唯一的行业
@@ -205,7 +205,7 @@ class CustomerView(QWidget):
 
     def refresh_data(self):
         # 获取筛选参数
-        company = self.customer_name_filter.text().strip() or None
+        company = self.company_filter.text().strip() or None
         industry = self.industry_filter.currentData()
         province = self.province_filter.currentData()
         city = self.city_filter.currentData()
@@ -213,7 +213,7 @@ class CustomerView(QWidget):
         sales_id = self.sales_filter.currentData()
 
         # 获取客户数据（带筛选）
-        self.customers_data = customers_api.get_customers(
+        self.customers_data = customers_api.get_customeromers(
             company=company,
             industry=industry,
             province=province,
@@ -282,7 +282,7 @@ class CustomerView(QWidget):
             edit_button.setObjectName("tableEditButton")
             delete_button.setObjectName("tableDeleteButton")
             edit_button.clicked.connect(self._on_edit_customer_clicked)
-            delete_button.clicked.connect(self._on_delete_customer_clicked)
+            delete_button.clicked.connect(self._on_delete_customeromer_clicked)
 
             button_layout = QHBoxLayout()
             button_layout.setSpacing(5)
@@ -316,7 +316,7 @@ class CustomerView(QWidget):
             customer_data, contacts_data = dialog.get_data()
             
             # 调用API创建客户
-            result = customers_api.create_customer(customer_data, contacts_data)
+            result = customers_api.create_customeromer(customer_data, contacts_data)
             
             if result:
                 QMessageBox.information(self, "成功", "客户添加成功！")
@@ -451,7 +451,7 @@ class CustomerView(QWidget):
             updated_customer_data, updated_contacts_data = dialog.get_data()
             
             # 调用API更新客户
-            result = customers_api.update_customer(customer_id, updated_customer_data)
+            result = customers_api.update_customeromer(customer_id, updated_customer_data)
             
             if result:
                 QMessageBox.information(self, "成功", "客户信息更新成功！")
@@ -459,27 +459,27 @@ class CustomerView(QWidget):
             else:
                 QMessageBox.warning(self, "失败", "客户信息更新失败，请重试。")
     
-    def _on_delete_customer_clicked(self):
+    def _on_delete_customeromer_clicked(self):
         """处理删除按钮点击"""
         sender = self.sender()
         customer_id = sender.property("customer_id")
         customer_row = sender.property("customer_row")
         
         # 从当前数据中获取客户名称
-        customer_name = self.customers_data[customer_row].get("company", "")
+        company = self.customers_data[customer_row].get("company", "")
         
         # 确认删除
         reply = QMessageBox.question(
             self,
             "确认删除",
-            f'确定要删除客户 "{customer_name}" 吗？\n此操作不可撤销。',
+            f'确定要删除客户 "{company}" 吗？\n此操作不可撤销。',
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No
         )
         
         if reply == QMessageBox.StandardButton.Yes:
             # 调用API删除客户
-            result = customers_api.delete_customer(customer_id)
+            result = customers_api.delete_customeromer(customer_id)
             
             if result:
                 QMessageBox.information(self, "成功", "客户删除成功！")
@@ -505,7 +505,7 @@ class CustomerView(QWidget):
     
     def _on_reset_clicked(self):
         """重置所有筛选条件"""
-        self.customer_name_filter.clear()
+        self.company_filter.clear()
         self.industry_filter.setCurrentIndex(0)
         self.province_filter.setCurrentIndex(0)
         self.city_filter.setCurrentIndex(0)

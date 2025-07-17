@@ -1,5 +1,5 @@
 import requests
-from ..config import API_BASE_URL
+from config import API_BASE_URL
  
 class ApiClient:
     def __init__(self, base_url=None):

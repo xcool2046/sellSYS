@@ -1,19 +1,19 @@
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-    QStackedWidget, QFrame, QLabel, QTableView, QHeaderView, QMessageBox
-)
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap, QPainter, QColor
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtSvg import QSvgRenderer
-
-from ..api import departments as departments_api
-from ..api import department_groups as department_groups_api
-from ..api import employees as employees_api
+from api import departments as departments_api
+from api import department_groups as department_groups_api
+from api import employees as employees_api
 from .department_dialog import DepartmentDialog
 from .department_group_dialog import DepartmentGroupDialog
 from .employee_dialog import EmployeeDialog
 from .permission_dialog import PermissionDialog
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
+    QStackedWidget, QFrame, QLabel, QTableView, QHeaderView, QMessageBox
+)
+
 
 
 class DepartmentTab(QWidget):

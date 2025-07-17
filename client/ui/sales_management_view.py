@@ -1,16 +1,16 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor, QFont
+from PySide6.QtCore import Qt
+from api import sales_view as sales_view_api
+from api import employees as employees_api
+from api import contacts as contacts_api
+from .sales_contact_view_dialog import SalesContactViewDialog
     QApplication, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QComboBox, QPushButton, QTableView,
     QHeaderView, QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor, QFont
-from PySide6.QtCore import Qt
 
-from ..api import sales_view as sales_view_api
-from ..api import employees as employees_api
-from ..api import contacts as contacts_api
-from .sales_contact_view_dialog import SalesContactViewDialog
 
 class SalesManagementView(QWidget):
     """
@@ -191,8 +191,8 @@ class SalesManagementView(QWidget):
         if row >= len(self.table_data):
             return
         customer_id = self.table_data[row].get('id')
-        customer_name = self.table_data[row].get('company')
-        QMessageBox.information(self, "查看订单记录", f"查看客户 [{customer_name}] (ID: {customer_id}) 的订单记录。\n\n(此功能待实现)")
+        company = self.table_data[row].get('company')
+        QMessageBox.information(self, "查看订单记录", f"查看客户 [{company}] (ID: {customer_id}) 的订单记录。\n\n(此功能待实现)")
 
     def on_selection_changed(self, selected, deselected):
         """处理表格选择变化事件 (placeholder)"""

@@ -1,12 +1,12 @@
+import os
+import re
+import glob
+from pathlib import Path
 #!/usr/bin/env python3
 """
 代码整理脚本
 整合导入修复、字段命名等代码整理功能
 """
-import os
-import re
-import glob
-from pathlib import Path
 
 def fix_imports_in_file(filepath):
     """修复单个文件中的导入路径"""
@@ -17,10 +17,10 @@ def fix_imports_in_file(filepath):
     original_content = content
     
     # 修复各种导入模式
-    # from client.xxx import -> from xxx import
+    # from xxx import -> from xxx import
     content = re.sub(r'from client\.', 'from ', content)
     
-    # from ..xxx import -> from xxx import (处理相对导入)
+    # from xxx import -> from xxx import (处理相对导入)
     content = re.sub(r'from \.\.([a-zA-Z_]+)', r'from \1', content)
     
     # 如果文件被修改了，写回文件
@@ -36,21 +36,21 @@ def fix_field_names_in_files(project_root):
     # 定义要进行的替换
     replacements = {
         # 数据库字段名统一
-        'customer_name': 'company',
-        'product_name': 'name',
-        'order_status': 'status',
-        'contact_name': 'name',
+        'company': 'company',
+        'name': 'name',
+        'status': 'status',
+        'name': 'name',
         
         # 变量名统一
-        'cust_id': 'customer_id',
-        'prod_id': 'product_id',
-        'emp_id': 'employee_id',
+        'customer_id': 'customer_id',
+        'product_id': 'product_id',
+        'employee_id': 'employee_id',
         
         # 方法名统一
-        'get_cust': 'get_customer',
-        'create_cust': 'create_customer',
-        'update_cust': 'update_customer',
-        'delete_cust': 'delete_customer',
+        'get_customer': 'get_customeromer',
+        'create_customer': 'create_customeromer',
+        'update_customer': 'update_customeromer',
+        'delete_customer': 'delete_customeromer',
     }
     
     total_files_changed = 0

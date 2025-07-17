@@ -1,13 +1,13 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtCore import Qt
+from api import service_records as service_records_api
     QApplication, QDialog, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QTableView, QHeaderView, QTextEdit, QDialogButtonBox,
     QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from PySide6.QtCore import Qt
 
-from ..api import service_records as service_records_api
 
 class ServiceRecordDialog(QDialog):
     def __init__(self, customer_id, parent=None):

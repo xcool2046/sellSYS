@@ -1,12 +1,12 @@
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtCore import Qt
+from api import products as products_api
+from .product_dialog import ProductDialog
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableView, QLineEdit,
     QHeaderView, QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from PySide6.QtCore import Qt
 
-from ..api import products as products_api
-from .product_dialog import ProductDialog
 
 class ProductsView(QWidget):
     def __init__(self, parent=None):

@@ -1,10 +1,10 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtCore import Qt
     QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QTextEdit, QPushButton, QFrame, QCheckBox,
     QSpacerItem, QSizePolicy
 )
-from PySide6.QtCore import Qt
 
 class SalesContactViewDialog(QDialog):
     def __init__(self, customer_data, contacts_data, parent=None):
@@ -20,10 +20,10 @@ class SalesContactViewDialog(QDialog):
         customer_group_layout = QVBoxLayout(customer_group)
         
         # 使用 QFormLayout 可能更适合这里，但为了与截图1:1，我们手动对齐
-        self.customer_name_label = QLabel(f"客户单位：{customer_data.get('company', 'N/A')}")
+        self.company_label = QLabel(f"客户单位：{customer_data.get('company', 'N/A')}")
         self.customer_address_label = QLabel(f"详细地址：{customer_data.get('address', 'N/A')}")
         
-        customer_group_layout.addWidget(self.customer_name_label)
+        customer_group_layout.addWidget(self.company_label)
         customer_group_layout.addWidget(self.customer_address_label)
         
         # 客户备注

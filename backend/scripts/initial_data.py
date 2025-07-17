@@ -1,14 +1,14 @@
 import sys
 import os
 import logging
-
-# Ensure the app module can be found by adding the script's directory to the path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from app.database import SessionLocal
 from app.crud.crud_employee import create_employee
 from app.schemas.employee import EmployeeCreate
 from app.models.employee import EmployeeRole
+
+# Ensure the app module can be found by adding the script's directory to the path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

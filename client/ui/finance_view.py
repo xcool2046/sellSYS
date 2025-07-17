@@ -1,18 +1,20 @@
 import sys
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox,
-    QPushButton, QTableView, QTabWidget,
-    QHeaderView, QAbstractItemView, QSizePolicy, QFrame, QSpacerItem, QApplication
-)
 from PySide6.QtCore import Qt, QDate
 from PySide6.QtGui import QFont, QStandardItemModel, QStandardItem
 from PySide6.QtWidgets import QDateEdit
 from datetime import datetime, date
 from decimal import Decimal
-from ..api.orders import get_orders
-from ..api.customers import get_customers
-from ..api.products import get_products
-from ..api.employees import get_employees
+from api.orders import get_orders
+from api.customers import get_customeromers
+from api.products import get_products
+from api.employees import get_employees
+            from PySide6.QtWidgets import QMessageBox
+            from api.orders import update_order_financials
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox,
+    QPushButton, QTableView, QTabWidget,
+    QHeaderView, QAbstractItemView, QSizePolicy, QFrame, QSpacerItem, QApplication
+)
 
 class FinanceView(QWidget):
     def __init__(self, parent=None):
@@ -88,10 +90,10 @@ class FinanceView(QWidget):
 
         # 客户名称
         row1_layout.addWidget(QLabel("客户名称:"))
-        self.customer_name_input = QLineEdit()
-        self.customer_name_input.setPlaceholderText("请输入客户单位名称")
-        self.customer_name_input.setFixedWidth(180)
-        row1_layout.addWidget(self.customer_name_input)
+        self.company_input = QLineEdit()
+        self.company_input.setPlaceholderText("请输入客户单位名称")
+        self.company_input.setFixedWidth(180)
+        row1_layout.addWidget(self.company_input)
 
         # 订单状态
         row1_layout.addWidget(QLabel("订单状态:"))
@@ -275,7 +277,7 @@ class FinanceView(QWidget):
     def load_basic_data(self):
         """加载基础数据（客户、产品、员工）"""
         try:
-            self.customers_data = get_customers() or []
+            self.customers_data = get_customeromers() or []
             self.products_data = get_products() or []
             self.employees_data = get_employees() or []
         except Exception as e:
@@ -310,7 +312,7 @@ class FinanceView(QWidget):
             # 准备数据项
             items = [
                 QStandardItem(str(row_index + 1)),
-                QStandardItem(self.get_customer_name(order.get("customer_id"))),
+                QStandardItem(self.get_company(order.get("customer_id"))),
                 QStandardItem(product_info.get("name", "")),
                 QStandardItem(product_info.get("spec", "")),
                 QStandardItem(format_decimal(product_info.get('price'))), # 'price' is the base price
@@ -345,7 +347,7 @@ class FinanceView(QWidget):
             action_btn.clicked.connect(lambda checked, o=order: self.confirm_payment(o.get("id")))
             self.table.setIndexWidget(self.model.index(row_index, 16), action_btn)
             
-    def get_customer_name(self, customer_id):
+    def get_company(self, customer_id):
         """根据客户ID获取客户名称"""
         for customer in self.customers_data:
             if customer.get("id") == customer_id:
@@ -395,9 +397,9 @@ class FinanceView(QWidget):
         try:
             params = {}
             
-            customer_name = self.customer_name_input.text().strip()
-            if customer_name:
-                params['customer_name'] = customer_name
+            company = self.company_input.text().strip()
+            if company:
+                params['company'] = company
                 
             if self.status_combo.currentIndex() > 0:
                 params['status'] = self.status_combo.currentText()
@@ -428,7 +430,7 @@ class FinanceView(QWidget):
         
     def reset_filters(self):
         """重置筛选条件"""
-        self.customer_name_input.clear()
+        self.company_input.clear()
         self.status_combo.setCurrentIndex(0)
         
         self.sign_date_start_edit.clear()
@@ -443,8 +445,6 @@ class FinanceView(QWidget):
     def confirm_payment(self, order_id):
         """确认收款"""
         try:
-            from PySide6.QtWidgets import QMessageBox
-            from ..api.orders import update_order_financials
             
             # 弹出确认对话框
             reply = QMessageBox.question(

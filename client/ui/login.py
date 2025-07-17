@@ -1,9 +1,9 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtCore import Qt
     QApplication, QDialog, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout,
     QLabel, QWidget, QSpacerItem, QSizePolicy, QFormLayout
 )
-from PySide6.QtCore import Qt
 
 class LoginDialog(QDialog):
     def __init__(self, parent=None):

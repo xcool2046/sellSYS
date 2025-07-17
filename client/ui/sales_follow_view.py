@@ -1,11 +1,11 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from api.sales_follows import get_sales_follows_by_customer, create_sales_follow
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit,
     QPushButton, QTableView, QHeaderView, QLineEdit, QComboBox, QDateTimeEdit,
     QMessageBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from ..api.sales_follows import get_sales_follows_by_customer, create_sales_follow
 
 class SalesFollowView(QWidget):
     def __init__(self, parent=None):
@@ -67,7 +67,7 @@ class SalesFollowView(QWidget):
             if not isinstance(follow, dict): continue
             row = [
                 QStandardItem(str(follow.get("id", ""))),
-                QStandardItem(follow.get("customer_name", "N/A")),  # Assuming customer name is returned
+                QStandardItem(follow.get("company", "N/A")),  # Assuming customer name is returned
                 QStandardItem(follow.get("content", "")),
                 QStandardItem(follow.get("follow_type", "")),
                 QStandardItem(follow.get("follow_date", "").split("T")[0]),

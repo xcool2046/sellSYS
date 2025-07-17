@@ -1,12 +1,12 @@
 from PySide6.QtCore import Qt, QDateTime, QDate
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from api import orders, customers, products, employees
+from datetime import datetime
+from schemas.product import Product
+from .order_creation_dialog import OrderCreationDialog
                              QComboBox, QLineEdit, QPushButton, QTableView,
                              QHeaderView, QMessageBox, QDateEdit)
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from ..api import orders, customers, products, employees
-from datetime import datetime
-from ..schemas.product import Product
-from .order_creation_dialog import OrderCreationDialog
 
 class OrderView(QWidget):
     def __init__(self):
@@ -157,7 +157,7 @@ class OrderView(QWidget):
         """加载数据"""
         try:
             # 加载客户列表
-            self.customers = customers.get_customers() or []
+            self.customers = customers.get_customeromers() or []
             
             # 加载产品列表
             product_list = products.get_products() or []
@@ -190,7 +190,7 @@ class OrderView(QWidget):
             total_amount = 0.0
             
             for idx, order in enumerate(order_list):
-                customer_name = self.get_customer_name(order.get('customer_id'))
+                company = self.get_company(order.get('customer_id'))
                 product = self.get_product(order.get('product_id'))
                 employee_name = self.get_employee_name(order.get('sales_person_id'))
                 
@@ -216,7 +216,7 @@ class OrderView(QWidget):
 
                 row_data = [
                     QStandardItem(str(idx + 1)),
-                    QStandardItem(customer_name),
+                    QStandardItem(company),
                     QStandardItem(product.name if product else ""),
                     QStandardItem(product.specifications if product else ""),
                     QStandardItem(f"{product.list_price:.2f}" if product else "0.00"),
@@ -245,7 +245,7 @@ class OrderView(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "错误", f"加载订单数据失败: {str(e)}")
             
-    def get_customer_name(self, customer_id):
+    def get_company(self, customer_id):
         """获取客户名称"""
         for customer in self.customers:
             if customer.get('id') == customer_id:
@@ -270,12 +270,12 @@ class OrderView(QWidget):
         """根据筛选条件搜索订单"""
         params = {}
         
-        customer_name = self.customer_search.text().strip()
-        if customer_name:
-            params['customer_name'] = customer_name
+        company = self.customer_search.text().strip()
+        if company:
+            params['company'] = company
             
         if self.product_combo.currentIndex() > 0:
-            params['product_name'] = self.product_combo.currentText()
+            params['name'] = self.product_combo.currentText()
 
         if self.start_date_edit.date().isValid():
             params['effective_date_start'] = self.start_date_edit.date().toString(Qt.ISODate)

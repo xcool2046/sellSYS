@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QComboBox, QPushButton, QDialogButtonBox
-from ..api import departments, department_groups, employees
+from api import departments, department_groups, employees
 
 class AssignServiceDialog(QDialog):
     def __init__(self, parent=None):

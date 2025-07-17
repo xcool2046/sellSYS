@@ -1,21 +1,21 @@
+import os
+import sys
+import argparse
+from pathlib import Path
+from sqlalchemy import create_engine, text, inspect
+from app.config import settings
+from app.database import Base
+from app.models import *  # 导入所有模型
 #!/usr/bin/env python3
 """
 数据库设置和初始化脚本
 整合了所有数据库修复功能，用于统一管理数据库架构
 """
-import os
-import sys
-import argparse
-from pathlib import Path
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from sqlalchemy import create_engine, text, inspect
-from app.config import settings
-from app.database import Base
-from app.models import *  # 导入所有模型
 
 def check_table_structure(engine, table_name):
     """检查表结构并返回列信息"""
@@ -96,7 +96,7 @@ def add_missing_columns(engine):
         conn.commit()
         print("✓ 数据库列检查完成")
 
-def fix_customer_name_field(engine):
+def fix_company_field(engine):
     """修复customers表的name字段"""
     print("检查customers表name字段...")
     
@@ -138,7 +138,7 @@ def init_database(force=False):
         add_missing_columns(engine)
         
         # 3. 修复特定字段问题
-        fix_customer_name_field(engine)
+        fix_company_field(engine)
         
         print("\n✅ 数据库初始化完成！")
         

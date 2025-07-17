@@ -1,9 +1,9 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtCore import Qt
     QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QSpacerItem, QSizePolicy, QFrame
 )
-from PySide6.QtCore import Qt
 
 class DepartmentDialog(QDialog):
     """添加或编辑部门的对话框"""

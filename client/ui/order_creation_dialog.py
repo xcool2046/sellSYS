@@ -1,16 +1,16 @@
 import sys
 from PySide6.QtWidgets import (
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtCore import Qt, Slot
+from api.customers import get_customeromers
+from api.products import get_products
+from api.employees import get_employees
+from api.orders import create_order
     QApplication, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
     QPushButton, QTableView, QHeaderView, QLineEdit, QDialogButtonBox,
     QMessageBox, QSpinBox
 )
-from PySide6.QtGui import QStandardItemModel, QStandardItem
-from PySide6.QtCore import Qt, Slot
 
-from ..api.customers import get_customers
-from ..api.products import get_products
-from ..api.employees import get_employees
-from ..api.orders import create_order
 
 class OrderCreationDialog(QDialog):
     def __init__(self, parent=None):
@@ -99,7 +99,7 @@ class OrderCreationDialog(QDialog):
     def load_initial_data(self):
         """Fetches and populates initial data for combo boxes."""
         try:
-            customers = get_customers() or []
+            customers = get_customeromers() or []
             if customers and not isinstance(customers, dict):
                 for customer in customers:
                     self.customer_combo.addItem(customer['company'], userData=customer['id'])
@@ -125,7 +125,7 @@ class OrderCreationDialog(QDialog):
             return
             
         product_id = self.product_combo.itemData(product_index)
-        product_name = self.product_combo.currentText()
+        name = self.product_combo.currentText()
         
         # Find the full product details
         product_details = next((p for p in self.products_data if p['id'] == product_id), None)
@@ -139,7 +139,7 @@ class OrderCreationDialog(QDialog):
         
         # Create table items
         id_item = QStandardItem(str(product_id))
-        name_item = QStandardItem(product_name)
+        name_item = QStandardItem(name)
         quantity_item = QStandardItem(str(quantity))
         price_item = QStandardItem(f"{unit_price:.2f}")
         subtotal_item = QStandardItem(f"{subtotal:.2f}")

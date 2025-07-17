@@ -1,8 +1,5 @@
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QStackedWidget, QFrame, QLabel, QSizePolicy
-)
 from PySide6.QtCore import Qt, QSize
 from .customer_view import CustomerView
 from .products_view import ProductsView
@@ -12,6 +9,10 @@ from .service_record_view import ServiceRecordView
 from .finance_view import FinanceView
 from .settings_view import SettingsView
 from .sales_management_view import SalesManagementView
+        from PySide6.QtCore import Qt
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QPushButton, QStackedWidget, QFrame, QLabel, QSizePolicy
+)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -24,7 +25,6 @@ class MainWindow(QMainWindow):
         self.setMaximumSize(1920, 1080)  # 设置最大尺寸
         
         # 设置窗口属性，允许拖拽边框调整大小
-        from PySide6.QtCore import Qt
         self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.WindowTitleHint | 
                            Qt.WindowType.WindowSystemMenuHint | Qt.WindowType.WindowMinMaxButtonsHint |
                            Qt.WindowType.WindowCloseButtonHint)

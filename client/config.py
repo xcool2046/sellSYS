@@ -1,9 +1,9 @@
+import os
 """
 客户端配置文件
 可以在本地开发和生产环境之间切换
 """
 
-import os
 
 # 环境变量控制使用哪个后端
 # 设置 SELLSYS_ENV=production 使用生产服务器

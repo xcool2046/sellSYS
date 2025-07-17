@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-
 from ... import models, schemas
 from ...crud import crud_contact
 from ...database import get_db
+
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ def create_contact_for_customer(
     customer_id: int, contact: schemas.ContactCreate, db: Session = Depends(get_db)
 ):
     """为指定客户创建联系人"""
-    return crud_contact.create_customer_contact(db=db, contact=contact, customer_id=customer_id)
+    return crud_contact.create_customeromer_contact(db=db, contact=contact, customer_id=customer_id)
 
 @router.get("/customers/{customer_id}/contacts/", response_model=List[schemas.Contact])
 def read_contacts_for_customer(
