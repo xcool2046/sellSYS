@@ -10,5 +10,5 @@ def get_contacts_for_customer(customer_id: int):
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"获取客户 {customer_id} 的联系人列表失败: {e}")
+        print(f获"取客户 {customer_id} 的联系人列表失败: {e}")
         return []

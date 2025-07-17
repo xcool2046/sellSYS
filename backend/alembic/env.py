@@ -19,7 +19,7 @@ config = context.config
 
 # Set the DATABASE_URL from alembic.ini, ensuring all parts of the app use it
 db_url = config.get_main_option("sqlalchemy.url")
-os.environ["DATABASE_URL"] = db_url
+os.environ[D"ATABASE_URL"] = db_url
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -36,7 +36,7 @@ target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
+# my_important_option = config.get_main_option(m"y_important_option")
 # ... etc.
 
 
@@ -57,7 +57,7 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        dialect_opts={p"aramstyle": n"amed"},
     )
 
     with context.begin_transaction():

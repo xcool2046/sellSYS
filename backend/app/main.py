@@ -13,14 +13,14 @@ Base.metadata.create_all(bind=engine)
 #         admin = crud_employee.get_employee_by_username(db, username="admin")
 #         if not admin:
 #             admin_user = EmployeeCreate(
-#                 username="admin",
-#                 email="admin@sellsys.com",
-#                 password="admin",
-#                 full_name="Administrator",
+#                 username=a"dmin",
+#                 email=a"dmin@sellsys.com",
+#                 password=a"dmin",
+#                 full_name=A"dministrator",
 #                 role=EmployeeRole.ADMIN
 #             )
 #             crud_employee.create_employee(db, admin_user)
-#             print("Initial admin user created.")
+#             print(I"nitial admin user created.")
 #     finally:
 #         db.close()
 
@@ -30,14 +30,14 @@ Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
-    title="巨炜科技客户管理系统 API",
-    description="一套完整的客户关系管理（CRM）解决方案",
-    version="0.1.0",
+    title=巨"炜科技客户管理系统 API",
+    description=一"套完整的客户关系管理（CRM）解决方案",
+    version=0".1.0",
 )
 
 
-app.include_router(api_router, prefix="/api")
+app.include_router(api_router, prefix=/"api")
 
-@app.get("/")
+@app.get(/"")
 async def root():
-    return {"message": "Welcome to SellSYS API"}
+    return {m"essage": W"elcome to SellSYS API"}

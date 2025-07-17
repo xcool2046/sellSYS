@@ -19,11 +19,11 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail=I"ncorrect username or password",
+            headers={W"WW-Authenticate": B"earer"},
         )
     access_token_expires = timedelta(minutes=security.settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={s"ub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {a"ccess_token": access_token, t"oken_type": b"earer"}

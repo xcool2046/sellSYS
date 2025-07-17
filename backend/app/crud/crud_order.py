@@ -31,7 +31,7 @@ def get_orders(
         query = query.filter(models.Customer.company.ilike(f"%{company}%"))
 
     if name:
-        query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{name}%"))
+        query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f%"{name}%"))
 
     if sign_date_start:
         query = query.filter(db.func.date(models.Order.created_at) >= sign_date_start.date())
@@ -77,7 +77,7 @@ def create_order(db: Session, order: order_schema.OrderCreate):
     for item_data in order.order_items:
         product = db.query(models.Product).filter(models.Product.id == item_data.product_id).first()
         if not product:
-            raise HTTPException(status_code=404, detail=f"Product with id {item_data.product_id} not found")
+            raise HTTPException(status_code=404, detail=fP"roduct with id {item_data.product_id} not found")
         
         # 使用数据库中的价格，忽略客户端提交的价格
         unit_price = product.price

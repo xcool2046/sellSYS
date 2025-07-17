@@ -11,11 +11,11 @@ from ...crud import crud_contact
 router = APIRouter()
 
 @router.post("/", response_model=schemas.Customer)
-def create_customeromer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
-    return crud_customer.create_customeromer(db=db, customer=customer)
+def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    return crud_customer.create_customer(db=db, customer=customer)
 
 
-@router.get("/", response_model=List[schemas.Customer])
+@router.get(/"", response_model=List[schemas.Customer])
 def read_customers(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -27,7 +27,7 @@ def read_customers(
     status: CustomerStatus = None,
     sales_id: int = None,
 ):
-    customers = crud_customer.get_customeromers(
+    customers = crud_customer.get_customers(
         db,
         skip=skip,
         limit=limit,
@@ -49,35 +49,35 @@ def read_customers(
         
     return response_customers
 
-@router.get("/{customer_id}", response_model=schemas.Customer)
+@router.get(/"{customer_id}", response_model=schemas.Customer)
 def read_customer(customer_id: int, db: Session = Depends(get_db)):
-    db_customer = crud_customer.get_customeromer(db, customer_id=customer_id)
+    db_customer = crud_customer.get_customer(db, customer_id=customer_id)
     if db_customer is None:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail=C"ustomer not found")
     return db_customer
 
-@router.put("/{customer_id}", response_model=schemas.Customer)
-def update_customeromer(customer_id: int, customer: schemas.CustomerUpdate, db: Session = Depends(get_db)):
-    db_customer = crud_customer.update_customeromer(db, customer_id=customer_id, customer=customer)
+@router.put(/"{customer_id}", response_model=schemas.Customer)
+def update_customer(customer_id: int, customer: schemas.CustomerUpdate, db: Session = Depends(get_db)):
+    db_customer = crud_customer.update_customer(db, customer_id=customer_id, customer=customer)
     if db_customer is None:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail=C"ustomer not found")
     return db_customer
 
-@router.delete("/{customer_id}", response_model=schemas.Customer)
-def delete_customeromer(customer_id: int, db: Session = Depends(get_db)):
-    db_customer = crud_customer.delete_customeromer(db, customer_id=customer_id)
+@router.delete(/"{customer_id}", response_model=schemas.Customer)
+def delete_customer(customer_id: int, db: Session = Depends(get_db)):
+    db_customer = crud_customer.delete_customer(db, customer_id=customer_id)
     if db_customer is None:
-        raise HTTPException(status_code=404, detail="Customer not found")
+        raise HTTPException(status_code=404, detail=C"ustomer not found")
     return db_customer
 
-@router.get("/unassigned/", response_model=List[schemas.Customer])
+@router.get(/"unassigned/", response_model=List[schemas.Customer])
 def read_unassigned_customers(db: Session = Depends(get_db)):
     """获取未分配销售的客户列表"""
     customers = db.query(models.Customer).filter(models.Customer.sales_id == None).all()
     return customers
 
 
-@router.get("/{customer_id}/contacts/", response_model=List[schemas.Contact])
+@router.get(/"{customer_id}/contacts/", response_model=List[schemas.Contact])
 def read_customer_contacts(customer_id: int, db: Session = Depends(get_db)):
     """
     Retrieve contacts for a specific customer.

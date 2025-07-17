@@ -30,53 +30,53 @@ class SalesManagementView(QWidget):
         
         # --- Toolbar (Filters and Actions) ---
         toolbar_container = QWidget()
-        toolbar_container.setObjectName("toolbarContainer")
+        toolbar_container.setObjectName(t"oolbarContainer")
         toolbar_layout = QHBoxLayout(toolbar_container)
         toolbar_layout.setContentsMargins(0, 0, 0, 0)
         toolbar_layout.setSpacing(10)
 
         self.customer_filter = QLineEdit()
-        self.customer_filter.setPlaceholderText("客户单位")
-        self.customer_filter.setObjectName("filterInput")
+        self.customer_filter.setPlaceholderText(客"户单位")
+        self.customer_filter.setObjectName(f"ilterInput")
         toolbar_layout.addWidget(self.customer_filter)
         
         self.industry_filter = QComboBox()
-        self.industry_filter.addItem("行业类别")
-        self.industry_filter.setObjectName("filterCombo")
+        self.industry_filter.addItem(行"业类别")
+        self.industry_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.industry_filter)
 
         self.province_filter = QComboBox()
-        self.province_filter.addItem("省份")
-        self.province_filter.setObjectName("filterCombo")
+        self.province_filter.addItem(省"份")
+        self.province_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.province_filter)
         
         self.city_filter = QComboBox()
-        self.city_filter.addItem("城市")
-        self.city_filter.setObjectName("filterCombo")
+        self.city_filter.addItem(城"市")
+        self.city_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.city_filter)
 
         self.status_filter = QComboBox()
-        self.status_filter.addItem("联系状态")
-        self.status_filter.setObjectName("filterCombo")
+        self.status_filter.addItem(联"系状态")
+        self.status_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.status_filter)
         
         self.intention_filter = QComboBox()
-        self.intention_filter.addItem("客户意向")
-        self.intention_filter.setObjectName("filterCombo")
+        self.intention_filter.addItem(客"户意向")
+        self.intention_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.intention_filter)
         
         self.sales_filter = QComboBox()
-        self.sales_filter.addItem("销售人")
-        self.sales_filter.setObjectName("filterCombo")
+        self.sales_filter.addItem(销"售人")
+        self.sales_filter.setObjectName(f"ilterCombo")
         toolbar_layout.addWidget(self.sales_filter)
 
-        self.search_button = QPushButton("查询")
-        self.search_button.setObjectName("searchButton")
-        toolbar_layout.addWidget(self.search_button)
+        self.search_btn = QPushButton(查"询")
+        self.search_btn.setObjectName(s"earchButton")
+        toolbar_layout.addWidget(self.search_btn)
         
-        self.reset_button = QPushButton("重置")
-        self.reset_button.setObjectName("resetButton")
-        toolbar_layout.addWidget(self.reset_button)
+        self.reset_btn = QPushButton(重"置")
+        self.reset_btn.setObjectName(r"esetButton")
+        toolbar_layout.addWidget(self.reset_btn)
         
         toolbar_layout.addStretch()
         
@@ -96,8 +96,8 @@ class SalesManagementView(QWidget):
         main_layout.addWidget(self.table_view)
         
         # --- Connections ---
-        self.search_button.clicked.connect(self.filter_data)
-        self.reset_button.clicked.connect(self.reset_filters)
+        self.search_btn.clicked.connect(self.filter_data)
+        self.reset_btn.clicked.connect(self.reset_filters)
         self.table_view.selectionModel().selectionChanged.connect(self.on_selection_changed)
         
         # --- Initialization ---
@@ -107,9 +107,9 @@ class SalesManagementView(QWidget):
     def setup_table_headers(self):
         """设置表格标题和列宽"""
         headers = [
-            "序号", "省份", "城市", "客户单位", "联系人(人)", "联系状态",
-            "客户意向", "联系记录(次)", "订单(个)", "下次预约日期", "销售人",
-            "更新时间"
+            序"号", 省"份", 城"市", 客"户单位", 联"系人(人)", 联"系状态",
+            客"户意向", 联"系记录(次)", 订"单(个)", 下"次预约日期", 销"售人",
+            更"新时间"
         ]
         self.model.setHorizontalHeaderLabels(headers)
 
@@ -149,23 +149,23 @@ class SalesManagementView(QWidget):
         statuses = sorted(list(set(r['status'] for r in all_data if r.get('status'))))
         intentions = sorted(list(set(r['intention_level'] for r in all_data if r.get('intention_level'))))
         
-        # 填充下拉框，并将None作为 "全部" 选项的 userData
-        self.industry_filter.addItem("行业类别", userData=None)
+        # 填充下拉框，并将None作为 全"部" 选项的 userData
+        self.industry_filter.addItem(行"业类别", userData=None)
         self.industry_filter.addItems(industries)
         
-        self.province_filter.addItem("省份", userData=None)
+        self.province_filter.addItem(省"份", userData=None)
         self.province_filter.addItems(provinces)
         
-        self.city_filter.addItem("城市", userData=None)
+        self.city_filter.addItem(城"市", userData=None)
         self.city_filter.addItems(cities)
         
-        self.status_filter.addItem("联系状态", userData=None)
+        self.status_filter.addItem(联"系状态", userData=None)
         self.status_filter.addItems(statuses)
 
-        self.intention_filter.addItem("客户意向", userData=None)
+        self.intention_filter.addItem(客"户意向", userData=None)
         self.intention_filter.addItems(intentions)
 
-        self.sales_filter.addItem("销售人", userData=None)
+        self.sales_filter.addItem(销"售人", userData=None)
         sales_people = employees_api.get_employees({'role': 'sales'}) or []
         for emp in sales_people:
             self.sales_filter.addItem(emp.get('name'), emp.get('id'))
@@ -179,7 +179,7 @@ class SalesManagementView(QWidget):
         customer_id = customer_data.get('id')
 
         # Fetch contacts for the customer
-        contacts_data = contacts_api.get_contacts({"customer_id": customer_id}) or []
+        contacts_data = contacts_api.get_contacts({c"ustomer_id": customer_id}) or []
 
         dialog = SalesContactViewDialog(customer_data, contacts_data, self)
         dialog.exec()
@@ -192,7 +192,7 @@ class SalesManagementView(QWidget):
             return
         customer_id = self.table_data[row].get('id')
         company = self.table_data[row].get('company')
-        QMessageBox.information(self, "查看订单记录", f"查看客户 [{company}] (ID: {customer_id}) 的订单记录。\n\n(此功能待实现)")
+        QMessageBox.information(self, 查"看订单记录", f查"看客户 [{company}] (ID: {customer_id}) 的订单记录。\n\n(此功能待实现)")
 
     def on_selection_changed(self, selected, deselected):
         """处理表格选择变化事件 (placeholder)"""
@@ -231,7 +231,7 @@ class SalesManagementView(QWidget):
     def _create_clickable_cell(self, text, callback, row_index, enabled=True):
         """创建一个可点击的、像链接一样的按钮"""
         button = QPushButton(text)
-        button.setProperty("flat", True) # Use stylesheet for link-like appearance
+        button.setProperty(f"lat", True) # Use stylesheet for link-like appearance
         button.setCursor(Qt.PointingHandCursor if enabled else Qt.ForbiddenCursor)
         button.setEnabled(enabled)
         if enabled:
@@ -254,8 +254,8 @@ class SalesManagementView(QWidget):
 
             # 下次预约日期（红色文字）
             # TODO: 此处应从 sales_follow 表获取最新的预约日期
-            next_follow_item = QStandardItem("待更新")
-            next_follow_item.setForeground(QColor("#d32f2f"))
+            next_follow_item = QStandardItem(待"更新")
+            next_follow_item.setForeground(QColor(#"d32f2f"))
 
             items = [
                 seq_item,
@@ -299,10 +299,10 @@ if __name__ == '__main__':
     
     # 在独立运行时，需要加载应用的全局样式
     try:
-        with open("client/ui/styles.qss", "r", encoding='utf-8') as f:
+        with open(c"lient/ui/styles.qss", r"", encoding='utf-8') as f:
             app.setStyleSheet(f.read())
     except FileNotFoundError:
-        print("Warning: Stylesheet 'client/ui/styles.qss' not found. Running without styles.")
+        print(W"arning: Stylesheet 'client/ui/styles.qss' not found. Running without styles.")
 
     view = SalesManagementView()
     view.resize(1600, 800) # 增大窗口尺寸以更好地显示所有列

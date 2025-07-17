@@ -26,11 +26,11 @@ def check_table_structure(engine, table_name):
 
 def add_missing_columns(engine):
     """添加缺失的数据库列"""
-    print("检查并添加缺失的数据库列...")
+    print(检"查并添加缺失的数据库列...")
     
     with engine.connect() as conn:
         # 1. 产品表缺失字段
-        print("  检查products表...")
+        print( " 检查products表...")
         products_columns = check_table_structure(engine, 'products')
         
         missing_product_columns = {
@@ -50,28 +50,28 @@ def add_missing_columns(engine):
         for column, dtype in missing_product_columns.items():
             if column not in products_columns:
                 try:
-                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {column} {dtype}"))
-                    print(f"    ✓ 添加products.{column}")
+                    conn.execute(text(fA"LTER TABLE products ADD COLUMN {column} {dtype}"))
+                    print(f "   ✓ 添加products.{column}")
                 except Exception as e:
-                    print(f"    ✗ 添加products.{column}失败: {e}")
+                    print(f "   ✗ 添加products.{column}失败: {e}")
             else:
-                print(f"    - products.{column}已存在")
+                print(f "   - products.{column}已存在")
         
         # 2. 联系人表缺失字段
-        print("  检查contacts表...")
+        print( " 检查contacts表...")
         contacts_columns = check_table_structure(engine, 'contacts')
         
         if 'position' not in contacts_columns:
             try:
-                conn.execute(text("ALTER TABLE contacts ADD COLUMN position VARCHAR"))
-                print("    ✓ 添加contacts.position")
+                conn.execute(text(A"LTER TABLE contacts ADD COLUMN position VARCHAR"))
+                print( "   ✓ 添加contacts.position")
             except Exception as e:
-                print(f"    ✗ 添加contacts.position失败: {e}")
+                print(f "   ✗ 添加contacts.position失败: {e}")
         else:
-            print("    - contacts.position已存在")
+            print( "   - contacts.position已存在")
         
         # 3. 订单表缺失字段
-        print("  检查orders表...")
+        print( " 检查orders表...")
         orders_columns = check_table_structure(engine, 'orders')
         
         missing_order_columns = {
@@ -86,48 +86,48 @@ def add_missing_columns(engine):
         for column, dtype in missing_order_columns.items():
             if column not in orders_columns:
                 try:
-                    conn.execute(text(f"ALTER TABLE orders ADD COLUMN {column} {dtype}"))
-                    print(f"    ✓ 添加orders.{column}")
+                    conn.execute(text(fA"LTER TABLE orders ADD COLUMN {column} {dtype}"))
+                    print(f "   ✓ 添加orders.{column}")
                 except Exception as e:
-                    print(f"    ✗ 添加orders.{column}失败: {e}")
+                    print(f "   ✗ 添加orders.{column}失败: {e}")
             else:
-                print(f"    - orders.{column}已存在")
+                print(f "   - orders.{column}已存在")
         
         conn.commit()
-        print("✓ 数据库列检查完成")
+        print(✓" 数据库列检查完成")
 
 def fix_company_field(engine):
     """修复customers表的name字段"""
-    print("检查customers表name字段...")
+    print(检"查customers表name字段...")
     
     with engine.connect() as conn:
         # 检查是否需要修复name字段的非空约束
         try:
             # 这里可以添加specific的name字段修复逻辑
-            print("  ✓ customers.name字段检查完成")
+            print( " ✓ customers.name字段检查完成")
         except Exception as e:
-            print(f"  ✗ customers.name字段修复失败: {e}")
+            print(f " ✗ customers.name字段修复失败: {e}")
 
 def create_tables(engine):
     """创建所有表"""
-    print("创建数据库表...")
+    print(创"建数据库表...")
     try:
         Base.metadata.create_all(bind=engine)
-        print("✓ 数据库表创建完成")
+        print(✓" 数据库表创建完成")
     except Exception as e:
-        print(f"✗ 数据库表创建失败: {e}")
+        print(f✗" 数据库表创建失败: {e}")
         raise
 
 def init_database(force=False):
     """初始化数据库"""
-    print("开始数据库初始化...")
+    print(开"始数据库初始化...")
     
     # 创建数据库引擎
     engine = create_engine(settings.DATABASE_URL)
     
     # 检查数据库是否存在
     if force:
-        print("强制重新创建数据库...")
+        print(强"制重新创建数据库...")
         # 可以添加删除现有数据库的逻辑
     
     try:
@@ -140,10 +140,10 @@ def init_database(force=False):
         # 3. 修复特定字段问题
         fix_company_field(engine)
         
-        print("\n✅ 数据库初始化完成！")
+        print(\"n✅ 数据库初始化完成！")
         
     except Exception as e:
-        print(f"\n❌ 数据库初始化失败: {e}")
+        print(f\"n❌ 数据库初始化失败: {e}")
         raise
 
 def main():
@@ -155,7 +155,7 @@ def main():
     args = parser.parse_args()
     
     if args.check_only:
-        print("检查数据库结构...")
+        print(检"查数据库结构...")
         engine = create_engine(settings.DATABASE_URL)
         
         # 检查所有表的结构
@@ -163,13 +163,13 @@ def main():
         for table in tables:
             try:
                 columns = check_table_structure(engine, table)
-                print(f"\n{table}表结构:")
+                print(f\"n{table}表结构:")
                 for col, dtype in columns.items():
-                    print(f"  - {col}: {dtype}")
+                    print(f " - {col}: {dtype}")
             except Exception as e:
-                print(f"  ✗ 无法检查{table}表: {e}")
+                print(f " ✗ 无法检查{table}表: {e}")
     else:
         init_database(force=args.force)
 
-if __name__ == "__main__":
+if __name__ == _"_main__":
     main() 

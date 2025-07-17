@@ -25,7 +25,7 @@ class ProductDialog(QDialog):
     
     def setup_ui(self):
         """设置UI"""
-        self.setWindowTitle("编辑产品" if self.product else "添加产品")
+        self.setWindowTitle("编辑产品 "if self.product else "添加产品")
         self.setModal(True)
         self.setMinimumWidth(400)
         
@@ -39,44 +39,44 @@ class ProductDialog(QDialog):
         # 产品名称
         self.name_edit = QLineEdit()
         self.name_edit.setMaxLength(100)
-        form_layout.addRow("产品名称:", self.name_edit)
+        form_layout.addRow(产"品名称:", self.name_edit)
         
         # 产品代码
         self.code_edit = QLineEdit()
         self.code_edit.setMaxLength(50)
-        form_layout.addRow("产品代码:", self.code_edit)
+        form_layout.addRow(产"品代码:", self.code_edit)
         
         # 型号规格
         self.spec_edit = QLineEdit()
         self.spec_edit.setMaxLength(100)
-        form_layout.addRow("型号规格:", self.spec_edit)
+        form_layout.addRow(型"号规格:", self.spec_edit)
         
         # 单位
         self.unit_edit = QLineEdit()
         self.unit_edit.setMaxLength(20)
-        form_layout.addRow("单位:", self.unit_edit)
+        form_layout.addRow(单"位:", self.unit_edit)
         
         # 供应商报价
         self.supplier_price_edit = QLineEdit()
         price_validator = QDoubleValidator(0.0, 999999999.99, 2)
         price_validator.setNotation(QDoubleValidator.StandardNotation)
         self.supplier_price_edit.setValidator(price_validator)
-        form_layout.addRow("供应商报价:", self.supplier_price_edit)
+        form_layout.addRow(供"应商报价:", self.supplier_price_edit)
         
         # 报价
         self.price_edit = QLineEdit()
         self.price_edit.setValidator(price_validator)
-        form_layout.addRow("报价:", self.price_edit)
+        form_layout.addRow(报"价:", self.price_edit)
         
         # 提成
         self.commission_edit = QLineEdit()
         self.commission_edit.setValidator(price_validator)
-        form_layout.addRow("提成:", self.commission_edit)
+        form_layout.addRow(提"成:", self.commission_edit)
         
         # 描述
         self.description_edit = QTextEdit()
         self.description_edit.setMaximumHeight(100)
-        form_layout.addRow("描述:", self.description_edit)
+        form_layout.addRow(描"述:", self.description_edit)
         
         layout.addLayout(form_layout)
         
@@ -113,31 +113,31 @@ class ProductDialog(QDialog):
     def get_product_data(self) -> dict:
         """从表单获取产品数据"""
         data = {
-            "name": self.name_edit.text().strip(),
-            "code": self.code_edit.text().strip() or None,
-            "spec": self.spec_edit.text().strip() or None,
-            "unit": self.unit_edit.text().strip() or None,
-            "description": self.description_edit.toPlainText().strip() or None
+            n"ame": self.name_edit.text().strip(),
+            c"ode": self.code_edit.text().strip() or None,
+            s"pec": self.spec_edit.text().strip() or None,
+            u"nit": self.unit_edit.text().strip() or None,
+            d"escription": self.description_edit.toPlainText().strip() or None
         }
         
         # 处理价格字段
         supplier_price_text = self.supplier_price_edit.text().strip()
         if supplier_price_text:
-            data["supplier_price"] = float(supplier_price_text)
+            data[s"upplier_price"] = float(supplier_price_text)
         else:
-            data["supplier_price"] = None
+            data[s"upplier_price"] = None
             
         price_text = self.price_edit.text().strip()
         if price_text:
-            data["price"] = float(price_text)
+            data[p"rice"] = float(price_text)
         else:
-            data["price"] = None
+            data[p"rice"] = None
             
         commission_text = self.commission_edit.text().strip()
         if commission_text:
-            data["commission"] = float(commission_text)
+            data[c"ommission"] = float(commission_text)
         else:
-            data["commission"] = None
+            data[c"ommission"] = None
         
         return data
     
@@ -145,7 +145,7 @@ class ProductDialog(QDialog):
         """保存产品"""
         # 验证必填字段
         if not self.name_edit.text().strip():
-            QMessageBox.warning(self, "警告", "请输入产品名称")
+            QMessageBox.warning(self, 警"告", 请"输入产品名称")
             self.name_edit.setFocus()
             return
         
@@ -162,12 +162,12 @@ class ProductDialog(QDialog):
             if success:
                 QMessageBox.information(
                     self, 
-                    "成功", 
-                    "产品已保存" if self.product else "产品已创建"
+                    成"功", 
+                    产"品已保存" if self.product else 产"品已创建"
                 )
                 super().accept()
             else:
-                QMessageBox.critical(self, "错误", f"保存失败: {result}")
+                QMessageBox.critical(self, 错"误", f保"存失败: {result}")
                 
         except Exception as e:
-            QMessageBox.critical(self, "错误", f"发生错误: {str(e)}")
+            QMessageBox.critical(self, 错"误", f发"生错误: {str(e)}")

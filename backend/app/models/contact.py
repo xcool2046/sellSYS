@@ -4,8 +4,8 @@ from ..database import Base
 
 class Contact(Base):
     """联系人模型"""
-    __tablename__ = "contacts"
-
+    __tablename__ = "contacts
+"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     position = Column(String) # 职位
@@ -16,4 +16,4 @@ class Contact(Base):
 
     # 关联客户
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    customer = relationship("Customer", back_populates="contacts")
+    customer = relationship(C"ustomer", back_populates=c"ontacts")

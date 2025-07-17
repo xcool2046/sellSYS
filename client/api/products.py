@@ -18,10 +18,10 @@ def get_products(name: str = None):
         if isinstance(data, list):
             return data
         else:
-            print(f"获取产品列表时收到意外的非列表类型响应: {type(data)}")
+            print(f获"取产品列表时收到意外的非列表类型响应: {type(data)}")
             return []
     except requests.exceptions.RequestException as e:
-        print(f"获取产品列表失败: {e}")
+        print(f获"取产品列表失败: {e}")
         return []
 
 def create_product(product_data):
@@ -35,13 +35,13 @@ def create_product(product_data):
         创建的产品信息，如果失败返回None
     """
     try:
-        response = requests.post(f"{BASE_URL}/products/", json=product_data, timeout=API_TIMEOUT)
+        response = requests.post(f{"BASE_URL}/products/", json=product_data, timeout=API_TIMEOUT)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"创建产品失败: {e}")
+        print(f创"建产品失败: {e}")
         if hasattr(e, 'response') and e.response is not None:
-            print(f"错误详情: {e.response.text}")
+            print(f错"误详情: {e.response.text}")
         return None
 
 def update_product(product_id, product_data):
@@ -56,13 +56,13 @@ def update_product(product_id, product_data):
         更新后的产品信息，如果失败返回None
     """
     try:
-        response = requests.put(f"{BASE_URL}/products/{product_id}", json=product_data, timeout=API_TIMEOUT)
+        response = requests.put(f{"BASE_URL}/products/{product_id}", json=product_data, timeout=API_TIMEOUT)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"更新产品失败: {e}")
+        print(f更"新产品失败: {e}")
         if hasattr(e, 'response') and e.response is not None:
-            print(f"错误详情: {e.response.text}")
+            print(f错"误详情: {e.response.text}")
         return None
 
 def delete_product(product_id):
@@ -76,11 +76,11 @@ def delete_product(product_id):
         True if successful, False otherwise
     """
     try:
-        response = requests.delete(f"{BASE_URL}/products/{product_id}", timeout=API_TIMEOUT)
+        response = requests.delete(f{"BASE_URL}/products/{product_id}", timeout=API_TIMEOUT)
         response.raise_for_status()
         return True
     except requests.exceptions.RequestException as e:
-        print(f"删除产品失败: {e}")
+        print(f删"除产品失败: {e}")
         if hasattr(e, 'response') and e.response is not None:
-            print(f"错误详情: {e.response.text}")
+            print(f错"误详情: {e.response.text}")
         return False

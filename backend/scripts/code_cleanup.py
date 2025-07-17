@@ -47,10 +47,10 @@ def fix_field_names_in_files(project_root):
         'employee_id': 'employee_id',
         
         # 方法名统一
-        'get_customer': 'get_customeromer',
-        'create_customer': 'create_customeromer',
-        'update_customer': 'update_customeromer',
-        'delete_customer': 'delete_customeromer',
+        'get_customer': 'get_customer',
+        'create_customer': 'create_customer',
+        'update_customer': 'update_customer',
+        'delete_customer': 'delete_customer',
     }
     
     total_files_changed = 0
@@ -115,7 +115,7 @@ def remove_redundant_imports(filepath):
 
 def clean_code_style(project_root):
     """清理代码风格"""
-    print("清理代码风格...")
+    print(清"理代码风格...")
     
     python_files = []
     for root, dirs, files in os.walk(project_root):
@@ -132,13 +132,13 @@ def clean_code_style(project_root):
             # 修复导入
             if fix_imports_in_file(filepath):
                 cleaned_count += 1
-                print(f"  修复导入: {filepath}")
+                print(f " 修复导入: {filepath}")
                 
             # 移除冗余导入
             remove_redundant_imports(filepath)
             
         except Exception as e:
-            print(f"  错误处理文件 {filepath}: {e}")
+            print(f " 错误处理文件 {filepath}: {e}")
     
     return cleaned_count
 
@@ -146,29 +146,29 @@ def main():
     """主函数"""
     project_root = Path(__file__).parent.parent.parent
     
-    print("开始代码整理...")
-    print(f"项目根目录: {project_root}")
+    print(开"始代码整理...")
+    print(f项"目根目录: {project_root}")
     
     # 1. 修复导入问题
-    print("\n1. 修复导入问题...")
+    print(\"n1. 修复导入问题...")
     client_root = project_root / 'client'
     if client_root.exists():
         cleaned_count = clean_code_style(str(client_root))
-        print(f"  修复了 {cleaned_count} 个客户端文件的导入")
+        print(f " 修复了 {cleaned_count} 个客户端文件的导入")
     
     # 2. 修复字段命名
-    print("\n2. 修复字段命名...")
+    print(\"n2. 修复字段命名...")
     field_changes = fix_field_names_in_files(str(project_root))
-    print(f"  修复了 {field_changes} 个文件的字段命名")
+    print(f " 修复了 {field_changes} 个文件的字段命名")
     
     # 3. 清理后端代码
-    print("\n3. 清理后端代码...")
+    print(\"n3. 清理后端代码...")
     backend_root = project_root / 'backend'
     if backend_root.exists():
         backend_cleaned = clean_code_style(str(backend_root))
-        print(f"  清理了 {backend_cleaned} 个后端文件")
+        print(f " 清理了 {backend_cleaned} 个后端文件")
     
-    print("\n✅ 代码整理完成！")
+    print(\"n✅ 代码整理完成！")
 
-if __name__ == "__main__":
+if __name__ == _"_main__":
     main() 

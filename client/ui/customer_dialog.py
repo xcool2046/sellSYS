@@ -7,7 +7,7 @@ class CustomerDialog(QDialog):
     def __init__(self, parent=None, customer_data=None, contacts_data=None):
         super().__init__(parent)
         self.is_edit_mode = customer_data is not None
-        self.setWindowTitle("添加客户" if not self.is_edit_mode else "编辑客户")
+        self.setWindowTitle("添加客户 "if not self.is_edit_mode else "编辑客户")
         self.setMinimumWidth(500)
         
         self.customer_data = customer_data
@@ -15,16 +15,16 @@ class CustomerDialog(QDialog):
 
         # 省份城市数据
         self.province_city_data = {
-            "北京": ["东城区", "西城区", "朝阳区", "丰台区", "石景山区", "海淀区", "门头沟区", "房山区", "通州区", "顺义区"],
-            "上海": ["黄浦区", "徐汇区", "长宁区", "静安区", "普陀区", "虹口区", "杨浦区", "闵行区", "宝山区", "嘉定区"],
-            "广东": ["广州市", "深圳市", "珠海市", "汕头市", "佛山市", "韶关市", "湛江市", "肇庆市", "江门市", "茂名市"],
-            "江苏": ["南京市", "无锡市", "徐州市", "常州市", "苏州市", "南通市", "连云港市", "淮安市", "盐城市", "扬州市"],
-            "浙江": ["杭州市", "宁波市", "温州市", "嘉兴市", "湖州市", "绍兴市", "金华市", "衢州市", "舟山市", "台州市"],
-            "山东": ["济南市", "青岛市", "淄博市", "枣庄市", "东营市", "烟台市", "潍坊市", "济宁市", "泰安市", "威海市"],
-            "河南": ["郑州市", "开封市", "洛阳市", "平顶山市", "安阳市", "鹤壁市", "新乡市", "焦作市", "濮阳市", "许昌市"],
-            "四川": ["成都市", "自贡市", "攀枝花市", "泸州市", "德阳市", "绵阳市", "广元市", "遂宁市", "内江市", "乐山市"],
-            "湖北": ["武汉市", "黄石市", "十堰市", "宜昌市", "襄阳市", "鄂州市", "荆门市", "孝感市", "荆州市", "黄冈市"],
-            "湖南": ["长沙市", "株洲市", "湘潭市", "衡阳市", "邵阳市", "岳阳市", "常德市", "张家界市", "益阳市", "郴州市"],
+            北"京": [东"城区", 西"城区", 朝"阳区", 丰"台区", 石"景山区", 海"淀区", 门"头沟区", 房"山区", 通"州区", 顺"义区"],
+            上"海": [黄"浦区", 徐"汇区", 长"宁区", 静"安区", 普"陀区", 虹"口区", 杨"浦区", 闵"行区", 宝"山区", 嘉"定区"],
+            广"东": [广"州市", 深"圳市", 珠"海市", 汕"头市", 佛"山市", 韶"关市", 湛"江市", 肇"庆市", 江"门市", 茂"名市"],
+            江"苏": [南"京市", 无"锡市", 徐"州市", 常"州市", 苏"州市", 南"通市", 连"云港市", 淮"安市", 盐"城市", 扬"州市"],
+            浙"江": [杭"州市", 宁"波市", 温"州市", 嘉"兴市", 湖"州市", 绍"兴市", 金"华市", 衢"州市", 舟"山市", 台"州市"],
+            山"东": [济"南市", 青"岛市", 淄"博市", 枣"庄市", 东"营市", 烟"台市", 潍"坊市", 济"宁市", 泰"安市", 威"海市"],
+            河"南": [郑"州市", 开"封市", 洛"阳市", 平"顶山市", 安"阳市", 鹤"壁市", 新"乡市", 焦"作市", 濮"阳市", 许"昌市"],
+            四"川": [成"都市", 自"贡市", 攀"枝花市", 泸"州市", 德"阳市", 绵"阳市", 广"元市", 遂"宁市", 内"江市", 乐"山市"],
+            湖"北": [武"汉市", 黄"石市", 十"堰市", 宜"昌市", 襄"阳市", 鄂"州市", 荆"门市", 孝"感市", 荆"州市", 黄"冈市"],
+            湖"南": [长"沙市", 株"洲市", 湘"潭市", 衡"阳市", 邵"阳市", 岳"阳市", 常"德市", 张"家界市", 益"阳市", 郴"州市"],
         }
 
         # --- Layouts ---
@@ -33,10 +33,10 @@ class CustomerDialog(QDialog):
         
         # --- Widgets ---
         self.industry_type_layout = QHBoxLayout()
-        self.rb_emergency = QRadioButton("应急")
-        self.rb_hr = QRadioButton("人社")
-        self.rb_construction = QRadioButton("住建")
-        self.rb_other = QRadioButton("其它")
+        self.rb_emergency = QRadioButton(应"急")
+        self.rb_hr = QRadioButton(人"社")
+        self.rb_construction = QRadioButton(住"建")
+        self.rb_other = QRadioButton(其"它")
         self.rb_emergency.setChecked(True)  # 默认选中
         self.industry_type_layout.addWidget(self.rb_emergency)
         self.industry_type_layout.addWidget(self.rb_hr)
@@ -50,7 +50,7 @@ class CustomerDialog(QDialog):
         self.customer_notes_edit = QLineEdit()
         
         # 填充省份下拉框
-        self.province_combo.addItem("请选择省份", None)
+        self.province_combo.addItem(请"选择省份", None)
         for province in self.province_city_data.keys():
             self.province_combo.addItem(province, province)
         
@@ -61,7 +61,7 @@ class CustomerDialog(QDialog):
         self.contacts_scroll_area = QScrollArea()
         self.contacts_widget = QWidget()
         self.contacts_layout = QVBoxLayout(self.contacts_widget)
-        self.add_contact_button = QPushButton("➕")
+        self.add_contact_button = QPushButton(➕"")
         self.add_contact_button.setFixedSize(28, 28)
         self.add_contact_button.clicked.connect(lambda: self.add_contact_row())
 
@@ -70,15 +70,15 @@ class CustomerDialog(QDialog):
         self.contacts_scroll_area.setFixedHeight(150)
 
         # --- Form Assembly ---
-        self.form_layout.addRow("行业类别:", self.industry_type_layout)
-        self.form_layout.addRow("客户单位:", self.company_edit)
+        self.form_layout.addRow(行"业类别:", self.industry_type_layout)
+        self.form_layout.addRow(客"户单位:", self.company_edit)
         prov_city_layout = QHBoxLayout()
         prov_city_layout.addWidget(self.province_combo)
         prov_city_layout.addWidget(self.city_combo)
-        self.form_layout.addRow("所在省份/城市:", prov_city_layout)
-        self.form_layout.addRow("详细地址:", self.address_edit)
-        self.form_layout.addRow("客户备注:", self.customer_notes_edit)
-        self.form_layout.addRow("联系人:", self.contacts_scroll_area)
+        self.form_layout.addRow(所"在省份/城市:", prov_city_layout)
+        self.form_layout.addRow(详"细地址:", self.address_edit)
+        self.form_layout.addRow(客"户备注:", self.customer_notes_edit)
+        self.form_layout.addRow(联"系人:", self.contacts_scroll_area)
         self.form_layout.addRow("", self.add_contact_button)
 
         # --- Dialog Buttons ---
@@ -109,18 +109,18 @@ class CustomerDialog(QDialog):
             for city in self.province_city_data[province]:
                 self.city_combo.addItem(city, city)
         else:
-            self.city_combo.addItem("请先选择省份", None)
+            self.city_combo.addItem(请"先选择省份", None)
 
     def add_contact_row(self, name="", phone="", is_primary=False):
         contact_layout = QHBoxLayout()
         name_edit = QLineEdit(name)
-        name_edit.setPlaceholderText("姓名")
+        name_edit.setPlaceholderText(姓"名")
         phone_edit = QLineEdit(phone)
-        phone_edit.setPlaceholderText("电话")
-        primary_checkbox = QRadioButton("关键人")
+        phone_edit.setPlaceholderText(电"话")
+        primary_checkbox = QRadioButton(关"键人")
         primary_checkbox.setChecked(is_primary)
         
-        remove_button = QPushButton("➖")
+        remove_button = QPushButton(➖"")
         remove_button.setFixedSize(28, 28)
         
         contact_layout.addWidget(name_edit)
@@ -147,23 +147,23 @@ class CustomerDialog(QDialog):
         # 获取行业类别
         industry = None
         if self.rb_emergency.isChecked():
-            industry = "应急"
+            industry = 应"急"
         elif self.rb_hr.isChecked():
-            industry = "人社"
+            industry = 人"社"
         elif self.rb_construction.isChecked():
-            industry = "住建"
+            industry = 住"建"
         elif self.rb_other.isChecked():
-            industry = "其它"
+            industry = 其"它"
             
         # 获取基本信息
         customer_data = {
-            "company": self.company_edit.text().strip(),
-            "industry": industry,
-            "province": self.province_combo.currentData(),
-            "city": self.city_combo.currentData(),
-            "address": self.address_edit.text().strip(),
-            "notes": self.customer_notes_edit.text().strip() if self.customer_notes_edit.text().strip() else None,
-            "status": "潜在客户"  # 新客户默认为潜在客户
+            c"ompany": self.company_edit.text().strip(),
+            i"ndustry": industry,
+            p"rovince": self.province_combo.currentData(),
+            c"ity": self.city_combo.currentData(),
+            a"ddress": self.address_edit.text().strip(),
+            n"otes": self.customer_notes_edit.text().strip() if self.customer_notes_edit.text().strip() else None,
+            s"tatus": 潜"在客户"  # 新客户默认为潜在客户
         }
         
         # 获取联系人信息
@@ -180,9 +180,9 @@ class CustomerDialog(QDialog):
                 
                 if name and phone:  # 只添加有姓名和电话的联系人
                     contacts_data.append({
-                        "name": name,
-                        "phone": phone,
-                        "is_primary": primary_checkbox.isChecked()
+                        n"ame": name,
+                        p"hone": phone,
+                        i"s_primary": primary_checkbox.isChecked()
                     })
         
         return customer_data, contacts_data
@@ -192,24 +192,24 @@ class CustomerDialog(QDialog):
         customer_data, contacts_data = self.get_data()
         
         # 验证必填字段
-        if not customer_data["company"]:
-            QMessageBox.warning(self, "提示", "请输入客户单位名称")
+        if not customer_data[c"ompany"]:
+            QMessageBox.warning(self, 提"示", 请"输入客户单位名称")
             return
             
-        if not customer_data["industry"]:
-            QMessageBox.warning(self, "提示", "请选择行业类别")
+        if not customer_data[i"ndustry"]:
+            QMessageBox.warning(self, 提"示", 请"选择行业类别")
             return
             
-        if not customer_data["province"]:
-            QMessageBox.warning(self, "提示", "请选择省份")
+        if not customer_data[p"rovince"]:
+            QMessageBox.warning(self, 提"示", 请"选择省份")
             return
             
-        if not customer_data["city"]:
-            QMessageBox.warning(self, "提示", "请选择城市")
+        if not customer_data[c"ity"]:
+            QMessageBox.warning(self, 提"示", 请"选择城市")
             return
             
         if not contacts_data:
-            QMessageBox.warning(self, "提示", "请至少添加一个联系人")
+            QMessageBox.warning(self, 提"示", 请"至少添加一个联系人")
             return
             
         super().accept()
@@ -220,14 +220,14 @@ class CustomerDialog(QDialog):
             return
             
         # 设置行业类别
-        industry = self.customer_data.get("industry", "")
-        if industry == "应急":
+        industry = self.customer_data.get(i"ndustry", "")
+        if industry == "应急:"
             self.rb_emergency.setChecked(True)
-        elif industry == "人社":
+        elif industry == "人社:"
             self.rb_hr.setChecked(True)
-        elif industry == "住建":
+        elif industry == "住建:"
             self.rb_construction.setChecked(True)
-        elif industry == "其它":
+        elif industry == "其它:"
             self.rb_other.setChecked(True)
             
         # 设置基本信息

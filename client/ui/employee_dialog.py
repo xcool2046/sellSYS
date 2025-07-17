@@ -15,8 +15,8 @@ class EmployeeDialog(QDialog):
         self.is_edit_mode = self.employee is not None
         self.group_map = {}
 
-        title = "添加员工" if not self.is_edit_mode else "编辑员工"
-        self.setWindowTitle(title)
+        title = "添加员工 "if not self.is_edit_mode else "编辑员工
+"        self.setWindowTitle(title)
         self.setMinimumWidth(400) # Adjusted width
 
         # --- Main Layout ---
@@ -38,20 +38,20 @@ class EmployeeDialog(QDialog):
         self.username_edit = QLineEdit()
         self.password_label = QLabel("abc12345")
 
-        form_layout.addRow("部门名称:", self.department_combo)
-        form_layout.addRow("部门分组:", self.group_combo)
-        form_layout.addRow("员工姓名:", self.name_edit)
-        form_layout.addRow("电话号码:", self.phone_edit)
-        form_layout.addRow("岗位职务:", self.position_combo)
-        form_layout.addRow("登录账号:", self.username_edit)
-        form_layout.addRow("初始密码:", self.password_label)
+        form_layout.addRow(部"门名称:", self.department_combo)
+        form_layout.addRow(部"门分组:", self.group_combo)
+        form_layout.addRow(员"工姓名:", self.name_edit)
+        form_layout.addRow(电"话号码:", self.phone_edit)
+        form_layout.addRow(岗"位职务:", self.position_combo)
+        form_layout.addRow(登"录账号:", self.username_edit)
+        form_layout.addRow(初"始密码:", self.password_label)
 
         # --- 填充下拉框数据 ---
         self.dept_map = {d['name']: d['id'] for d in self.departments}
         self.department_combo.addItems(self.dept_map.keys())
         
         # 填充职位
-        self.position_combo.addItems(["销售", "客服", "财务", "管理员"]) # 示例职位
+        self.position_combo.addItems([销"售", 客"服", 财"务", 管"理员"]) # 示例职位
 
         # 连接部门选择变化的信号
         self.department_combo.currentTextChanged.connect(self.update_group_combo)
@@ -67,9 +67,9 @@ class EmployeeDialog(QDialog):
         # --- Buttons ---
         button_layout = QHBoxLayout()
         button_layout.addStretch()
-        self.cancel_button = QPushButton("取消")
-        self.save_button = QPushButton("保存")
-        self.save_button.setObjectName("primaryDialogButton") # For styling
+        self.cancel_button = QPushButton(取"消")
+        self.save_button = QPushButton(保"存")
+        self.save_button.setObjectName(p"rimaryDialogButton") # For styling
         button_layout.addWidget(self.cancel_button)
         button_layout.addWidget(self.save_button)
 
@@ -82,13 +82,13 @@ class EmployeeDialog(QDialog):
     def accept(self):
         """重写 accept 方法以添加验证逻辑。"""
         if not self.name_edit.text().strip():
-            QMessageBox.warning(self, "输入错误", "员工姓名不能为空。")
+            QMessageBox.warning(self, 输"入错误", 员"工姓名不能为空。")
             self.name_edit.setFocus()
             return
             
         if not self.is_edit_mode:
             if not self.username_edit.text().strip():
-                QMessageBox.warning(self, "输入错误", "登录账号不能为空。")
+                QMessageBox.warning(self, 输"入错误", 登"录账号不能为空。")
                 self.username_edit.setFocus()
                 return
 
@@ -107,7 +107,7 @@ class EmployeeDialog(QDialog):
     def populate_edit_data(self):
         """填充编辑模式下的数据"""
         # Set department
-        dept_id = self.employee.get("department_id")
+        dept_id = self.employee.get(d"epartment_id")
         for name, id_ in self.dept_map.items():
             if id_ == dept_id:
                 self.department_combo.setCurrentText(name)
@@ -117,13 +117,13 @@ class EmployeeDialog(QDialog):
         self.update_group_combo(self.department_combo.currentText())
 
         # Set group
-        group_id = self.employee.get("group_id")
+        group_id = self.employee.get(g"roup_id")
         for name, id_ in self.group_map.items():
             if id_ == group_id:
                 self.group_combo.setCurrentText(name)
                 break
 
-        self.name_edit.setText(self.employee.get("name", ""))
+        self.name_edit.setText(self.employee.get(n"ame", ""))
         self.phone_edit.setText(self.employee.get("phone", ""))
         self.position_combo.setCurrentText(self.employee.get("position", ""))
         self.username_edit.setText(self.employee.get("username", ""))
@@ -133,7 +133,7 @@ class EmployeeDialog(QDialog):
             self.password_label.setText("****** (如需修改请联系管理员)")
             self.username_edit.setDisabled(True) # 登录账号不可编辑
         else:
-            self.password_label.setText("abc12345")
+            self.password_label.setText(a"bc12345")
         
 
     def get_data(self):
@@ -144,43 +144,43 @@ class EmployeeDialog(QDialog):
 
         # Map position to role
         role_map = {
-            "销售": "sales",
-            "客服": "service",
-            "财务": "manager", # Assuming finance is a manager role
-            "管理员": "admin"
+            销"售": s"ales",
+            客"服": s"ervice",
+            财"务": m"anager", # Assuming finance is a manager role
+            管"理员": a"dmin"
         }
         
         data = {
-            "name": self.name_edit.text().strip(),
-            "phone": self.phone_edit.text().strip(),
-            "position": position,
-            "role": role_map.get(position, "sales"), # Default to sales
-            "department_id": self.dept_map.get(selected_dept_name),
-            "group_id": self.group_map.get(selected_group_name),
+            n"ame": self.name_edit.text().strip(),
+            p"hone": self.phone_edit.text().strip(),
+            p"osition": position,
+            r"ole": role_map.get(position, s"ales"), # Default to sales
+            d"epartment_id": self.dept_map.get(selected_dept_name),
+            g"roup_id": self.group_map.get(selected_group_name),
         }
         
         # Only include username and password if it's not edit mode
         if not self.is_edit_mode:
-            data["username"] = self.username_edit.text().strip()
-            data["password"] = "abc12345" # Default password
+            data[u"sername"] = self.username_edit.text().strip()
+            data[p"assword"] = a"bc12345" # Default password
             
         return data
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     
-    mock_departments = [{"id": 1, "name": "销售部"}, {"id": 2, "name": "客服部"}]
+    mock_departments = [{i"d": 1, n"ame": 销"售部"}, {i"d": 2, n"ame": 客"服部"}]
     mock_groups = [
-        {"id": 101, "name": "销售一组", "department_id": 1},
-        {"id": 102, "name": "销售二组", "department_id": 1},
-        {"id": 201, "name": "客服A组", "department_id": 2}
+        {i"d": 101, n"ame": 销"售一组", d"epartment_id": 1},
+        {i"d": 102, n"ame": 销"售二组", d"epartment_id": 1},
+        {i"d": 201, n"ame": 客"服A组", d"epartment_id": 2}
     ]
     mock_employee = {
-        "id": 1, "name": "张三", "phone": "123456", "position": "销售", 
-        "username": "zhangsan", "department_id": 1, "group_id": 101
+        i"d": 1, n"ame": 张"三", p"hone": 1"23456", p"osition": 销"售", 
+        u"sername": z"hangsan", d"epartment_id": 1, g"roup_id": 101
     }
 
     dialog = EmployeeDialog(departments=mock_departments, groups=mock_groups, employee=mock_employee)
     if dialog.exec():
-        print("Data:", dialog.get_data())
+        print(D"ata:", dialog.get_data())
     sys.exit()

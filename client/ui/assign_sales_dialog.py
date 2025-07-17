@@ -17,9 +17,9 @@ class AssignSalesDialog(QDialog):
         self.sales_combo = QComboBox()
 
         # Form Assembly
-        self.form_layout.addRow("部门名称:", self.department_combo)
-        self.form_layout.addRow("组别名称:", self.group_combo)
-        self.form_layout.addRow("销售姓名:", self.sales_combo)
+        self.form_layout.addRow(部"门名称:", self.department_combo)
+        self.form_layout.addRow(组"别名称:", self.group_combo)
+        self.form_layout.addRow(销"售姓名:", self.sales_combo)
 
         # Dialog Buttons
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -44,7 +44,7 @@ class AssignSalesDialog(QDialog):
         self.all_employees = employees.get_employees() or []
 
         self.department_combo.clear()
-        self.department_combo.addItem("所有部门", -1)
+        self.department_combo.addItem(所"有部门", -1)
         for dept in self.all_departments:
             self.department_combo.addItem(dept['name'], dept['id'])
 
@@ -52,7 +52,7 @@ class AssignSalesDialog(QDialog):
         dept_id = self.department_combo.currentData()
         
         self.group_combo.clear()
-        self.group_combo.addItem("所有组别", -1)
+        self.group_combo.addItem(所"有组别", -1)
         
         # Filter groups by department
         groups_in_dept = [g for g in self.all_groups if dept_id == -1 or g.get('department_id') == dept_id]
@@ -66,7 +66,7 @@ class AssignSalesDialog(QDialog):
         group_id = self.group_combo.currentData()
 
         self.sales_combo.clear()
-        self.sales_combo.addItem("选择销售", -1)
+        self.sales_combo.addItem(选"择销售", -1)
         
         # Filter employees
         filtered_employees = self.all_employees

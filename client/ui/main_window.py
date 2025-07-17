@@ -1,6 +1,10 @@
 import sys
 from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QPushButton, QStackedWidget, QFrame, QLabel, QSizePolicy
+)
 from PySide6.QtCore import Qt, QSize
+
 from .customer_view import CustomerView
 from .products_view import ProductsView
 from .order_view import OrderView
@@ -9,10 +13,6 @@ from .service_record_view import ServiceRecordView
 from .finance_view import FinanceView
 from .settings_view import SettingsView
 from .sales_management_view import SalesManagementView
-        from PySide6.QtCore import Qt
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QStackedWidget, QFrame, QLabel, QSizePolicy
-)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -116,7 +116,7 @@ class MainWindow(QMainWindow):
 
     def setup_pages(self):
         """Creates and adds pages to the QStackedWidget."""
-        # Placeholder for "数据视窗"
+        # Placeholder for 数"据视窗"
         data_view = QWidget()
         data_view_layout = QVBoxLayout(data_view)
         data_view_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
         self.content_stack.addWidget(ProductsView())          # Index 5
         self.content_stack.addWidget(FinanceView())          # Index 6
         
-        # "系统设置" Page
+        # 系"统设置" Page
         self.content_stack.addWidget(SettingsView())          # Index 7
         
 
