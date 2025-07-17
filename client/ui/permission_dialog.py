@@ -1,12 +1,12 @@
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QDialog, QVBoxLayout, QHBoxLayout, QFrame,
-    QLabel, QPushButton, QComboBox, QFormLayout, QCheckBox, QGridLayout
+    QApplication, QDialog, QVBoxLayout, QHBoxLayout,
+    QLabel, QPushButton, QComboBox, QFormLayout, QCheckBox, QGridLayout, QFrame
 )
 from PySide6.QtCore import Qt
 
 class PermissionDialog(QDialog):
-    """添加或编辑用户权限的对话框"""
+    """添加或编辑用户权限的对话框（根据截图重构）"""
     def __init__(self, parent=None, permission=None, departments=None, employees=None):
         super().__init__(parent)
         self.permission = permission
@@ -14,36 +14,29 @@ class PermissionDialog(QDialog):
         self.employees = employees or []
         self.is_edit_mode = self.permission is not None
 
-        self.setWindowTitle("添加权限" if not self.is_edit_mode else "编辑权限")
-        self.setMinimumWidth(450)
+        title = "添加权限" if not self.is_edit_mode else "编辑权限"
+        self.setWindowTitle(title)
+        self.setMinimumWidth(500) # Adjusted width
 
+        # --- Main Layout ---
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 20)
-        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(20)
 
-        # --- 标题栏 ---
-        title_bar = QFrame()
-        title_bar.setObjectName("dialogTitleBar")
-        title_layout = QHBoxLayout(title_bar)
-        title_label = QLabel(self.windowTitle())
-        title_label.setObjectName("dialogTitleLabel")
-        title_layout.addWidget(title_label)
-        main_layout.addWidget(title_bar)
+        # --- Form Layout ---
+        form_layout = QFormLayout()
+        form_layout.setSpacing(15)
+        form_layout.setLabelAlignment(Qt.AlignRight)
 
-        content_layout = QFormLayout()
-        content_layout.setContentsMargins(20, 20, 20, 20)
-        content_layout.setSpacing(15)
-        content_layout.setLabelAlignment(Qt.AlignRight)
-
-        # --- 部门和职位选择 ---
+        # --- Department and Position Selection ---
         self.department_combo = QComboBox()
         self.position_combo = QComboBox()
         
         self.dept_map = {d['name']: d['id'] for d in self.departments}
-        self.department_combo.addItems(self.dept_map.keys())
+        self.department_combo.addItems([""] + list(self.dept_map.keys())) # Add a blank item
 
-        content_layout.addRow("部门名称:", self.department_combo)
-        content_layout.addRow("岗位职务:", self.position_combo)
+        form_layout.addRow("部门名称:", self.department_combo)
+        form_layout.addRow("岗位职务:", self.position_combo)
         
         self.department_combo.currentTextChanged.connect(self.update_position_combo)
 
@@ -68,16 +61,17 @@ class PermissionDialog(QDialog):
             row, col = positions[i]
             permissions_layout.addWidget(checkbox, row, col)
 
-        content_layout.addRow("操作权限:", permissions_layout)
+        form_layout.addRow("操作权限:", permissions_layout)
+        
+        main_layout.addLayout(form_layout)
+        
+        # --- Separator ---
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.HLine)
+        separator.setFrameShadow(QFrame.Shadow.Sunken)
+        # main_layout.addWidget(separator)
 
-        if self.is_edit_mode:
-            self.populate_edit_data()
-        else:
-            self.update_position_combo(self.department_combo.currentText())
-
-        main_layout.addLayout(content_layout)
-
-        # --- 按钮 ---
+        # --- Buttons ---
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         self.cancel_button = QPushButton("取消")
@@ -86,6 +80,11 @@ class PermissionDialog(QDialog):
         button_layout.addWidget(self.cancel_button)
         button_layout.addWidget(self.save_button)
         main_layout.addLayout(button_layout)
+
+        if self.is_edit_mode:
+            self.populate_edit_data()
+        else:
+            self.update_position_combo(self.department_combo.currentText())
 
         # --- 连接信号 ---
         self.cancel_button.clicked.connect(self.reject)

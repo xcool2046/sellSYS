@@ -35,8 +35,8 @@ class OrderCreate(OrderBase):
 class Order(OrderBase):
     id: int
     order_number: str
-    total_amount: Decimal
     paid_amount: Optional[Decimal] = None
+    total_amount: Decimal
     payment_date: Optional[datetime] = None
     order_items: List[OrderItem] = []
     

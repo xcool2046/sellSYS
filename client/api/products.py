@@ -3,13 +3,17 @@ from ..config import API_BASE_URL, API_TIMEOUT
 
 BASE_URL = API_BASE_URL
 
-def get_products():
+def get_products(name: str = None):
     """
-    获取所有产品信息
+    获取所有产品信息, 可选地通过名称进行筛选
     """
     try:
-        response = requests.get(f"{BASE_URL}/products/", timeout=API_TIMEOUT)
-        response.raise_for_status()  # 如果请求失败，则引发HTTPError
+        params = {}
+        if name:
+            params['name'] = name
+            
+        response = requests.get(f"{BASE_URL}/products/", params=params, timeout=API_TIMEOUT)
+        response.raise_for_status()
         data = response.json()
         if isinstance(data, list):
             return data

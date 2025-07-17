@@ -1,11 +1,12 @@
 import sys
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox,
-    QPushButton, QTableWidget, QTableWidgetItem, QTabWidget, 
-    QHeaderView, QAbstractItemView, QSizePolicy, QFrame, QSpacerItem
+    QPushButton, QTableView, QTabWidget,
+    QHeaderView, QAbstractItemView, QSizePolicy, QFrame, QSpacerItem, QApplication
 )
 from PySide6.QtCore import Qt, QDate
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QStandardItemModel, QStandardItem
+from PySide6.QtWidgets import QDateEdit
 from datetime import datetime, date
 from decimal import Decimal
 from ..api.orders import get_orders
@@ -42,7 +43,7 @@ class FinanceView(QWidget):
         # 订单统计标签页（暂时空白）
         stats_tab = QWidget()
         stats_layout = QVBoxLayout(stats_tab)
-        stats_label = QLabel("订单统计（本期不做）")
+        stats_label = QLabel("订单统计")
         stats_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         stats_label.setStyleSheet("color: #666; font-size: 16px;")
         stats_layout.addWidget(stats_label)
@@ -56,8 +57,8 @@ class FinanceView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         
-        # 筛选栏
-        self.setup_filters(layout)
+        # 工具栏
+        self.setup_toolbar(layout)
         
         # 表格
         self.setup_table(layout)
@@ -65,129 +66,164 @@ class FinanceView(QWidget):
         # 合计行
         self.setup_summary(layout)
         
-    def setup_filters(self, parent_layout):
-        """设置筛选栏"""
-        filter_frame = QFrame()
-        filter_frame.setObjectName("filterFrame")
-        filter_layout = QHBoxLayout(filter_frame)
-        filter_layout.setSpacing(10)
-        filter_layout.setContentsMargins(10, 10, 10, 10)
+    def setup_toolbar(self, parent_layout):
+        """设置工具栏"""
+        toolbar_container = QWidget()
+        toolbar_container.setObjectName("toolbarContainer")
         
-        # 输入客户名称
-        filter_layout.addWidget(QLabel("输入客户名称"))
+        # 主要水平布局
+        main_toolbar_layout = QHBoxLayout(toolbar_container)
+        main_toolbar_layout.setContentsMargins(0, 0, 0, 0)
+        main_toolbar_layout.setSpacing(15)
+        
+        # 左侧筛选区域
+        filters_widget = QWidget()
+        filters_layout = QVBoxLayout(filters_widget)
+        filters_layout.setContentsMargins(0,0,0,0)
+        filters_layout.setSpacing(10)
+        
+        # 第一行筛选
+        row1_layout = QHBoxLayout()
+        row1_layout.setSpacing(10)
+
+        # 客户名称
+        row1_layout.addWidget(QLabel("客户名称:"))
         self.customer_name_input = QLineEdit()
-        self.customer_name_input.setPlaceholderText("输入客户名称")
-        self.customer_name_input.setFixedWidth(150)
-        filter_layout.addWidget(self.customer_name_input)
-        
-        # 产品名称下拉
-        filter_layout.addWidget(QLabel("产品名称"))
-        self.product_combo = QComboBox()
-        self.product_combo.setFixedWidth(120)
-        self.product_combo.addItem("全部", None)
-        filter_layout.addWidget(self.product_combo)
-        
-        # 生效日期下拉
-        filter_layout.addWidget(QLabel("生效日期"))
-        self.effective_date_combo = QComboBox()
-        self.effective_date_combo.setFixedWidth(120)
-        self.effective_date_combo.addItem("全部", None)
-        filter_layout.addWidget(self.effective_date_combo)
-        
-        # 到期日期下拉
-        filter_layout.addWidget(QLabel("到期日期"))
-        self.expire_date_combo = QComboBox()
-        self.expire_date_combo.setFixedWidth(120)
-        self.expire_date_combo.addItem("全部", None)
-        filter_layout.addWidget(self.expire_date_combo)
-        
-        # 签单日期下拉
-        filter_layout.addWidget(QLabel("签单日期"))
-        self.sign_date_combo = QComboBox()
-        self.sign_date_combo.setFixedWidth(120)
-        self.sign_date_combo.addItem("全部", None)
-        filter_layout.addWidget(self.sign_date_combo)
-        
-        # 订单状态下拉
-        filter_layout.addWidget(QLabel("订单状态"))
+        self.customer_name_input.setPlaceholderText("请输入客户单位名称")
+        self.customer_name_input.setFixedWidth(180)
+        row1_layout.addWidget(self.customer_name_input)
+
+        # 订单状态
+        row1_layout.addWidget(QLabel("订单状态:"))
         self.status_combo = QComboBox()
-        self.status_combo.setFixedWidth(100)
         self.status_combo.addItem("全部", None)
         self.status_combo.addItem("待付款", "待付款")
         self.status_combo.addItem("已付款", "已付款")
         self.status_combo.addItem("已完成", "已完成")
         self.status_combo.addItem("已取消", "已取消")
-        filter_layout.addWidget(self.status_combo)
+        self.status_combo.setFixedWidth(120)
+        row1_layout.addWidget(self.status_combo)
+        row1_layout.addStretch()
+
+        # 第二行筛选
+        row2_layout = QHBoxLayout()
+        row2_layout.setSpacing(5)
+
+        # 签单日期
+        self.sign_date_start_edit, self.sign_date_end_edit = self._create_date_range_picker(row2_layout, "签单日期:")
+        # 生效日期
+        self.effective_date_start_edit, self.effective_date_end_edit = self._create_date_range_picker(row2_layout, "生效日期:")
+        # 到期日期
+        self.expiry_date_start_edit, self.expiry_date_end_edit = self._create_date_range_picker(row2_layout, "到期日期:")
+        row2_layout.addStretch()
+
+        filters_layout.addLayout(row1_layout)
+        filters_layout.addLayout(row2_layout)
         
-        # 销售人下拉
-        filter_layout.addWidget(QLabel("销售人"))
-        self.sales_combo = QComboBox()
-        self.sales_combo.setFixedWidth(100)
-        self.sales_combo.addItem("全部", None)
-        filter_layout.addWidget(self.sales_combo)
-        
-        # 查询和重置按钮
+        main_toolbar_layout.addWidget(filters_widget)
+
+        # 右侧按钮区域
+        buttons_layout = QVBoxLayout()
+        buttons_layout.setContentsMargins(0, 0, 0, 0)
         self.search_btn = QPushButton("查询")
         self.search_btn.setObjectName("searchButton")
-        self.search_btn.setFixedWidth(80)
-        filter_layout.addWidget(self.search_btn)
+        self.search_btn.setFixedSize(80, 32)
         
         self.reset_btn = QPushButton("重置")
         self.reset_btn.setObjectName("resetButton")
-        self.reset_btn.setFixedWidth(80)
-        filter_layout.addWidget(self.reset_btn)
+        self.reset_btn.setFixedSize(80, 32)
         
-        # 添加弹性空间
-        filter_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
+        buttons_layout.addWidget(self.search_btn)
+        buttons_layout.addWidget(self.reset_btn)
+        buttons_layout.addStretch()
         
-        parent_layout.addWidget(filter_frame)
+        main_toolbar_layout.addLayout(buttons_layout)
+        main_toolbar_layout.addStretch()
+        
+        parent_layout.addWidget(toolbar_container)
         
         # 连接信号
         self.search_btn.clicked.connect(self.search_orders)
         self.reset_btn.clicked.connect(self.reset_filters)
+
+    def _create_date_range_picker(self, layout, label_text):
+        """辅助函数，用于创建带标签的日期范围选择器"""
+        layout.addWidget(QLabel(label_text))
+        start_date_edit = QDateEdit()
+        start_date_edit.setCalendarPopup(True)
+        start_date_edit.clear()
+        start_date_edit.setSpecialValueText("开始日期")
+        start_date_edit.setFixedWidth(120)
+        layout.addWidget(start_date_edit)
+        
+        layout.addWidget(QLabel("至"))
+        
+        end_date_edit = QDateEdit()
+        end_date_edit.setCalendarPopup(True)
+        end_date_edit.clear()
+        end_date_edit.setSpecialValueText("结束日期")
+        end_date_edit.setFixedWidth(120)
+        layout.addWidget(end_date_edit)
+        
+        # 添加间隔
+        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        layout.addSpacerItem(spacer)
+        
+        return start_date_edit, end_date_edit
         
     def setup_table(self, parent_layout):
-        """设置表格"""
-        self.table = QTableWidget()
+        """使用QTableView设置表格"""
+        self.table = QTableView()
         self.table.setObjectName("financeTable")
-        
-        # 设置列
-        headers = [
-            "序号", "客户单位", "产品名称", "型号规格", "产品定价", "实际售价", 
-            "数量", "单位", "订单金额", "销售提成", "主管提成", "经理提成",
-            "签单日期", "销售人", "订单状态", "到期日期", "操作"
-        ]
-        self.table.setColumnCount(len(headers))
-        self.table.setHorizontalHeaderLabels(headers)
-        
+        self.model = QStandardItemModel(self)
+        self.table.setModel(self.model)
+
         # 表格设置
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        
-        # 设置列宽策略
-        header = self.table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # 序号
-        header.resizeSection(0, 60)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 客户单位
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)  # 产品名称
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)  # 型号规格
-        header.resizeSection(3, 100)
-        for i in range(4, 12):  # 价格和提成列
-            header.setSectionResizeMode(i, QHeaderView.ResizeMode.Fixed)
-            header.resizeSection(i, 90)
-        header.setSectionResizeMode(12, QHeaderView.ResizeMode.Fixed)  # 签单日期
-        header.resizeSection(12, 100)
-        header.setSectionResizeMode(13, QHeaderView.ResizeMode.Fixed)  # 销售人
-        header.resizeSection(13, 80)
-        header.setSectionResizeMode(14, QHeaderView.ResizeMode.Fixed)  # 订单状态
-        header.resizeSection(14, 80)
-        header.setSectionResizeMode(15, QHeaderView.ResizeMode.Fixed)  # 到期日期
-        header.resizeSection(15, 100)
-        header.setSectionResizeMode(16, QHeaderView.ResizeMode.Fixed)  # 操作
-        header.resizeSection(16, 120)
+        self.table.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.table.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+        self.setup_table_headers()
         
         parent_layout.addWidget(self.table)
+
+    def setup_table_headers(self):
+        """设置表头和列宽"""
+        headers = [
+            "序号", "客户单位", "产品名称", "型号规格", "产品定价", "实际售价",
+            "数量", "单位", "订单金额", "销售提成", "主管提成", "经理提成",
+            "签单日期", "销售人", "订单状态", "到账日期", "操作"
+        ]
+        self.model.setHorizontalHeaderLabels(headers)
+        
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        
+        # 固定宽度
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        self.table.setColumnWidth(0, 50)
+        
+        # 可伸展列
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+
+        # 其他列使用交互式调整，并设置初始宽度
+        self.table.setColumnWidth(3, 100) # 型号规格
+        self.table.setColumnWidth(4, 90)  # 产品定价
+        self.table.setColumnWidth(5, 90)  # 实际售价
+        self.table.setColumnWidth(6, 60)  # 数量
+        self.table.setColumnWidth(7, 60)  # 单位
+        self.table.setColumnWidth(8, 90)  # 订单金额
+        self.table.setColumnWidth(9, 90)  # 销售提成
+        self.table.setColumnWidth(10, 90) # 主管提成
+        self.table.setColumnWidth(11, 90) # 经理提成
+        self.table.setColumnWidth(12, 110) # 签单日期
+        self.table.setColumnWidth(13, 80) # 销售人
+        self.table.setColumnWidth(14, 90) # 订单状态
+        self.table.setColumnWidth(15, 110) # 到账日期
+        self.table.setColumnWidth(16, 100) # 操作
         
     def setup_summary(self, parent_layout):
         """设置底部合计行"""
@@ -242,20 +278,6 @@ class FinanceView(QWidget):
             self.customers_data = get_customers() or []
             self.products_data = get_products() or []
             self.employees_data = get_employees() or []
-            
-            # 填充产品下拉框
-            self.product_combo.clear()
-            self.product_combo.addItem("全部", None)
-            for product in self.products_data:
-                self.product_combo.addItem(product.get("name", ""), product.get("id"))
-                
-            # 填充销售人员下拉框
-            self.sales_combo.clear()
-            self.sales_combo.addItem("全部", None)
-            for employee in self.employees_data:
-                if employee.get("role") == "sales":
-                    self.sales_combo.addItem(employee.get("name", ""), employee.get("id"))
-                    
         except Exception as e:
             print(f"加载基础数据错误: {e}")
             
@@ -269,79 +291,59 @@ class FinanceView(QWidget):
             print(f"加载订单数据错误: {e}")
             
     def populate_table(self):
-        """填充表格数据"""
-        self.table.setRowCount(len(self.orders_data))
-        
-        for row, order in enumerate(self.orders_data):
-            # 序号
-            self.table.setItem(row, 0, QTableWidgetItem(str(row + 1)))
+        pass
+        """使用QStandardItemModel填充表格数据"""
+        self.model.removeRows(0, self.model.rowCount())
+
+        for row_index, order in enumerate(self.orders_data):
+            # 订单项信息（假设一个订单只有一个产品）
+            order_item_data = order.get("order_items", [{}])[0]
+            product_info = self.get_product_info(order_item_data.get("product_id"))
             
-            # 客户单位
-            customer_name = self.get_customer_name(order.get("customer_id"))
-            self.table.setItem(row, 1, QTableWidgetItem(customer_name))
+            def format_decimal(value, default=0):
+                return f"{Decimal(value or default):.2f}"
             
-            # 订单项信息（假设一个订单只有一个产品，如果有多个需要特殊处理）
-            order_items = order.get("order_items", [])
-            if order_items:
-                item = order_items[0]  # 取第一个产品
-                product = self.get_product_info(item.get("product_id"))
+            def format_date(date_str):
+                if not date_str: return ""
+                return date_str.split("T")[0]
+
+            # 准备数据项
+            items = [
+                QStandardItem(str(row_index + 1)),
+                QStandardItem(self.get_customer_name(order.get("customer_id"))),
+                QStandardItem(product_info.get("name", "")),
+                QStandardItem(product_info.get("spec", "")),
+                QStandardItem(format_decimal(product_info.get('price'))), # 'price' is the base price
+                QStandardItem(format_decimal(order_item_data.get('unit_price'))),
+                QStandardItem(str(order_item_data.get("quantity", 0))),
+                QStandardItem(product_info.get("unit", "")),
+                QStandardItem(format_decimal(order.get('total_amount'))),
+                QStandardItem(format_decimal(product_info.get('sales_commission'))),
+                QStandardItem(format_decimal(product_info.get('manager_commission'))),
+                QStandardItem(format_decimal(product_info.get('director_commission'))),
+                QStandardItem(format_date(order.get("created_at"))),
+                QStandardItem(self.get_employee_name(order.get("sales_id"))),
+                QStandardItem(order.get("status", "")),
+                QStandardItem(format_date(order.get("payment_date"))),
+                QStandardItem() # Placeholder for button
+            ]
+            
+            # 设置文本居中
+            for i in [0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]:
+                items[i].setTextAlignment(Qt.AlignCenter)
                 
-                # 产品名称
-                self.table.setItem(row, 2, QTableWidgetItem(product.get("name", "")))
-                # 型号规格
-                self.table.setItem(row, 3, QTableWidgetItem(product.get("spec", "")))
-                # 产品定价
-                self.table.setItem(row, 4, QTableWidgetItem(f"{float(product.get('base_price', 0)):.2f}"))
-                # 实际售价
-                self.table.setItem(row, 5, QTableWidgetItem(f"{float(item.get('unit_price', 0)):.2f}"))
-                # 数量
-                self.table.setItem(row, 6, QTableWidgetItem(str(item.get("quantity", 0))))
-                # 单位
-                self.table.setItem(row, 7, QTableWidgetItem(product.get("unit", "")))
-                # 订单金额
-                self.table.setItem(row, 8, QTableWidgetItem(f"{float(order.get('total_amount', 0)):.2f}"))
-                # 销售提成
-                sales_commission = float(product.get('sales_commission', 0)) * int(item.get("quantity", 0))
-                self.table.setItem(row, 9, QTableWidgetItem(f"{sales_commission:.2f}"))
-                # 主管提成
-                manager_commission = float(product.get('manager_commission', 0)) * int(item.get("quantity", 0))
-                self.table.setItem(row, 10, QTableWidgetItem(f"{manager_commission:.2f}"))
-                # 经理提成
-                director_commission = float(product.get('director_commission', 0)) * int(item.get("quantity", 0))
-                self.table.setItem(row, 11, QTableWidgetItem(f"{director_commission:.2f}"))
-            else:
-                # 如果没有订单项，填充空值
-                for col in range(2, 12):
-                    self.table.setItem(row, col, QTableWidgetItem(""))
-            
-            # 签单日期
-            created_at = order.get("created_at", "")
-            if created_at:
-                date_str = created_at.split("T")[0] if "T" in created_at else created_at
-                self.table.setItem(row, 12, QTableWidgetItem(date_str))
-            else:
-                self.table.setItem(row, 12, QTableWidgetItem(""))
-                
-            # 销售人
-            sales_name = self.get_employee_name(order.get("sales_id"))
-            self.table.setItem(row, 13, QTableWidgetItem(sales_name))
-            
-            # 订单状态
-            self.table.setItem(row, 14, QTableWidgetItem(order.get("status", "")))
-            
-            # 到期日期
-            end_date = order.get("end_date", "")
-            if end_date:
-                date_str = end_date.split("T")[0] if "T" in end_date else end_date
-                self.table.setItem(row, 15, QTableWidgetItem(date_str))
-            else:
-                self.table.setItem(row, 15, QTableWidgetItem(""))
-                
+            self.model.appendRow(items)
+
             # 操作按钮
+            is_paid = order.get("status") in ["已付款", "已完成", "已发货", "部分付款"]
             action_btn = QPushButton("确认收款")
             action_btn.setObjectName("actionButton")
-            action_btn.clicked.connect(lambda checked, order_id=order.get("id"): self.confirm_payment(order_id))
-            self.table.setCellWidget(row, 16, action_btn)
+            action_btn.setEnabled(not is_paid)
+            if is_paid:
+                action_btn.setText("已收款")
+
+            action_btn.clicked.connect(lambda checked, o=order: self.confirm_payment(o.get("id")))
+            self.table.setIndexWidget(self.model.index(row_index, 16), action_btn)
             
     def get_customer_name(self, customer_id):
         """根据客户ID获取客户名称"""
@@ -391,49 +393,51 @@ class FinanceView(QWidget):
     def search_orders(self):
         """搜索订单"""
         try:
-            # 获取筛选条件
             params = {}
             
-            # 客户名称筛选
             customer_name = self.customer_name_input.text().strip()
             if customer_name:
                 params['customer_name'] = customer_name
                 
-            # 产品名称筛选
-            product_id = self.product_combo.currentData()
-            if product_id:
-                product_name = self.product_combo.currentText()
-                params['product_name'] = product_name
-                
-            # 订单状态筛选
-            status = self.status_combo.currentData()
-            if status:
-                params['status'] = status
-                
-            # 销售人员筛选
-            sales_id = self.sales_combo.currentData()
-            if sales_id:
-                params['sales_id'] = sales_id
-            
-            # 调用API获取筛选后的数据
+            if self.status_combo.currentIndex() > 0:
+                params['status'] = self.status_combo.currentText()
+
+            # 日期范围筛选
+            if self.sign_date_start_edit.date().isValid():
+                params['sign_date_start'] = self.sign_date_start_edit.date().toString(Qt.ISODate)
+            if self.sign_date_end_edit.date().isValid():
+                params['sign_date_end'] = self.sign_date_end_edit.date().toString(Qt.ISODate)
+
+            if self.effective_date_start_edit.date().isValid():
+                params['effective_date_start'] = self.effective_date_start_edit.date().toString(Qt.ISODate)
+            if self.effective_date_end_edit.date().isValid():
+                params['effective_date_end'] = self.effective_date_end_edit.date().toString(Qt.ISODate)
+
+            if self.expiry_date_start_edit.date().isValid():
+                params['expiry_date_start'] = self.expiry_date_start_edit.date().toString(Qt.ISODate)
+            if self.expiry_date_end_edit.date().isValid():
+                params['expiry_date_end'] = self.expiry_date_end_edit.date().toString(Qt.ISODate)
+
             self.orders_data = get_orders(params) or []
             self.populate_table()
             self.update_summary()
             
         except Exception as e:
             print(f"搜索订单时发生错误: {e}")
-            # 如果搜索失败，加载所有数据
             self.load_orders_data()
         
     def reset_filters(self):
         """重置筛选条件"""
         self.customer_name_input.clear()
-        self.product_combo.setCurrentIndex(0)
-        self.effective_date_combo.setCurrentIndex(0)
-        self.expire_date_combo.setCurrentIndex(0)
-        self.sign_date_combo.setCurrentIndex(0)
         self.status_combo.setCurrentIndex(0)
-        self.sales_combo.setCurrentIndex(0)
+        
+        self.sign_date_start_edit.clear()
+        self.sign_date_end_edit.clear()
+        self.effective_date_start_edit.clear()
+        self.effective_date_end_edit.clear()
+        self.expiry_date_start_edit.clear()
+        self.expiry_date_end_edit.clear()
+        
         self.load_orders_data()
         
     def confirm_payment(self, order_id):

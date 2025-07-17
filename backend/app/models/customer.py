@@ -28,12 +28,12 @@ class Customer(Base):
     status = Column(Enum(CustomerStatus), nullable=False, default=CustomerStatus.LEAD)
     
     # 关联销售负责人
-    sales_owner_id = Column(Integer, ForeignKey("employees.id"))
-    sales_owner = relationship("Employee", foreign_keys=[sales_owner_id], back_populates="sales_customers")
-    
+    sales_id = Column(Integer, ForeignKey("employees.id"))
+    sales = relationship("Employee", foreign_keys=[sales_id], back_populates="sales_customers")
+
     # 关联客服负责人
-    service_owner_id = Column(Integer, ForeignKey("employees.id"))
-    service_owner = relationship("Employee", foreign_keys=[service_owner_id], back_populates="service_customers")
+    service_id = Column(Integer, ForeignKey("employees.id"))
+    service = relationship("Employee", foreign_keys=[service_id], back_populates="service_customers")
 
     # 关联联系人
     contacts = relationship("Contact", back_populates="customer", cascade="all, delete-orphan")

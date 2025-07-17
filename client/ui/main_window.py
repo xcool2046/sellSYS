@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QStackedWidget, QFrame, QLabel
+    QPushButton, QStackedWidget, QFrame, QLabel, QSizePolicy
 )
 from PySide6.QtCore import Qt, QSize
 from .customer_view import CustomerView
@@ -16,7 +16,7 @@ from .sales_management_view import SalesManagementView
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("巨伟科技客户管理信息系统")
+        self.setWindowTitle("巨炜科技客户管理信息系统")
         self.setGeometry(100, 100, 1200, 800)
         
         # 设置窗口可调整大小
@@ -41,9 +41,15 @@ class MainWindow(QMainWindow):
         title_bar.setObjectName("titleBar")
         title_bar.setFixedHeight(60)
         title_layout = QHBoxLayout(title_bar)
-        title_label = QLabel("巨伟科技客户管理信息系统")
+        title_layout.setContentsMargins(0, 0, 0, 0)
+        title_layout.setSpacing(0)
+        
+        # 标题
+        title_label = QLabel("巨炜科技客户管理信息系统")
         title_label.setObjectName("titleLabel")
+        title_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         title_layout.addWidget(title_label)
+        
         main_layout.addWidget(title_bar)
 
         # --- 2. Main Content Area (Sidebar + Content) ---
@@ -83,6 +89,9 @@ class MainWindow(QMainWindow):
         # --- Add pages to the stack ---
         self.setup_pages()
         
+        # Set default page to customer management (index 1)
+        self.content_stack.setCurrentIndex(1)
+        
         # Connect buttons
     def _create_nav_button(self, text, index, layout):
         button = QPushButton(text)
@@ -91,8 +100,8 @@ class MainWindow(QMainWindow):
         button.clicked.connect(lambda: self.on_nav_button_clicked(index))
         layout.addWidget(button)
         self.nav_buttons[index] = button
-        # Set first button as default checked
-        if index == 0:
+        # Set customer management as default checked (index 1)
+        if index == 1:  # 客户管理
             button.setChecked(True)
 
     def on_nav_button_clicked(self, index):
@@ -111,9 +120,6 @@ class MainWindow(QMainWindow):
         data_view = QWidget()
         data_view_layout = QVBoxLayout(data_view)
         data_view_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        data_view_label = QLabel("本期不做")
-        data_view_label.setStyleSheet("font-size: 24px; color: #999;")
-        data_view_layout.addWidget(data_view_label)
         
         self.content_stack.addWidget(data_view)             # Index 0
         self.content_stack.addWidget(CustomerView())         # Index 1

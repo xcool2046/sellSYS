@@ -14,7 +14,7 @@ class ContactViewDialog(QDialog):
         self.form_layout = QFormLayout()
 
         # Widgets
-        self.company_name_label = QLabel(customer_data.get("company_name", "N/A"))
+        self.company_label = QLabel(customer_data.get("company", "N/A"))
         self.address_label = QLabel(customer_data.get("address", "N/A"))
         self.notes_text = QTextEdit(customer_data.get("notes", ""))
         self.notes_text.setReadOnly(True)
@@ -38,7 +38,7 @@ class ContactViewDialog(QDialog):
             self.contacts_layout.addWidget(QLabel("无联系人信息"))
 
         # Form Assembly
-        self.form_layout.addRow("客户单位:", self.company_name_label)
+        self.form_layout.addRow("客户单位:", self.company_label)
         self.form_layout.addRow("详细地址:", self.address_label)
         self.form_layout.addRow("客户备注:", self.notes_text)
         self.form_layout.addRow("联系人:", self.contacts_layout)

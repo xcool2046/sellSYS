@@ -1,14 +1,14 @@
 import requests
 from ..config import API_BASE_URL, API_TIMEOUT
 
-def get_customers(company_name=None, industry=None, province=None, city=None, status=None, sales_owner_id=None):
+def get_customers(company=None, industry=None, province=None, city=None, status=None, sales_id=None):
     """
     获取所有客户信息（支持筛选）
     """
     try:
         params = {}
-        if company_name:
-            params['company_name'] = company_name
+        if company:
+            params['company'] = company
         if industry:
             params['industry'] = industry
         if province:
@@ -17,8 +17,8 @@ def get_customers(company_name=None, industry=None, province=None, city=None, st
             params['city'] = city
         if status:
             params['status'] = status
-        if sales_owner_id:
-            params['sales_owner_id'] = sales_owner_id
+        if sales_id:
+            params['sales_id'] = sales_id
             
         response = requests.get(f"{API_BASE_URL}/customers/", params=params, timeout=API_TIMEOUT)
         response.raise_for_status()  # If the request fails, this will raise an HTTPError

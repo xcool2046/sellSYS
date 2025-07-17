@@ -1,60 +1,50 @@
 import sys
-import re
 from PySide6.QtWidgets import (
-    QApplication, QDialog, QVBoxLayout, QHBoxLayout, QFrame,
+    QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QComboBox, QFormLayout, QMessageBox
 )
 from PySide6.QtCore import Qt
 
 class EmployeeDialog(QDialog):
-    """添加或编辑员工的对话框"""
+    """添加或编辑员工的对话框（根据截图重构）"""
     def __init__(self, parent=None, employee=None, departments=None, groups=None):
         super().__init__(parent)
         self.employee = employee
         self.departments = departments or []
         self.groups = groups or []
         self.is_edit_mode = self.employee is not None
-        self.group_map = {} # Initialize group_map
+        self.group_map = {}
 
-        self.setWindowTitle("添加员工" if not self.is_edit_mode else "编辑员工")
-        self.setMinimumWidth(450)
+        title = "添加员工" if not self.is_edit_mode else "编辑员工"
+        self.setWindowTitle(title)
+        self.setMinimumWidth(400) # Adjusted width
 
+        # --- Main Layout ---
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 20)
-        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(15)
 
-        # --- 标题栏 ---
-        title_bar = QFrame()
-        title_bar.setObjectName("dialogTitleBar")
-        title_layout = QHBoxLayout(title_bar)
-        title_label = QLabel(self.windowTitle())
-        title_label.setObjectName("dialogTitleLabel")
-        title_layout.addWidget(title_label)
-        main_layout.addWidget(title_bar)
+        # --- Form Layout ---
+        form_layout = QFormLayout()
+        form_layout.setSpacing(15)
+        form_layout.setLabelAlignment(Qt.AlignRight)
 
-        content_layout = QFormLayout()
-        content_layout.setContentsMargins(20, 20, 20, 20)
-        content_layout.setSpacing(15)
-        content_layout.setLabelAlignment(Qt.AlignRight)
-
-        # --- 表单字段 ---
+        # --- Form Fields (matching screenshot) ---
         self.department_combo = QComboBox()
         self.group_combo = QComboBox()
         self.name_edit = QLineEdit()
         self.phone_edit = QLineEdit()
-        self.position_combo = QComboBox() # 职位
-        self.email_edit = QLineEdit() # 邮箱
+        self.position_combo = QComboBox()
         self.username_edit = QLineEdit()
-        self.password_label = QLabel("abc12345") # 初始密码
+        self.password_label = QLabel("abc12345")
 
-        content_layout.addRow("部门名称:", self.department_combo)
-        content_layout.addRow("部门分组:", self.group_combo)
-        content_layout.addRow("员工姓名:", self.name_edit)
-        content_layout.addRow("电子邮箱:", self.email_edit)
-        content_layout.addRow("电话号码:", self.phone_edit)
-        content_layout.addRow("岗位职务:", self.position_combo)
-        content_layout.addRow("登录账号:", self.username_edit)
-        content_layout.addRow("初始密码:", self.password_label)
+        form_layout.addRow("部门名称:", self.department_combo)
+        form_layout.addRow("部门分组:", self.group_combo)
+        form_layout.addRow("员工姓名:", self.name_edit)
+        form_layout.addRow("电话号码:", self.phone_edit)
+        form_layout.addRow("岗位职务:", self.position_combo)
+        form_layout.addRow("登录账号:", self.username_edit)
+        form_layout.addRow("初始密码:", self.password_label)
 
         # --- 填充下拉框数据 ---
         self.dept_map = {d['name']: d['id'] for d in self.departments}
@@ -72,14 +62,14 @@ class EmployeeDialog(QDialog):
             # 触发一次，加载初始部门对应的分组
             self.update_group_combo(self.department_combo.currentText())
 
-        main_layout.addLayout(content_layout)
+        main_layout.addLayout(form_layout)
 
-        # --- 按钮 ---
+        # --- Buttons ---
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         self.cancel_button = QPushButton("取消")
         self.save_button = QPushButton("保存")
-        self.save_button.setObjectName("primaryDialogButton")
+        self.save_button.setObjectName("primaryDialogButton") # For styling
         button_layout.addWidget(self.cancel_button)
         button_layout.addWidget(self.save_button)
 
@@ -91,26 +81,12 @@ class EmployeeDialog(QDialog):
 
     def accept(self):
         """重写 accept 方法以添加验证逻辑。"""
-        email = self.email_edit.text().strip()
-        
-        # 对新员工，邮箱是必填项
-        if not self.is_edit_mode and not email:
-            QMessageBox.warning(self, "输入错误", "电子邮箱不能为空。")
-            self.email_edit.setFocus()
-            return
-
-        # 基本的邮箱格式验证
-        if email and not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
-            QMessageBox.warning(self, "输入错误", "请输入有效的电子邮箱地址。")
-            self.email_edit.setFocus()
+        if not self.name_edit.text().strip():
+            QMessageBox.warning(self, "输入错误", "员工姓名不能为空。")
+            self.name_edit.setFocus()
             return
             
-        # 检查其他新员工的必填项
         if not self.is_edit_mode:
-            if not self.name_edit.text().strip():
-                QMessageBox.warning(self, "输入错误", "员工姓名不能为空。")
-                self.name_edit.setFocus()
-                return
             if not self.username_edit.text().strip():
                 QMessageBox.warning(self, "输入错误", "登录账号不能为空。")
                 self.username_edit.setFocus()
@@ -149,11 +125,15 @@ class EmployeeDialog(QDialog):
 
         self.name_edit.setText(self.employee.get("name", ""))
         self.phone_edit.setText(self.employee.get("phone", ""))
-        self.email_edit.setText(self.employee.get("email", ""))
         self.position_combo.setCurrentText(self.employee.get("position", ""))
         self.username_edit.setText(self.employee.get("username", ""))
-        self.password_label.setText("******" if self.is_edit_mode else "abc12345")
-        self.username_edit.setDisabled(self.is_edit_mode) # 登录账号不可编辑
+        
+        # UI/UX improvements for edit mode
+        if self.is_edit_mode:
+            self.password_label.setText("****** (如需修改请联系管理员)")
+            self.username_edit.setDisabled(True) # 登录账号不可编辑
+        else:
+            self.password_label.setText("abc12345")
         
 
     def get_data(self):
@@ -172,7 +152,6 @@ class EmployeeDialog(QDialog):
         
         data = {
             "name": self.name_edit.text().strip(),
-            "email": self.email_edit.text().strip(),
             "phone": self.phone_edit.text().strip(),
             "position": position,
             "role": role_map.get(position, "sales"), # Default to sales

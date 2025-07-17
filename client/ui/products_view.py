@@ -1,13 +1,6 @@
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QPushButton,
-    QTableView,
-    QHBoxLayout,
-    QSpacerItem,
-    QSizePolicy,
-    QHeaderView,
-    QMessageBox,
+    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTableView, QLineEdit,
+    QHeaderView, QMessageBox
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem
 from PySide6.QtCore import Qt
@@ -23,29 +16,54 @@ class ProductsView(QWidget):
 
         # --- Layouts ---
         main_layout = QVBoxLayout(self)
-        top_bar_layout = QHBoxLayout()
-        
-        # --- Widgets ---
-        self.add_product_button = QPushButton("➕ 添加产品")
-        self.table_view = QTableView()
-        
-        # --- Top Bar ---
-        top_bar_layout.addWidget(self.add_product_button)
-        top_bar_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
-        
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(10)
+
+        # --- Toolbar (Filters and Actions) ---
+        toolbar_container = QWidget()
+        toolbar_container.setObjectName("toolbarContainer")
+        toolbar_layout = QHBoxLayout(toolbar_container)
+        toolbar_layout.setContentsMargins(0, 0, 0, 0)
+        toolbar_layout.setSpacing(10)
+
+        # --- Filter Widgets ---
+        self.name_filter = QLineEdit()
+        self.name_filter.setPlaceholderText("产品名称")
+        self.name_filter.setObjectName("filterInput")
+        toolbar_layout.addWidget(self.name_filter)
+
+        self.search_button = QPushButton("查询")
+        self.search_button.setObjectName("searchButton")
+        toolbar_layout.addWidget(self.search_button)
+
+        self.reset_button = QPushButton("重置")
+        self.reset_button.setObjectName("resetButton")
+        toolbar_layout.addWidget(self.reset_button)
+
+        toolbar_layout.addStretch(1)
+
+        # --- Action Buttons ---
+        self.add_product_button = QPushButton("添加产品")
+        self.add_product_button.setObjectName("productAddButton")
+        toolbar_layout.addWidget(self.add_product_button)
+
         # --- Table View ---
+        self.table_view = QTableView()
         self.model = QStandardItemModel()
         self.table_view.setModel(self.model)
         self.table_view.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
-
+        self.table_view.setAlternatingRowColors(True)
+        
         # --- Assembly ---
-        main_layout.addLayout(top_bar_layout)
+        main_layout.addWidget(toolbar_container)
         main_layout.addWidget(self.table_view)
         
         # --- Connections ---
         self.add_product_button.clicked.connect(self.handle_add_product)
+        self.search_button.clicked.connect(self.refresh_data)
+        self.reset_button.clicked.connect(self._on_reset_clicked)
         
         # --- Initialization ---
         self.setup_table_headers()
@@ -62,7 +80,8 @@ class ProductsView(QWidget):
     def load_data(self):
         """从API加载数据并填充表格"""
         self.model.removeRows(0, self.model.rowCount())
-        self.products_data = products_api.get_products()
+        name = self.name_filter.text().strip() or None
+        self.products_data = products_api.get_products(name=name) or []
         if not self.products_data:
             self.products_data = []
             return
@@ -88,18 +107,26 @@ class ProductsView(QWidget):
             delete_button.setProperty("product_id", product["id"])
             edit_button.setProperty("product_row", i)
             delete_button.setProperty("product_row", i)
+            edit_button.setObjectName("tableEditButton")
+            delete_button.setObjectName("tableDeleteButton")
             edit_button.clicked.connect(self.handle_edit_product)
             delete_button.clicked.connect(self.handle_delete_product)
 
             button_layout = QHBoxLayout()
+            button_layout.setSpacing(5)
+            button_layout.setContentsMargins(5, 0, 5, 0)
             button_layout.addWidget(edit_button)
             button_layout.addWidget(delete_button)
-            button_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             button_container = QWidget()
             button_container.setLayout(button_layout)
             
             self.table_view.setIndexWidget(self.model.index(i, 9), button_container)
 
+    def _on_reset_clicked(self):
+        """重置所有筛选条件"""
+        self.name_filter.clear()
+        self.refresh_data()
+    
     def refresh_data(self):
         """刷新数据"""
         self.load_data()

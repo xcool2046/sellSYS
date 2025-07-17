@@ -1,8 +1,8 @@
 from PySide6.QtCore import Qt, QDateTime, QDate
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                              QComboBox, QLineEdit, QPushButton, QTableView,
-                             QHeaderView, QMessageBox, QSplitter)
-from PySide6.QtGui import QStandardItemModel, QStandardItem, QColor
+                             QHeaderView, QMessageBox, QDateEdit)
+from PySide6.QtGui import QStandardItemModel, QStandardItem
 from ..api import orders, customers, products, employees
 from datetime import datetime
 from ..schemas.product import Product
@@ -18,148 +18,100 @@ class OrderView(QWidget):
         self.load_data()
         
     def setup_ui(self):
-        layout = QVBoxLayout()
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(10)
-        
-        # 顶部筛选栏
-        filter_layout = QHBoxLayout()
-        filter_layout.setSpacing(10)
-        
-        # 输入客户名称
-        filter_layout.addWidget(QLabel("输入客户名称"))
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(10)
+
+        # --- Toolbar (Filters and Actions) ---
+        toolbar_container = QWidget()
+        toolbar_container.setObjectName("toolbarContainer")
+        toolbar_layout = QHBoxLayout(toolbar_container)
+        toolbar_layout.setContentsMargins(0, 0, 0, 0)
+        toolbar_layout.setSpacing(10)
+
         self.customer_search = QLineEdit()
-        self.customer_search.setPlaceholderText("输入客户名称")
-        self.customer_search.setFixedWidth(150)
-        filter_layout.addWidget(self.customer_search)
-        
-        # 产品名称
-        filter_layout.addWidget(QLabel("产品名称"))
+        self.customer_search.setPlaceholderText("客户名称")
+        toolbar_layout.addWidget(self.customer_search)
+
         self.product_combo = QComboBox()
-        self.product_combo.setFixedWidth(120)
-        self.product_combo.addItem("全部")
-        filter_layout.addWidget(self.product_combo)
+        self.product_combo.addItem("产品名称")
+        toolbar_layout.addWidget(self.product_combo)
         
-        # 生效日期
-        filter_layout.addWidget(QLabel("生效日期"))
-        self.effective_date_combo = QComboBox()
-        self.effective_date_combo.setFixedWidth(120)
-        self.effective_date_combo.addItem("全部")
-        filter_layout.addWidget(self.effective_date_combo)
+        self.start_date_edit = QDateEdit(self)
+        self.start_date_edit.setCalendarPopup(True)
+        self.start_date_edit.setSpecialValueText("生效日期")
+        self.start_date_edit.clear() # Display placeholder
+        toolbar_layout.addWidget(self.start_date_edit)
+
+        self.end_date_edit = QDateEdit(self)
+        self.end_date_edit.setCalendarPopup(True)
+        self.end_date_edit.setSpecialValueText("到期日期")
+        self.end_date_edit.clear() # Display placeholder
+        toolbar_layout.addWidget(self.end_date_edit)
+
+        self.sign_date_edit = QDateEdit(self)
+        self.sign_date_edit.setCalendarPopup(True)
+        self.sign_date_edit.setSpecialValueText("签单日期")
+        self.sign_date_edit.clear() # Display placeholder
+        toolbar_layout.addWidget(self.sign_date_edit)
         
-        # 到期日期
-        filter_layout.addWidget(QLabel("到期日期"))
-        self.expiry_date_combo = QComboBox()
-        self.expiry_date_combo.setFixedWidth(120)
-        self.expiry_date_combo.addItem("全部")
-        filter_layout.addWidget(self.expiry_date_combo)
-        
-        # 签单日期
-        filter_layout.addWidget(QLabel("签单日期"))
-        self.sign_date_combo = QComboBox()
-        self.sign_date_combo.setFixedWidth(120)
-        self.sign_date_combo.addItem("全部")
-        filter_layout.addWidget(self.sign_date_combo)
-        
-        # 订单状态
-        filter_layout.addWidget(QLabel("订单状态"))
         self.status_combo = QComboBox()
-        self.status_combo.setFixedWidth(120)
-        self.status_combo.addItems(["全部", "待收款", "已收款", "已到期"])
-        filter_layout.addWidget(self.status_combo)
+        self.status_combo.addItems(["订单状态", "待收款", "已收款", "已到期"])
+        toolbar_layout.addWidget(self.status_combo)
         
-        # 销售人
-        filter_layout.addWidget(QLabel("销售人"))
         self.sales_combo = QComboBox()
-        self.sales_combo.setFixedWidth(120)
-        self.sales_combo.addItem("全部")
-        filter_layout.addWidget(self.sales_combo)
+        self.sales_combo.addItem("销售人")
+        toolbar_layout.addWidget(self.sales_combo)
         
-        # 查询按钮
         self.search_btn = QPushButton("查询")
-        self.search_btn.setFixedSize(80, 28)
-        self.search_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #1976d2;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #1565c0;
-            }
-        """)
-        filter_layout.addWidget(self.search_btn)
+        self.search_btn.setObjectName("searchButton")
+        toolbar_layout.addWidget(self.search_btn)
         
-        # 重置按钮
         self.reset_btn = QPushButton("重置")
-        self.reset_btn.setFixedSize(80, 28)
-        self.reset_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #757575;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #616161;
-            }
-        """)
-        filter_layout.addWidget(self.reset_btn)
+        self.reset_btn.setObjectName("resetButton")
+        toolbar_layout.addWidget(self.reset_btn)
+
+        toolbar_layout.addStretch()
         
-        filter_layout.addStretch()
+        self.add_order_btn = QPushButton("创建订单")
+        self.add_order_btn.setObjectName("addButton")
+        toolbar_layout.addWidget(self.add_order_btn)
         
-        self.add_order_btn = QPushButton("➕ 创建订单")
-        self.add_order_btn.setFixedSize(100, 28)
-        self.add_order_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #4CAF50; /* Green */
-                color: white;
-                border: none;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #45a049;
-            }
-        """)
-        filter_layout.addWidget(self.add_order_btn)
+        main_layout.addWidget(toolbar_container)
         
-        layout.addLayout(filter_layout)
+        # 主表格
+        self.table_view = QTableView()
+        self.model = QStandardItemModel()
+        self.table_view.setModel(self.model)
+        self.setup_table_headers(self.model)
+        self.setup_table_style(self.table_view)
+        main_layout.addWidget(self.table_view)
         
-        # 使用分割器来创建上下两个表格
-        splitter = QSplitter(Qt.Vertical)
+        # 合计栏
+        summary_layout = QHBoxLayout()
+        summary_layout.setContentsMargins(0, 5, 10, 5)
         
-        # 上表格
-        self.upper_table = QTableView()
-        self.upper_model = QStandardItemModel()
-        self.upper_table.setModel(self.upper_model)
-        self.setup_table_headers(self.upper_model)
-        self.setup_table_style(self.upper_table)
-        splitter.addWidget(self.upper_table)
+        self.total_label = QLabel("合计")
+        summary_layout.addWidget(self.total_label)
         
-        # 下表格  
-        self.lower_table = QTableView()
-        self.lower_model = QStandardItemModel()
-        self.lower_table.setModel(self.lower_model)
-        self.setup_table_headers(self.lower_model)
-        self.setup_table_style(self.lower_table)
-        splitter.addWidget(self.lower_table)
+        summary_layout.addStretch(2)
         
-        # 设置分割器初始比例
-        splitter.setSizes([300, 400])
+        self.total_actual_price_label = QLabel("实际售价: 0.00")
+        summary_layout.addWidget(self.total_actual_price_label)
         
-        layout.addWidget(splitter)
+        summary_layout.addStretch(1)
         
-        # 合计行
-        total_layout = QHBoxLayout()
-        total_layout.addWidget(QLabel("合计"))
-        total_layout.addStretch()
-        layout.addLayout(total_layout)
+        self.total_quantity_label = QLabel("数量: 0")
+        summary_layout.addWidget(self.total_quantity_label)
         
-        self.setLayout(layout)
+        summary_layout.addStretch(1)
+        
+        self.total_amount_label = QLabel("订单金额: 0.00")
+        summary_layout.addWidget(self.total_amount_label)
+        
+        summary_layout.addStretch(10) # Add more stretch to push to the left
+        
+        main_layout.addLayout(summary_layout)
         
         # 连接信号
         self.search_btn.clicked.connect(self.search_orders)
@@ -167,11 +119,12 @@ class OrderView(QWidget):
         self.add_order_btn.clicked.connect(self.open_create_order_dialog)
         
     def setup_table_headers(self, model):
-        """设置表格列头 - 两个表格使用相同的列"""
+        """设置表格列头"""
         headers = [
-            "序号", "客户单位", "产品名称", "型号规格", 
-            "产品定价", "实际售价", "数量", "单位", 
-            "订单金额", "生效日期", "到期日期", "签单时间"
+            "序号", "客户单位", "产品名称", "型号规格",
+            "产品定价", "实际售价", "数量", "单位",
+            "订单金额", "生效日期", "到期日期", "签单时间",
+            "销售人", "订单状态"
         ]
         model.setHorizontalHeaderLabels(headers)
         
@@ -197,6 +150,8 @@ class OrderView(QWidget):
         header.resizeSection(9, 100)  # 生效日期
         header.resizeSection(10, 100) # 到期日期
         header.resizeSection(11, 150) # 签单时间
+        header.resizeSection(12, 100) # 销售人
+        header.resizeSection(13, 100) # 订单状态
         
     def load_data(self):
         """加载数据"""
@@ -207,11 +162,13 @@ class OrderView(QWidget):
             # 加载产品列表
             product_list = products.get_products() or []
             self.products = [Product(**p) for p in product_list]
+            # Skip placeholder "产品名称"
             for product in self.products:
                 self.product_combo.addItem(product.name)
                 
             # 加载员工列表
             self.employees = employees.get_employees() or []
+            # Skip placeholder "销售人"
             for employee in self.employees:
                 self.sales_combo.addItem(employee['name'])
                 
@@ -222,113 +179,69 @@ class OrderView(QWidget):
             QMessageBox.critical(self, "错误", f"加载数据失败: {str(e)}")
             
     def load_orders(self, params=None):
-        """加载订单数据到两个表格"""
+        """加载订单数据到表格"""
         try:
             order_list = orders.get_orders(params=params) or []
             
-            # 清空表格
-            self.upper_model.setRowCount(0)
-            self.lower_model.setRowCount(0)
+            self.model.setRowCount(0)
             
-            # 用于统计的变量
+            total_actual_price = 0.0
             total_quantity = 0
             total_amount = 0.0
             
-            # 添加数据到两个表格
             for idx, order in enumerate(order_list):
-                # 获取关联数据
                 customer_name = self.get_customer_name(order.get('customer_id'))
                 product = self.get_product(order.get('product_id'))
                 employee_name = self.get_employee_name(order.get('sales_person_id'))
                 
-                # 计算订单金额
                 actual_price = order.get('actual_price', 0)
                 quantity = order.get('quantity', 0)
                 order_amount = actual_price * quantity
+                
+                total_actual_price += actual_price
                 total_quantity += quantity
                 total_amount += order_amount
                 
-                # 格式化日期
-                effective_date = order.get('effective_date', '')
-                if effective_date and effective_date != '':
+                def format_date(date_str, fmt="%Y-%m-%d"):
+                    if not date_str:
+                        return ""
                     try:
-                        effective_date = datetime.fromisoformat(effective_date.replace('Z', '+00:00')).strftime("%Y-%m-%d")
-                    except:
-                        pass
-                        
-                expiry_date = order.get('expiry_date', '')
-                if expiry_date and expiry_date != '':
-                    try:
-                        expiry_date = datetime.fromisoformat(expiry_date.replace('Z', '+00:00')).strftime("%Y-%m-%d")
-                    except:
-                        pass
-                        
-                sign_time = order.get('sign_time', '')
-                if sign_time and sign_time != '':
-                    try:
-                        sign_time = datetime.fromisoformat(sign_time.replace('Z', '+00:00')).strftime("%Y-%m-%d %H:%M:%S")
-                    except:
-                        pass
-                
-                # 创建行数据
+                        return datetime.fromisoformat(date_str.replace('Z', '+00:00')).strftime(fmt)
+                    except (ValueError, TypeError):
+                        return date_str
+
+                effective_date = format_date(order.get('effective_date'))
+                expiry_date = format_date(order.get('expiry_date'))
+                sign_time = format_date(order.get('sign_time'), fmt="%Y-%m-%d %H:%M:%S")
+
                 row_data = [
-                    str(idx + 1),  # 序号
-                    customer_name,  # 客户单位
-                    product.name if product else "",  # 产品名称
-                    product.specifications if product else "",  # 型号规格
-                    f"{product.list_price:.2f}" if product else "0.00",  # 产品定价
-                    f"{actual_price:.2f}",  # 实际售价
-                    str(quantity),  # 数量
-                    order.get('unit', ''),  # 单位
-                    f"{order_amount:.2f}",  # 订单金额
-                    effective_date,  # 生效日期
-                    expiry_date,  # 到期日期
-                    sign_time  # 签单时间
+                    QStandardItem(str(idx + 1)),
+                    QStandardItem(customer_name),
+                    QStandardItem(product.name if product else ""),
+                    QStandardItem(product.specifications if product else ""),
+                    QStandardItem(f"{product.list_price:.2f}" if product else "0.00"),
+                    QStandardItem(f"{actual_price:.2f}"),
+                    QStandardItem(str(quantity)),
+                    QStandardItem(order.get('unit', '')),
+                    QStandardItem(f"{order_amount:.2f}"),
+                    QStandardItem(effective_date),
+                    QStandardItem(expiry_date),
+                    QStandardItem(sign_time),
+                    QStandardItem(employee_name),
+                    QStandardItem(order.get('status', ''))
                 ]
                 
-                # 添加到上表格
-                upper_row = []
-                for i, value in enumerate(row_data):
-                    item = QStandardItem(value)
+                for i, item in enumerate(row_data):
                     item.setTextAlignment(Qt.AlignCenter)
-                    # 数字列右对齐
-                    if i in [4, 5, 6, 8]:  # 产品定价、实际售价、数量、订单金额
+                    if i in [4, 5, 6, 8]:  # Numeric columns
                         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                    upper_row.append(item)
-                self.upper_model.appendRow(upper_row)
-                
-                # 添加到下表格
-                lower_row = []
-                for i, value in enumerate(row_data):
-                    item = QStandardItem(value)
-                    item.setTextAlignment(Qt.AlignCenter)
-                    # 数字列右对齐
-                    if i in [4, 5, 6, 8]:  # 产品定价、实际售价、数量、订单金额
-                        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                    lower_row.append(item)
-                self.lower_model.appendRow(lower_row)
-            
-            # 在下表格添加合计行
-            total_row = []
-            for i in range(12):
-                if i == 0:
-                    item = QStandardItem("合计")
-                elif i == 6:  # 数量列
-                    item = QStandardItem(str(total_quantity))
-                    item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                elif i == 8:  # 订单金额列
-                    item = QStandardItem(f"{total_amount:.2f}")
-                    item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                else:
-                    item = QStandardItem("")
-                
-                item.setTextAlignment(Qt.AlignCenter)
-                # 设置合计行背景色
-                item.setBackground(QColor("#f5f5f5"))
-                total_row.append(item)
-                
-            self.lower_model.appendRow(total_row)
-            
+
+                self.model.appendRow(row_data)
+
+            self.total_actual_price_label.setText(f"实际售价: {total_actual_price:.2f}")
+            self.total_quantity_label.setText(f"数量: {total_quantity}")
+            self.total_amount_label.setText(f"订单金额: {total_amount:.2f}")
+
         except Exception as e:
             QMessageBox.critical(self, "错误", f"加载订单数据失败: {str(e)}")
             
@@ -354,22 +267,30 @@ class OrderView(QWidget):
         return ""
         
     def search_orders(self):
-        """搜索订单"""
+        """根据筛选条件搜索订单"""
         params = {}
+        
         customer_name = self.customer_search.text().strip()
         if customer_name:
             params['customer_name'] = customer_name
             
-        product_name = self.product_combo.currentText()
         if self.product_combo.currentIndex() > 0:
-            params['product_name'] = product_name
+            params['product_name'] = self.product_combo.currentText()
+
+        if self.start_date_edit.date().isValid():
+            params['effective_date_start'] = self.start_date_edit.date().toString(Qt.ISODate)
+
+        if self.end_date_edit.date().isValid():
+            params['expiry_date_end'] = self.end_date_edit.date().toString(Qt.ISODate)
+
+        if self.sign_date_edit.date().isValid():
+            params['sign_date'] = self.sign_date_edit.date().toString(Qt.ISODate)
             
-        status = self.status_combo.currentText()
         if self.status_combo.currentIndex() > 0:
-            params['status'] = status
+            params['status'] = self.status_combo.currentText()
             
-        sales_name = self.sales_combo.currentText()
         if self.sales_combo.currentIndex() > 0:
+            sales_name = self.sales_combo.currentText()
             selected_employee = next((emp for emp in self.employees if emp['name'] == sales_name), None)
             if selected_employee:
                 params['sales_id'] = selected_employee['id']
@@ -380,9 +301,9 @@ class OrderView(QWidget):
         """重置筛选条件"""
         self.customer_search.clear()
         self.product_combo.setCurrentIndex(0)
-        self.effective_date_combo.setCurrentIndex(0)
-        self.expiry_date_combo.setCurrentIndex(0)
-        self.sign_date_combo.setCurrentIndex(0)
+        self.start_date_edit.clear()
+        self.end_date_edit.clear()
+        self.sign_date_edit.clear()
         self.status_combo.setCurrentIndex(0)
         self.sales_combo.setCurrentIndex(0)
         self.load_orders()

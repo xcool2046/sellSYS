@@ -6,9 +6,12 @@ def get_product(db: Session, product_id: int):
     """通过ID获取产品"""
     return db.query(models.Product).filter(models.Product.id == product_id).first()
 
-def get_products(db: Session, skip: int = 0, limit: int = 100):
-    """获取产品列表"""
-    return db.query(models.Product).offset(skip).limit(limit).all()
+def get_products(db: Session, name: str = None, skip: int = 0, limit: int = 100):
+    """获取产品列表, 可选择按名称筛选"""
+    query = db.query(models.Product)
+    if name:
+        query = query.filter(models.Product.name.contains(name))
+    return query.offset(skip).limit(limit).all()
 
 def create_product(db: Session, product: product_schema.ProductCreate):
     """创建新产品"""

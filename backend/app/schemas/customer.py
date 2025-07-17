@@ -28,16 +28,16 @@ class CustomerUpdate(BaseModel):
     website: Optional[str] = None
     scale: Optional[str] = None
     status: Optional[CustomerStatus] = None
-    sales_owner_id: Optional[int] = None
-    service_owner_id: Optional[int] = None
+    sales_id: Optional[int] = None
+    service_id: Optional[int] = None
 
 # 数据库返回模型
 class Customer(CustomerBase):
     id: int
-    sales_owner_id: Optional[int] = None
-    service_owner_id: Optional[int] = None
-    sales_owner_name: Optional[str] = None
-    service_owner_name: Optional[str] = None
+    sales_id: Optional[int] = None
+    service_id: Optional[int] = None
+    sales_name: Optional[str] = None # Calculated in the endpoint
+    service_name: Optional[str] = None # Calculated in the endpoint
     contacts: List[Contact] = []
     
     model_config = ConfigDict(from_attributes=True)

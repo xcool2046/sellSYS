@@ -43,14 +43,15 @@ class Employee(Base):
     # 反向关联到客户，一个销售可以有多个客户
     sales_customers = relationship(
         "Customer",
-        foreign_keys=[Customer.sales_owner_id],
-        back_populates="sales_owner"
+        foreign_keys=[Customer.sales_id],
+        back_populates="sales"
     )
     # 反向关联到客户，一个客服可以负责多个客户
     service_customers = relationship(
         "Customer",
-        foreign_keys=[Customer.service_owner_id],
-        back_populates="service_owner"
+        foreign_keys=[Customer.service_id],
+        back_populates="service",
+        post_update=True
     )
     
     # 销售人员关联的销售跟进

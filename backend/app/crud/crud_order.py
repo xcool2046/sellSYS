@@ -10,39 +10,51 @@ def get_order(db: Session, order_id: int):
     return db.query(models.Order).filter(models.Order.id == order_id).first()
 
 def get_orders(
-   db: Session,
-   customer_name: str = None,
-   product_name: str = None,
-   start_date: order_schema.datetime = None,
-   end_date: order_schema.datetime = None,
-   status: order_schema.OrderStatus = None,
-   sales_id: int = None,
-   skip: int = 0,
-   limit: int = 100
+    db: Session,
+    customer_name: str = None,
+    product_name: str = None,
+    status: order_schema.OrderStatus = None,
+    sales_id: int = None,
+    sign_date_start: order_schema.datetime = None,
+    sign_date_end: order_schema.datetime = None,
+    effective_date_start: order_schema.datetime = None,
+    effective_date_end: order_schema.datetime = None,
+    expiry_date_start: order_schema.datetime = None,
+    expiry_date_end: order_schema.datetime = None,
+    skip: int = 0,
+    limit: int = 100
 ):
-   """获取订单列表（带筛选）"""
-   query = db.query(models.Order).join(models.Customer)
+    """获取订单列表（支持更全面的筛选，包括日期范围）"""
+    query = db.query(models.Order).join(models.Customer)
 
-   if customer_name:
-       query = query.filter(models.Customer.company.ilike(f"%{customer_name}%"))
-   
-   if product_name:
-       # This requires joining through OrderItem to Product
-       query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{product_name}%"))
+    if customer_name:
+        query = query.filter(models.Customer.company.ilike(f"%{customer_name}%"))
 
-   if start_date:
-       query = query.filter(models.Order.start_date >= start_date)
-   
-   if end_date:
-       query = query.filter(models.Order.end_date <= end_date)
+    if product_name:
+        query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f"%{product_name}%"))
 
-   if status:
-       query = query.filter(models.Order.status == status)
+    if sign_date_start:
+        query = query.filter(db.func.date(models.Order.created_at) >= sign_date_start.date())
+    if sign_date_end:
+        query = query.filter(db.func.date(models.Order.created_at) <= sign_date_end.date())
 
-   if sales_id:
-       query = query.filter(models.Order.sales_id == sales_id)
+    if effective_date_start:
+        query = query.filter(models.Order.start_date >= effective_date_start.date())
+    if effective_date_end:
+        query = query.filter(models.Order.start_date <= effective_date_end.date())
 
-   return query.offset(skip).limit(limit).all()
+    if expiry_date_start:
+        query = query.filter(models.Order.end_date >= expiry_date_start.date())
+    if expiry_date_end:
+        query = query.filter(models.Order.end_date <= expiry_date_end.date())
+
+    if status:
+        query = query.filter(models.Order.status == status)
+
+    if sales_id:
+        query = query.filter(models.Order.sales_id == sales_id)
+
+    return query.offset(skip).limit(limit).all()
 
 def update_order_financials(db: Session, order_id: int, financials: order_schema.OrderFinancialUpdate):
     """更新订单的财务信息"""
@@ -81,7 +93,6 @@ def create_order(db: Session, order: order_schema.OrderCreate):
         order_number=str(uuid.uuid4()),
         customer_id=order.customer_id,
         sales_id=order.sales_id,
-        total_amount=total_amount,
         status=order.status
     )
     db.add(db_order)

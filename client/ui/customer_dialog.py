@@ -43,7 +43,7 @@ class CustomerDialog(QDialog):
         self.industry_type_layout.addWidget(self.rb_construction)
         self.industry_type_layout.addWidget(self.rb_other)
 
-        self.company_name_edit = QLineEdit()
+        self.company_edit = QLineEdit()
         self.province_combo = QComboBox()
         self.city_combo = QComboBox()
         self.address_edit = QLineEdit()
@@ -71,7 +71,7 @@ class CustomerDialog(QDialog):
 
         # --- Form Assembly ---
         self.form_layout.addRow("行业类别:", self.industry_type_layout)
-        self.form_layout.addRow("客户单位:", self.company_name_edit)
+        self.form_layout.addRow("客户单位:", self.company_edit)
         prov_city_layout = QHBoxLayout()
         prov_city_layout.addWidget(self.province_combo)
         prov_city_layout.addWidget(self.city_combo)
@@ -157,7 +157,7 @@ class CustomerDialog(QDialog):
             
         # 获取基本信息
         customer_data = {
-            "company": self.company_name_edit.text().strip(),
+            "company": self.company_edit.text().strip(),
             "industry": industry,
             "province": self.province_combo.currentData(),
             "city": self.city_combo.currentData(),
@@ -231,7 +231,7 @@ class CustomerDialog(QDialog):
             self.rb_other.setChecked(True)
             
         # 设置基本信息
-        self.company_name_edit.setText(self.customer_data.get("company_name", "") or self.customer_data.get("company", ""))
+        self.company_edit.setText(self.customer_data.get("company", "") or self.customer_data.get("company", ""))
         
         # 设置省份
         province = self.customer_data.get("province", "")

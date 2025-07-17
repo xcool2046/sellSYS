@@ -1,4 +1,5 @@
 import enum
+from decimal import Decimal
 from sqlalchemy import Column, Integer, String, Enum, ForeignKey, Text, DateTime, Numeric
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -21,7 +22,6 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     order_number = Column(String, unique=True, nullable=False, index=True)
-    total_amount = Column(Numeric(10, 2), nullable=False)
     paid_amount = Column(Numeric(10, 2), default=0.0)
     payment_date = Column(DateTime, nullable=True)
     status = Column(Enum(OrderStatus), nullable=False, default=OrderStatus.PENDING)
@@ -42,6 +42,12 @@ class Order(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
 class OrderItem(Base):
+    @property
+    def total_amount(self) -> Decimal:
+        """计算订单总金额"""
+        if not self.order_items:
+            return Decimal('0.0')
+        return sum(item.quantity * item.unit_price for item in self.order_items)
     """订单项模型"""
     __tablename__ = "order_items"
     __table_args__ = {'extend_existing': True}

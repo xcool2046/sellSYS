@@ -31,7 +31,7 @@ Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
-    title="巨蜂科技客户管理系统 API",
+    title="巨炜科技客户管理系统 API",
     description="一套完整的客户关系管理（CRM）解决方案",
     version="0.1.0",
 )

@@ -64,7 +64,7 @@ def get_sales_view_data(db: Session, skip: int = 0, limit: int = 100):
     ).outerjoin(
         order_count_sub, models.Customer.id == order_count_sub.c.customer_id
     ).outerjoin(
-        models.Employee, models.Customer.sales_owner_id == models.Employee.id
+        models.Employee, models.Customer.sales_id == models.Employee.id
     ).outerjoin(
         models.SalesFollow, models.Customer.id == models.SalesFollow.customer_id
     )

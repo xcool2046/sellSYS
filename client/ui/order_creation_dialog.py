@@ -99,17 +99,17 @@ class OrderCreationDialog(QDialog):
     def load_initial_data(self):
         """Fetches and populates initial data for combo boxes."""
         try:
-            customers = get_customers()
+            customers = get_customers() or []
             if customers and not isinstance(customers, dict):
                 for customer in customers:
-                    self.customer_combo.addItem(customer['company_name'], userData=customer['id'])
+                    self.customer_combo.addItem(customer['company'], userData=customer['id'])
             
-            self.products_data = get_products()
+            self.products_data = get_products() or []
             if self.products_data and not isinstance(self.products_data, dict):
                 for product in self.products_data:
                     self.product_combo.addItem(product['name'], userData=product['id'])
             
-            employees = get_employees()
+            employees = get_employees() or []
             if employees:
                 for employee in employees:
                     self.sales_combo.addItem(employee['name'], userData=employee['id'])

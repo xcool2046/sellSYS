@@ -1,35 +1,46 @@
+
 /* ==========================================================================
-   Global Styles - Light Theme
+   Global Styles - Modern Theme
    ========================================================================== */
 QWidget {
     font-family: 'Microsoft YaHei UI', 'Segoe UI', Arial, sans-serif;
     font-size: 14px;
     color: #333333; /* Default text color */
-    background-color: #ffffff; /* Ensure default background is white */
+    background-color: #F7F8FA; /* A very light grey for the main background */
 }
 
 QMainWindow, QDialog {
-    background-color: #ffffff; /* Pure white background for windows */
+    background-color: #F7F8FA;
 }
 
 /* ==========================================================================
    Main Window Structure
    ========================================================================== */
 #titleBar {
-    background-color: #0078D4; /* Blue title bar from prototype */
-    border-bottom: 1px solid #005a9e;
+    background-color: #2C3E50; /* A darker, more professional blue/grey */
+    border-bottom: none;
 }
 
 #titleLabel {
     color: #ffffff;
-    font-size: 22px;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 600; /* Semibold */
+    padding: 8px 24px;
+    background-color: transparent;
+}
+
+#userLabel {
+    color: #ffffff;
+    font-size: 16px;
     font-weight: bold;
-    padding-left: 20px;
+    padding: 2px 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
 }
 
 #navPanel {
-    background-color: #e4f0f9; /* Lighter blue side panel from prototype */
-    border-right: 1px solid #cccccc;
+    background-color: #ffffff; /* Clean white navigation panel */
+    border-right: 1px solid #EAECEE;
 }
 
 /* ==========================================================================
@@ -38,246 +49,257 @@ QMainWindow, QDialog {
 QPushButton#navButton {
     background-color: transparent;
     border: none;
-    color: #333333;
-    padding: 15px 25px;
+    color: #515A6E;
+    padding: 14px 24px;
     text-align: left;
-    font-size: 16px;
-    border-radius: 0px;
+    font-size: 15px;
+    border-radius: 4px; /* Add slight rounding */
     font-weight: 500;
+    margin: 4px 10px; /* Add margin for spacing */
 }
 
 QPushButton#navButton:hover {
-    background-color: #d4e8f7;
+    background-color: #F7F8FA;
 }
 
 QPushButton#navButton:checked {
-    background-color: #ffffff;
-    color: #0078D4;
+    background-color: #EAF3FF; /* Light blue for selection */
+    color: #2D8CF0;
     font-weight: bold;
-    border-right: 3px solid #0078D4;
 }
 
 /* ==========================================================================
    Settings View Specific Styles
    ========================================================================== */
 #settingsView {
-    background-color: #F5F5F5;
+    background-color: #ffffff; /* Match screenshot background */
 }
 
 #settingsNavBar {
     background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #EAECEE; /* A lighter separator line */
 }
 
+/* The custom button container for icon + text */
 QPushButton#settingsNavButton {
     background-color: transparent;
     border: none;
-    padding: 10px 15px;
-    text-align: left;
-    border-bottom: 3px solid transparent; /* Default transparent border */
+    border-bottom: 3px solid transparent; /* Placeholder for selection indicator */
+    padding: 10px 15px; /* Adjust padding */
+    text-align: center;
 }
 
 QPushButton#settingsNavButton:hover {
-    background-color: #f5f5f5;
+    background-color: #F7F8FA; /* Subtle hover effect */
 }
 
 QPushButton#settingsNavButton:checked {
-    color: #0078D4;
-    font-weight: bold;
-    border-bottom: 3px solid #0078D4; /* Blue underline when checked */
+    background-color: transparent;
+    border-bottom: 3px solid #2D8CF0; /* Blue underline for active tab */
 }
 
-/* Style for the text label inside the button */
+/* The icon label inside the button */
+QLabel#settingsNavIcon {
+    /* Icons will be colored programmatically if they are SVG, otherwise this is a fallback */
+}
+
+/* The text label inside the button */
 QLabel#settingsNavLabel {
-    color: #333333;
+    color: #515A6E;
     font-size: 14px;
+    font-weight: 500;
 }
 
 QPushButton#settingsNavButton:checked QLabel#settingsNavLabel {
-    color: #0078D4;
-    font-weight: bold;
+    color: #2D8CF0; /* Blue text for active tab */
+    font-weight: 600;
+}
+
+/* Separator line style */
+QFrame#separator {
+    background-color: #EAECEE;
+    max-height: 1px;
+    border: none;
 }
 
 /* ==========================================================================
    Content Area & General Widgets
    ========================================================================== */
-/* Set all content views to have a white background, except settings */
-QStackedWidget > QWidget:not(#settingsView) {
-    background-color: #ffffff;
+/* Set all content views to have a consistent background */
+QStackedWidget > QWidget {
+    background-color: #F7F8FA;
 }
 
-/* Ensure view containers within pages are also white */
+/* Container for views like customer, product, etc. */
 #customerView, #productView, #orderView, #salesFollowView, #serviceRecordView, #financeView {
-    background-color: #ffffff;
+    background-color: #F7F8FA;
 }
 
 QLabel {
-    color: #606266;
+    color: #515A6E; /* A softer black */
     padding: 2px;
 }
 
 QLineEdit, QComboBox, QDateEdit {
-    border: 1px solid #dcdfe6;
+    border: 1px solid #DCDFE6;
     border-radius: 4px;
-    padding: 8px 10px;
+    padding: 8px 12px;
     background-color: #fff;
-    min-height: 22px;
+    min-height: 20px; /* Slightly adjusted */
+    font-size: 14px;
 }
 
 QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
-    border-color: #409eff;
+    border-color: #2D8CF0;
 }
 
 QComboBox::drop-down {
-    border-left: 1px solid #dcdfe6;
+    border: none;
     width: 20px;
 }
+
+QComboBox::down-arrow {
+    image: url(data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-chevron-down' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>);
+    width: 12px;
+    height: 12px;
+}
+
 
 /* ==========================================================================
    Buttons
    ========================================================================== */
+/* Default Button Style */
 QPushButton {
     border-radius: 4px;
-    padding: 8px 18px;
+    padding: 8px 16px;
     font-size: 14px;
-    border: 1px solid #dcdfe6;
+    border: 1px solid #DCDFE6;
     background-color: #ffffff;
-    color: #606266;
-    min-width: 70px;
+    color: #515A6E;
+    min-width: 60px;
 }
 
 QPushButton:hover {
-    background-color: #ecf5ff;
-    color: #409eff;
-    border-color: #c6e2ff;
+    background-color: #F8F8F8;
+    border-color: #C0C4CC;
 }
 
 QPushButton:pressed {
-    background-color: #d9ecff;
+    background-color: #F1F1F1;
 }
 
-/* Primary buttons - blue background */
-/* General Add Button in Settings Tabs */
-QPushButton#addButton {
-    background-color: #0078D4;
+/* Primary Action Buttons (e.g., Add, Search) */
+QPushButton#customerAddButton, #searchButton, QPushButton#addButton {
+    background-color: #2D8CF0;
     color: #ffffff;
-    border: 1px solid #0078D4;
-    padding: 8px 20px;
+    border: 1px solid #2D8CF0;
+    font-weight: 500;
 }
 
-QPushButton#addButton:hover {
-    background-color: #005a9e;
-    border-color: #005a9e;
+QPushButton#customerAddButton:hover, #searchButton:hover, QPushButton#addButton:hover {
+    background-color: #57A3F3;
+    border-color: #57A3F3;
 }
 
-QPushButton#addButton:pressed {
-    background-color: #004578;
-    border-color: #004578;
+QPushButton#customerAddButton:pressed, #searchButton:pressed, QPushButton#addButton:pressed {
+    background-color: #2B85E4;
+    border-color: #2B85E4;
 }
 
-/* Success buttons - green */
-QPushButton[text="添加客户"], QPushButton[text="分配给客服"] {
-    background-color: #52c41a;
-    color: #ffffff;
-    border-color: #52c41a;
+/* Secondary Action Buttons (e.g., Assign) */
+QPushButton#customerAssignSalesButton, QPushButton#customerAssignServiceButton {
+    background-color: #ffffff;
+    color: #2D8CF0;
+    border: 1px solid #2D8CF0;
+    font-weight: 500;
 }
 
-QPushButton[text="添加客户"]:hover, QPushButton[text="分配给客服"]:hover {
-    background-color: #73d13d;
-    border-color: #73d13d;
+QPushButton#customerAssignSalesButton:hover, QPushButton#customerAssignServiceButton:hover {
+    background-color: #EAF3FF;
 }
 
-/* Warning buttons - orange */
-QPushButton[text="分配销售"] {
-    background-color: #fa8c16;
-    color: #ffffff;
-    border-color: #fa8c16;
+/* Tertiary/Reset Buttons */
+#resetButton {
+    background-color: transparent;
+    border: none;
+    color: #515A6E;
+    text-decoration: underline;
 }
 
-QPushButton[text="分配销售"]:hover {
-    background-color: #ffa940;
-    border-color: #ffa940;
-}
-
-/* Table action buttons */
+/* Table Action Buttons (Edit/Delete) */
+/* Table Action Buttons (Edit/Delete) */
 #tableEditButton, QPushButton[text="编辑"] {
-    background-color: #0078D4; /* Blue background */
-    color: #ffffff;
-    border: 1px solid #0078D4;
+    background-color: #409EFF;
+    color: white;
+    border: 1px solid #409EFF;
     border-radius: 4px;
-    padding: 5px 15px;
-    min-width: 60px;
-    font-size: 14px;
-    text-decoration: none;
+    padding: 5px 10px;
 }
 
 #tableEditButton:hover, QPushButton[text="编辑"]:hover {
-    background-color: #005a9e;
-    border-color: #005a9e;
-    text-decoration: none;
-}
-
-#tableEditButton:pressed, QPushButton[text="编辑"]:pressed {
-    background-color: #004578;
-    border-color: #004578;
-    text-decoration: none;
+    background-color: #66b1ff;
+    border-color: #66b1ff;
 }
 
 #tableDeleteButton, QPushButton[text="删除"] {
-    background-color: #6c757d; /* Dark grey background */
-    color: #ffffff;
-    border: 1px solid #6c757d;
+    background-color: #C0C4CC; /* Grey color to match screenshot */
+    color: white;
+    border: 1px solid #C0C4CC;
     border-radius: 4px;
-    padding: 5px 15px;
-    min-width: 60px;
-    font-size: 14px;
-    text-decoration: none;
+    padding: 5px 10px;
 }
 
 #tableDeleteButton:hover, QPushButton[text="删除"]:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-    text-decoration: none;
-}
-
-#tableDeleteButton:pressed, QPushButton[text="删除"]:pressed {
-    background-color: #545b62;
-    border-color: #4e555b;
-    text-decoration: none;
+    background-color: #AAB0B6;
+    border-color: #AAB0B6;
 }
 
 /* ==========================================================================
    Table View
    ========================================================================== */
 QTableView, #contentTable {
-    border: 1px solid #DDDDDD;
-    gridline-color: #DDDDDD;
+    border: 1px solid #EAECEE;
+    border-radius: 4px;
+    gridline-color: #EAECEE;
     background-color: #ffffff;
-    selection-background-color: #E5F3FF;
+    selection-background-color: #EAF3FF;
     selection-color: #333333;
-    alternate-background-color: #F9F9F9;
-    border-radius: 0;
+    alternate-background-color: #F7F8FA;
 }
 
 QTableView::item {
-    padding: 12px 8px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 10px;
+    border: none; /* Use gridline color instead */
+    border-bottom: 1px solid #EAECEE; /* Horizontal lines */
+    border-right: 1px solid #EAECEE; /* Vertical lines */
 }
 
-/* Table headers with blue background */
+/* Modern Table Header */
 QHeaderView::section {
-    background-color: #0078D4; /* Blue background */
-    color: #ffffff; /* White text */
-    padding: 12px 8px;
+    background-color: #2D8CF0; /* A darker, more professional blue */
+    color: white; /* White text */
+    padding: 12px 10px;
     border: none;
-    border-bottom: 1px solid #005a9e;
+    border-right: 1px solid #D6DBDF; /* Lighter border for header */
     font-weight: bold;
     font-size: 14px;
-    text-align: left;
 }
 
 QHeaderView::section:last {
     border-right: none;
+}
+
+#contactLinkButton {
+    background-color: transparent;
+    border: none;
+    color: #D32F2F;
+    text-decoration: underline;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+}
+#contactLinkButton:hover {
+    color: #E57373;
 }
 
 QTableCornerButton::section {
@@ -314,8 +336,8 @@ QTableView::indicator:indeterminate {
 
 /* Table row styling */
 QTableView::item:selected {
-    background-color: #e3f2fd;
-    color: #333333;
+    background-color: #d4e8f7; /* A slightly darker blue for selection */
+    color: #000000; /* Ensure text is black and visible */
 }
 
 QTableView::item:hover {
@@ -402,18 +424,22 @@ QFormLayout QLabel {
 /* ==========================================================================
    Special Styles
    ========================================================================== */
-/* Link-style buttons (for contact count) */
+/* Link-style buttons (e.g., for counts in tables) */
 QPushButton[flat="true"] {
     background-color: transparent;
     border: none;
-    color: #409eff;
-    text-decoration: underline;
+    color: #d32f2f; /* Red color for clickable numbers, as per screenshot */
+    text-decoration: none; /* No underline by default */
+    font-weight: bold;
+    font-size: 14px;
     padding: 0;
+    margin: 0;
     min-width: 20px;
 }
 
 QPushButton[flat="true"]:hover {
-    color: #66b1ff;
+    color: #e57373; /* Lighter red on hover */
+    text-decoration: underline;
 }
 
 /* Status labels */
@@ -480,109 +506,31 @@ QFrame[frameShape="4"] { /* QFrame::HLine = 4 */
 }
 
 /* ==========================================================================
-   Filter Section Styles - High Fidelity Design
+   Filter Section Styles - High Fidelity Design (DEPRECATED)
    ========================================================================== */
-#filterSection {
-    background-color: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
-}
+/*
+ * These specific styles for #filterInput, #filterCombo, and #resetButton
+ * are now handled by the more generic QLineEdit, QComboBox, and QPushButton
+ * styles defined above to ensure a unified look. The specific button
+ * colors are handled by their respective ID selectors.
+ * This section is left here as a comment for historical reference but is
+ * no longer active.
+*/
 
-/* Filter input field */
-#filterInput {
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 6px 12px;
-    background-color: #ffffff;
-    color: #333333;
-    font-size: 14px;
-    min-width: 200px;
-}
-
-#filterInput:focus {
-    border-color: #1890ff;
-    outline: none;
-}
-
-/* Filter combo boxes */
-#filterCombo {
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 6px 12px;
-    background-color: #ffffff;
-    color: #333333;
-    font-size: 14px;
-    min-width: 110px;
-}
-
-#filterCombo:hover {
-    border-color: #40a9ff;
-}
-
-#filterCombo:focus {
-    border-color: #1890ff;
-}
-
-#filterCombo::drop-down {
+/* ==========================================================================
+   Customer View Filter Container
+   ========================================================================== */
+#customerFilterContainer {
+    background-color: #ffffff; /* The container itself is white */
     border: none;
-    width: 20px;
-}
-
-#filterCombo::down-arrow {
-    image: none;
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid #8c8c8c;
-    margin-right: 5px;
-}
-
-/* Search button - blue style */
-#searchButton {
-    background-color: #1890ff;
-    color: #ffffff;
-    border: 1px solid #1890ff;
-    border-radius: 4px;
-    padding: 6px 20px;
-    font-size: 14px;
-    min-width: 70px;
-}
-
-#searchButton:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-}
-
-#searchButton:pressed {
-    background-color: #096dd9;
-    border-color: #096dd9;
-}
-
-/* Reset button - outline style */
-#resetButton {
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 6px 20px;
-    font-size: 14px;
-    min-width: 70px;
-}
-
-#resetButton:hover {
-    color: #1890ff;
-    border-color: #40a9ff;
-}
-
-#resetButton:pressed {
-    color: #096dd9;
-    border-color: #096dd9;
-    background-color: #f5f5f5;
+    border-radius: 0;
+    margin: 0;
+    padding: 0; /* Let the layout handle padding */
 }
 
 /* ==========================================================================
-   Finance View Specific Styles - 财务管理界面专用样式
-   ========================================================================== */
+    Finance View Specific Styles - 财务管理界面专用样式
+    ========================================================================== */
 
 /* Finance Tab Widget */
 #financeTabWidget {
@@ -869,4 +817,39 @@ QSizeGrip {
     background-color: transparent;
     width: 16px;
     height: 16px;
+}
+
+/* ==========================================================================
+   Sales Management View Specific Styles
+   ========================================================================== */
+/* "联系记录" button in table actions */
+#tableContactButton {
+    background-color: #2D8CF0; /* Blue */
+    color: white;
+    border: 1px solid #2D8CF0;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
+    min-width: 80px;
+}
+
+#tableContactButton:hover {
+    background-color: #57A3F3;
+    border-color: #57A3F3;
+}
+
+/* "订单记录" button in table actions */
+#tableOrderButton {
+    background-color: #19be6b; /* Green */
+    color: white;
+    border: 1px solid #19be6b;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
+    min-width: 80px;
+}
+
+#tableOrderButton:hover {
+    background-color: #47cb89;
+    border-color: #47cb89;
 }

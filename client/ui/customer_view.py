@@ -26,36 +26,37 @@ class CustomerView(QWidget):
 
         # --- Layouts ---
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-        
-        # --- Filter Section ---
-        filter_widget = QWidget()
-        filter_widget.setObjectName("filterSection")
-        filter_widget.setFixedHeight(70)
-        filter_layout = QHBoxLayout(filter_widget)
-        filter_layout.setContentsMargins(20, 15, 20, 15)
-        filter_layout.setSpacing(10)
-        
-        action_layout = QHBoxLayout()
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(10)
+
+        # --- Toolbar (Filters and Actions) ---
+        toolbar_container = QWidget()
+        toolbar_container.setObjectName("toolbarContainer")
+        toolbar_layout = QHBoxLayout(toolbar_container)
+        toolbar_layout.setContentsMargins(0, 0, 0, 0)
+        toolbar_layout.setSpacing(10)
 
         # --- Filter Widgets ---
         self.customer_name_filter = QLineEdit()
         self.customer_name_filter.setPlaceholderText("客户名称")
         self.customer_name_filter.setObjectName("filterInput")
-        
+        toolbar_layout.addWidget(self.customer_name_filter)
+
         self.industry_filter = QComboBox()
         self.industry_filter.addItem("行业类别", None)
         self.industry_filter.setObjectName("filterCombo")
-        
+        toolbar_layout.addWidget(self.industry_filter)
+
         self.province_filter = QComboBox()
         self.province_filter.addItem("省份", None)
         self.province_filter.setObjectName("filterCombo")
-        
+        toolbar_layout.addWidget(self.province_filter)
+
         self.city_filter = QComboBox()
         self.city_filter.addItem("城市", None)
         self.city_filter.setObjectName("filterCombo")
-        
+        toolbar_layout.addWidget(self.city_filter)
+
         self.status_filter = QComboBox()
         self.status_filter.addItem("联系状态", None)
         self.status_filter.addItem("潜在客户", "LEAD")
@@ -64,36 +65,36 @@ class CustomerView(QWidget):
         self.status_filter.addItem("成交客户", "WON")
         self.status_filter.addItem("流失客户", "LOST")
         self.status_filter.setObjectName("filterCombo")
-        
+        toolbar_layout.addWidget(self.status_filter)
+
         self.sales_filter = QComboBox()
         self.sales_filter.addItem("销售人", None)
         self.sales_filter.setObjectName("filterCombo")
-        
+        toolbar_layout.addWidget(self.sales_filter)
+
         self.search_button = QPushButton("查询")
         self.search_button.setObjectName("searchButton")
-        
+        toolbar_layout.addWidget(self.search_button)
+
         self.reset_button = QPushButton("重置")
         self.reset_button.setObjectName("resetButton")
-        
-        filter_layout.addWidget(self.customer_name_filter)
-        filter_layout.addWidget(self.industry_filter)
-        filter_layout.addWidget(self.province_filter)
-        filter_layout.addWidget(self.city_filter)
-        filter_layout.addWidget(self.status_filter)
-        filter_layout.addWidget(self.sales_filter)
-        filter_layout.addWidget(self.search_button)
-        filter_layout.addWidget(self.reset_button)
-        filter_layout.addStretch()
+        toolbar_layout.addWidget(self.reset_button)
 
-        # --- Action Widgets ---
-        self.add_customer_button = QPushButton("➕ 添加客户")
-        self.assign_sales_button = QPushButton("分配销售")
-        self.assign_service_button = QPushButton("分配客服")
+        # --- Spacer to push action buttons to the right ---
+        toolbar_layout.addStretch(1)
+
+        # --- Action Buttons ---
+        self.add_customer_button = QPushButton("添加客户")
+        self.add_customer_button.setObjectName("customerAddButton")
+        toolbar_layout.addWidget(self.add_customer_button)
         
-        action_layout.addWidget(self.add_customer_button)
-        action_layout.addWidget(self.assign_sales_button)
-        action_layout.addWidget(self.assign_service_button)
-        action_layout.addSpacerItem(QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum))
+        self.assign_sales_button = QPushButton("分配给销售")
+        self.assign_sales_button.setObjectName("customerAssignSalesButton")
+        toolbar_layout.addWidget(self.assign_sales_button)
+        
+        self.assign_service_button = QPushButton("分配给客服")
+        self.assign_service_button.setObjectName("customerAssignServiceButton")
+        toolbar_layout.addWidget(self.assign_service_button)
 
         # --- Table View ---
         self.table_view = QTableView()
@@ -103,21 +104,22 @@ class CustomerView(QWidget):
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table_view.clicked.connect(self._on_table_clicked)
-        self.table_view.setAlternatingRowColors(True)  # 启用斑马纹
+        self.table_view.setAlternatingRowColors(True)
+        self.table_view.setObjectName("customerTable")
         
-        # 连接模型数据变化信号
         self.model.itemChanged.connect(self._on_item_changed)
 
-        # --- Content Widget ---
-        content_widget = QWidget()
-        content_layout = QVBoxLayout(content_widget)
-        content_layout.setContentsMargins(20, 20, 20, 20)
-        content_layout.addLayout(action_layout)
-        content_layout.addWidget(self.table_view)
+        # --- Content Widget for Table with Margins ---
+        table_container = QWidget()
+        table_container.setObjectName("tableContainer")
+        table_layout = QVBoxLayout(table_container)
+        table_layout.setContentsMargins(0, 0, 0, 0)
+        table_layout.setSpacing(0)
+        table_layout.addWidget(self.table_view)
 
         # --- Assembly ---
-        main_layout.addWidget(filter_widget)
-        main_layout.addWidget(content_widget)
+        main_layout.addWidget(toolbar_container)
+        main_layout.addWidget(table_container)
 
         # --- Connections ---
         self.add_customer_button.clicked.connect(self._on_add_customer_clicked)
@@ -138,8 +140,29 @@ class CustomerView(QWidget):
             "客户备注", "客户状态", "销售", "客服", "创建时间", "操作"
         ]
         self.model.setHorizontalHeaderLabels(headers)
-        self.table_view.setColumnHidden(1, True) # Hide ID column
-        self.table_view.setColumnWidth(0, 40)  # 复选框列宽度
+        self.table_view.setColumnHidden(1, True)  # Hide ID column
+
+        # Set column widths for better layout
+        header = self.table_view.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive) # Allow manual resize
+        self.table_view.setColumnWidth(0, 40)    # Checkbox
+        self.table_view.setColumnWidth(2, 100)   # Industry
+        self.table_view.setColumnWidth(3, 100)   # Province
+        self.table_view.setColumnWidth(4, 100)   # City
+        self.table_view.setColumnWidth(6, 80)    # Contacts
+        self.table_view.setColumnWidth(8, 100)   # Status
+        self.table_view.setColumnWidth(9, 100)   # Sales
+        self.table_view.setColumnWidth(10, 100)  # Service
+        self.table_view.setColumnWidth(11, 150)  # Created At
+        self.table_view.setColumnWidth(12, 130)  # Actions
+
+        # Stretch the main columns
+        header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(7, QHeaderView.ResizeMode.Stretch)
+
+        # Center align headers
+        for i in range(self.model.columnCount()):
+            self.model.setHeaderData(i, Qt.Orientation.Horizontal, Qt.AlignmentFlag.AlignCenter, Qt.TextAlignmentRole)
 
     def load_filter_options(self):
         """加载筛选选项"""
@@ -152,7 +175,7 @@ class CustomerView(QWidget):
             self.sales_filter.addItem(emp_name, emp_id)
         
         # 获取所有客户数据以提取唯一的行业、省份、城市值
-        self.all_customers_data = customers_api.get_customers()
+        self.all_customers_data = customers_api.get_customers() or []
         
         if self.all_customers_data:
             # 提取唯一的行业
@@ -182,21 +205,21 @@ class CustomerView(QWidget):
 
     def refresh_data(self):
         # 获取筛选参数
-        company_name = self.customer_name_filter.text().strip() or None
+        company = self.customer_name_filter.text().strip() or None
         industry = self.industry_filter.currentData()
         province = self.province_filter.currentData()
         city = self.city_filter.currentData()
         status = self.status_filter.currentData()
-        sales_owner_id = self.sales_filter.currentData()
+        sales_id = self.sales_filter.currentData()
 
         # 获取客户数据（带筛选）
         self.customers_data = customers_api.get_customers(
-            company_name=company_name,
+            company=company,
             industry=industry,
             province=province,
             city=city,
             status=status,
-            sales_owner_id=sales_owner_id
+            sales_id=sales_id
         )
         
         self.model.removeRows(0, self.model.rowCount())
@@ -216,9 +239,8 @@ class CustomerView(QWidget):
             self.checkbox_items.append(checkbox_item)
             
             # Create a clickable item for contacts
+            # This will be replaced by a button later
             contacts_item = QStandardItem(str(contacts_count))
-            contacts_item.setForeground(QColor("blue"))
-            contacts_item.setToolTip("点击查看联系人")
 
             row_items = [
                 checkbox_item,
@@ -226,15 +248,29 @@ class CustomerView(QWidget):
                 QStandardItem(customer.get("industry", "N/A")),
                 QStandardItem(customer.get("province", "N/A")),
                 QStandardItem(customer.get("city", "N/A")),
-                QStandardItem(customer.get("company_name", "N/A")),
-                contacts_item,
+                QStandardItem(customer.get("company", "N/A")),
+                contacts_item, # Placeholder, will be replaced by a button
                 QStandardItem(customer.get("notes", "")),
                 QStandardItem(customer.get("status", "N/A")),
-                QStandardItem(self.employees_map.get(customer.get("sales_owner_id"), "未分配")),
-                QStandardItem(self.employees_map.get(customer.get("service_owner_id"), "未分配")),
+                QStandardItem(self.employees_map.get(customer.get("sales_id"), "未分配")),
+                QStandardItem(self.employees_map.get(customer.get("service_id"), "未分配")),
                 QStandardItem(customer.get("created_at", "").split("T")[0]),
             ]
+            
+            # Center align all items
+            for item in row_items:
+                if item: # Checkbox item might be None initially
+                    item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
             self.model.appendRow(row_items)
+
+            # --- Contact Link Button ---
+            contact_button = QPushButton(str(contacts_count))
+            contact_button.setObjectName("contactLinkButton")
+            contact_button.setProperty("customer_id", customer["id"])
+            contact_button.setCursor(Qt.CursorShape.PointingHandCursor)
+            contact_button.clicked.connect(self._on_contact_button_clicked)
+            self.table_view.setIndexWidget(self.model.index(i, 6), contact_button)
 
             # --- Action Buttons ---
             edit_button = QPushButton("编辑")
@@ -407,7 +443,7 @@ class CustomerView(QWidget):
         customer_data = self.customers_data[customer_row]
         
         # 获取客户的联系人信息
-        contacts = contacts_api.get_contacts_for_customer(customer_id)
+        contacts = contacts_api.get_contacts_for_customer(customer_id) or []
         
         # 打开编辑对话框
         dialog = CustomerDialog(self, customer_data, contacts)
@@ -430,7 +466,7 @@ class CustomerView(QWidget):
         customer_row = sender.property("customer_row")
         
         # 从当前数据中获取客户名称
-        customer_name = self.customers_data[customer_row].get("company_name", "")
+        customer_name = self.customers_data[customer_row].get("company", "")
         
         # 确认删除
         reply = QMessageBox.question(
@@ -451,16 +487,21 @@ class CustomerView(QWidget):
             else:
                 QMessageBox.warning(self, "失败", "客户删除失败，请重试。")
 
-    def _on_table_clicked(self, index):
-        # Check if the "Contacts" column was clicked
-        if index.column() == 6:  # 联系人列现在是第6列
-            customer_id = self.model.item(index.row(), 1).text()
-            customer_data = next((c for c in self.customers_data if str(c['id']) == customer_id), None)
+    def _on_contact_button_clicked(self):
+        """处理联系人链接按钮点击"""
+        sender = self.sender()
+        customer_id = sender.property("customer_id")
+        
+        customer_data = next((c for c in self.customers_data if str(c['id']) == customer_id), None)
+        
+        if customer_data:
+            contacts = contacts_api.get_contacts_for_customer(customer_id) or []
+            dialog = ContactViewDialog(customer_data, contacts, self)
+            dialog.exec()
             
-            if customer_data:
-                contacts = contacts_api.get_contacts_for_customer(customer_id)
-                dialog = ContactViewDialog(customer_data, contacts, self)
-                dialog.exec()
+    def _on_table_clicked(self, index):
+        # The logic for clicking on the contact count is now handled by _on_contact_button_clicked
+        pass
     
     def _on_reset_clicked(self):
         """重置所有筛选条件"""

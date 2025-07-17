@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+from datetime import date
 
 from ... import models, schemas
 from ...crud import crud_order
@@ -15,29 +16,37 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[schemas.Order])
 def read_orders(
-   db: Session = Depends(get_db),
-   skip: int = 0,
-   limit: int = 100,
-   customer_name: str = None,
-   product_name: str = None,
-   start_date: schemas.order.datetime = None,
-   end_date: schemas.order.datetime = None,
-   status: schemas.order.OrderStatus = None,
-   sales_id: int = None
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+    customer_name: Optional[str] = None,
+    product_name: Optional[str] = None,
+    status: Optional[schemas.order.OrderStatus] = None,
+    sales_id: Optional[int] = None,
+    sign_date_start: Optional[date] = None,
+    sign_date_end: Optional[date] = None,
+    effective_date_start: Optional[date] = None,
+    effective_date_end: Optional[date] = None,
+    expiry_date_start: Optional[date] = None,
+    expiry_date_end: Optional[date] = None
 ):
-   """读取订单列表（支持筛选）"""
-   orders = crud_order.get_orders(
-       db,
-       customer_name=customer_name,
-       product_name=product_name,
-       start_date=start_date,
-       end_date=end_date,
-       status=status,
-       sales_id=sales_id,
-       skip=skip,
-       limit=limit
-   )
-   return orders
+    """读取订单列表（支持更全面的筛选，包括日期范围）"""
+    orders = crud_order.get_orders(
+        db,
+        customer_name=customer_name,
+        product_name=product_name,
+        status=status,
+        sales_id=sales_id,
+        sign_date_start=sign_date_start,
+        sign_date_end=sign_date_end,
+        effective_date_start=effective_date_start,
+        effective_date_end=effective_date_end,
+        expiry_date_start=expiry_date_start,
+        expiry_date_end=expiry_date_end,
+        skip=skip,
+        limit=limit
+    )
+    return orders
 
 @router.put("/{order_id}/financials", response_model=schemas.Order)
 def update_order_financials(

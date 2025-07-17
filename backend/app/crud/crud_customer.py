@@ -6,9 +6,34 @@ def get_customer(db: Session, customer_id: int):
     """通过ID获取客户"""
     return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
 
-def get_customers(db: Session, skip: int = 0, limit: int = 100):
-    """获取客户列表"""
-    return db.query(models.Customer).offset(skip).limit(limit).all()
+def get_customers(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    company: str = None,
+    industry: str = None,
+    province: str = None,
+    city: str = None,
+    status: str = None,
+    sales_id: int = None,
+):
+    """获取客户列表并根据条件过滤"""
+    query = db.query(models.Customer)
+
+    if company:
+        query = query.filter(models.Customer.company.contains(company))
+    if industry:
+        query = query.filter(models.Customer.industry.contains(industry))
+    if province:
+        query = query.filter(models.Customer.province == province)
+    if city:
+        query = query.filter(models.Customer.city == city)
+    if status:
+        query = query.filter(models.Customer.status == status)
+    if sales_id:
+        query = query.filter(models.Customer.sales_id == sales_id)
+
+    return query.offset(skip).limit(limit).all()
 
 def create_customer(db: Session, customer: customer_schema.CustomerCreate):
     """创建新客户（包括联系人）"""

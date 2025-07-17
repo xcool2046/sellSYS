@@ -19,29 +19,34 @@ def read_customers(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    company_name: str = None,
+    company: str = None,
     industry: str = None,
     province: str = None,
     city: str = None,
     status: CustomerStatus = None,
-    sales_owner_id: int = None,
+    sales_id: int = None,
 ):
-    query = db.query(models.Customer)
-    if company_name:
-        query = query.filter(models.Customer.company.contains(company_name))
-    if industry:
-        query = query.filter(models.Customer.industry == industry)
-    if province:
-        query = query.filter(models.Customer.province == province)
-    if city:
-        query = query.filter(models.Customer.city == city)
-    if status:
-        query = query.filter(models.Customer.status == status)
-    if sales_owner_id:
-        query = query.filter(models.Customer.sales_owner_id == sales_owner_id)
+    customers = crud_customer.get_customers(
+        db,
+        skip=skip,
+        limit=limit,
+        company=company,
+        industry=industry,
+        province=province,
+        city=city,
+        status=status,
+        sales_id=sales_id,
+    )
     
-    customers = query.offset(skip).limit(limit).all()
-    return customers
+    # Manually assemble the response to include owner names
+    response_customers = []
+    for customer in customers:
+        customer_data = schemas.Customer.from_orm(customer).dict()
+        customer_data['sales_owner_name'] = customer.sales.full_name if customer.sales else None
+        customer_data['service_owner_name'] = customer.service.full_name if customer.service else None
+        response_customers.append(customer_data)
+        
+    return response_customers
 
 @router.get("/{customer_id}", response_model=schemas.Customer)
 def read_customer(customer_id: int, db: Session = Depends(get_db)):
@@ -67,7 +72,7 @@ def delete_customer(customer_id: int, db: Session = Depends(get_db)):
 @router.get("/unassigned/", response_model=List[schemas.Customer])
 def read_unassigned_customers(db: Session = Depends(get_db)):
     """获取未分配销售的客户列表"""
-    customers = db.query(models.Customer).filter(models.Customer.sales_owner_id == None).all()
+    customers = db.query(models.Customer).filter(models.Customer.sales_id == None).all()
     return customers
 
 from ...crud import crud_contact
