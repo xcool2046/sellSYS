@@ -358,21 +358,29 @@ class CustomerManagementView(QWidget):
         # 设置列宽 - 优化响应式设计
         header = self.table_view.horizontalHeader()
 
-        # 设置列宽策略 - 混合固定和自适应
+        # 设置列宽策略 - 确保所有信息完整显示
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # 复选框 - 固定
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)  # 行业类型 - 自适应内容
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)  # 省份 - 自适应内容
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)  # 城市 - 自适应内容
-        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)  # 客户单位信息 - 拉伸填充
-        header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)  # 联系人 - 自适应内容
-        header.setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)  # 客户状态 - 自适应内容
-        header.setSectionResizeMode(7, QHeaderView.ResizeMode.ResizeToContents)  # 销售人 - 自适应内容
-        header.setSectionResizeMode(8, QHeaderView.ResizeMode.ResizeToContents)  # 创建时间 - 自适应内容
-        header.setSectionResizeMode(9, QHeaderView.ResizeMode.Fixed)  # 操作 - 固定
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)  # 行业类型 - 固定宽度
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)  # 省份 - 固定宽度
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)  # 城市 - 固定宽度
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)  # 客户单位信息 - 固定宽度
+        header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)  # 联系人 - 固定宽度
+        header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)  # 客户状态 - 固定宽度
+        header.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)  # 销售人 - 固定宽度
+        header.setSectionResizeMode(8, QHeaderView.ResizeMode.Fixed)  # 创建时间 - 固定宽度
+        header.setSectionResizeMode(9, QHeaderView.ResizeMode.Fixed)  # 操作 - 固定宽度
 
-        # 设置固定列的宽度
-        self.table_view.setColumnWidth(0, 50)   # 复选框
-        self.table_view.setColumnWidth(9, 120)  # 操作
+        # 设置固定列的宽度 - 确保信息完整显示
+        self.table_view.setColumnWidth(0, 50)    # 复选框
+        self.table_view.setColumnWidth(1, 100)   # 行业类型
+        self.table_view.setColumnWidth(2, 80)    # 省份
+        self.table_view.setColumnWidth(3, 100)   # 城市
+        self.table_view.setColumnWidth(4, 200)   # 客户单位信息
+        self.table_view.setColumnWidth(5, 150)   # 联系人
+        self.table_view.setColumnWidth(6, 100)   # 客户状态
+        self.table_view.setColumnWidth(7, 100)   # 销售人
+        self.table_view.setColumnWidth(8, 150)   # 创建时间
+        self.table_view.setColumnWidth(9, 120)   # 操作
 
         # 设置最小列宽，防止列太窄
         header.setMinimumSectionSize(50)
@@ -481,36 +489,80 @@ class CustomerManagementView(QWidget):
             checkbox_item.setCheckable(True)
             checkbox_item.setEditable(False)
 
+            # 处理联系人信息 - 显示完整信息
+            contacts = customer.get("contacts", [])
+            contact_info = ""
+            if contacts:
+                # 显示所有联系人，用换行分隔
+                contact_list = []
+                for contact in contacts:
+                    name = contact.get("name", "")
+                    phone = contact.get("phone", "")
+                    if name or phone:
+                        contact_str = f"{name}"
+                        if phone:
+                            contact_str += f" ({phone})"
+                        contact_list.append(contact_str)
+                contact_info = "\n".join(contact_list)
+
+            # 处理客户状态 - 按照图二的格式
+            status = customer.get("status", "")
+            # 将英文状态转换为中文显示
+            status_mapping = {
+                "LEAD": "潜在客户",
+                "QUALIFIED": "合格客户",
+                "PROPOSAL": "方案阶段",
+                "NEGOTIATION": "谈判阶段",
+                "CLOSED_WON": "已成交",
+                "CLOSED_LOST": "已失败",
+                "INACTIVE": "非活跃"
+            }
+            display_status = status_mapping.get(status, status)
+
+            # 处理创建时间 - 显示完整时间
+            created_at = customer.get("created_at", "")
+            if created_at and "T" in created_at:
+                # 格式化时间显示
+                try:
+                    from datetime import datetime
+                    dt = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+                    created_at = dt.strftime("%Y-%m-%d %H:%M:%S")
+                except:
+                    pass
+
             # 创建操作按钮
-            operation_text = "联系记录 详情记录"
+            operation_text = "联系记录详情 编辑"
 
             items = [
                 checkbox_item,  # 复选框
-                QStandardItem(customer.get("industry", "")),
-                QStandardItem(customer.get("province", "")),
-                QStandardItem(customer.get("city", "")),
-                QStandardItem(customer.get("company", "")),
-                QStandardItem(customer.get("contact_person", "")),
-                QStandardItem(customer.get("status", "")),
-                QStandardItem(customer.get("sales_person", "")),
-                QStandardItem(customer.get("created_at", "")),
-                QStandardItem(operation_text)
+                QStandardItem(customer.get("industry", "")),  # 行业类型 - 完整显示
+                QStandardItem(customer.get("province", "")),  # 省份 - 完整显示
+                QStandardItem(customer.get("city", "")),      # 城市 - 完整显示
+                QStandardItem(customer.get("company", "")),   # 客户单位信息 - 完整显示
+                QStandardItem(contact_info),                  # 联系人 - 显示所有联系人
+                QStandardItem(display_status),                # 客户状态 - 中文显示
+                QStandardItem(customer.get("sales_person", "")),  # 销售人 - 完整显示
+                QStandardItem(created_at),                    # 创建时间 - 格式化显示
+                QStandardItem(operation_text)                 # 操作
             ]
 
             # 设置项不可编辑
             for item in items:
                 item.setEditable(False)
 
-            # 设置客户状态的颜色
-            status = customer.get("status", "")
-            if status == "待分配":
-                items[6].setBackground(Qt.GlobalColor.yellow)
-            elif status == "待联系":
-                items[6].setBackground(Qt.GlobalColor.yellow)
-            elif status == "高":
-                items[6].setBackground(Qt.GlobalColor.red)
-            elif status == "已成交":
+            # 设置客户状态的颜色 - 按照图二的样式
+            if display_status == "潜在客户":
+                items[6].setBackground(Qt.GlobalColor.cyan)
+            elif display_status == "合格客户":
                 items[6].setBackground(Qt.GlobalColor.green)
+            elif display_status == "方案阶段":
+                items[6].setBackground(Qt.GlobalColor.yellow)
+            elif display_status == "谈判阶段":
+                items[6].setBackground(Qt.GlobalColor.magenta)
+            elif display_status == "已成交":
+                items[6].setBackground(Qt.GlobalColor.darkGreen)
+            elif display_status == "已失败":
+                items[6].setBackground(Qt.GlobalColor.gray)
 
             self.model.appendRow(items)
 

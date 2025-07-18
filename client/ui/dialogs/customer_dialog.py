@@ -4,7 +4,8 @@
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLineEdit,
     QComboBox, QTextEdit, QDialogButtonBox, QMessageBox, QTabWidget,
-    QWidget, QTableView, QPushButton, QHeaderView, QLabel, QCheckBox
+    QWidget, QTableView, QPushButton, QHeaderView, QLabel, QCheckBox,
+    QScrollArea
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QFont
 from PySide6.QtCore import Qt
@@ -123,10 +124,11 @@ class CustomerDialog(QDialog):
 
     def setup_contacts_section(self, main_layout):
         """设置联系人信息区域"""
-        # 联系人标题
-        contacts_label = QLabel("联系人信息:")
-        contacts_label.setStyleSheet("font-weight: bold; margin-top: 10px; color: #333333;")
-        main_layout.addWidget(contacts_label)
+        # 创建联系人容器
+        self.contacts_container = QWidget()
+        self.contacts_layout = QVBoxLayout(self.contacts_container)
+        self.contacts_layout.setContentsMargins(0, 0, 0, 0)
+        self.contacts_layout.setSpacing(5)
 
         # 存储联系人行的列表
         self.contact_rows = []
@@ -134,9 +136,8 @@ class CustomerDialog(QDialog):
         # 创建第一个联系人行
         self.add_contact_row()
 
-        # 将联系人行添加到主布局
-        for contact_widget in self.contact_rows:
-            main_layout.addWidget(contact_widget)
+        # 将联系人容器添加到主布局
+        main_layout.addWidget(self.contacts_container)
 
     def add_contact_row(self):
         """添加一个联系人行"""
@@ -215,6 +216,10 @@ class CustomerDialog(QDialog):
 
         self.contact_rows.append(contact_widget)
 
+        # 如果联系人容器已经存在，直接添加到容器中
+        if hasattr(self, 'contacts_layout'):
+            self.contacts_layout.addWidget(contact_widget)
+
         # 更新删除按钮状态
         self.update_delete_buttons()
 
@@ -222,23 +227,8 @@ class CustomerDialog(QDialog):
 
     def on_add_contact(self):
         """添加联系人按钮点击事件"""
-        new_contact = self.add_contact_row()
-
-        # 将新联系人行添加到布局中
-        # 找到联系人信息标题的位置
-        main_layout = self.layout()
-        contact_label_index = -1
-        for i in range(main_layout.count()):
-            item = main_layout.itemAt(i)
-            if item and item.widget() and isinstance(item.widget(), QLabel):
-                if item.widget().text() == "联系人信息:":
-                    contact_label_index = i
-                    break
-
-        if contact_label_index >= 0:
-            # 在按钮区域之前插入新的联系人行
-            insert_index = contact_label_index + len(self.contact_rows)
-            main_layout.insertWidget(insert_index, new_contact)
+        # 创建新的联系人行，它会自动添加到联系人容器中
+        self.add_contact_row()
 
     def on_remove_contact(self, contact_widget):
         """删除联系人按钮点击事件"""
