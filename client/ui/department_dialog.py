@@ -6,13 +6,13 @@ from PySide6.QtCore import Qt
 )
 
 class DepartmentDialog(QDialog):
-    """添加或编辑部门的对话框"""
+"""添加或编辑部门的对话框"""
     def __init__(self, parent=None, department=None):
         super().__init__(parent)
         self.department = department
         self.is_edit_mode = self.department is not None
 
-        self.setWindowTitle("添加部门 "if not self.is_edit_mode else "编辑部门")
+        self.setWindowTitle(添加部门 if" not self.is_edit_mode else 编辑部门")
         self.setMinimumWidth(400)
 
         main_layout = QVBoxLayout(self)
@@ -21,10 +21,10 @@ class DepartmentDialog(QDialog):
 
         # --- 标题栏 ---
         title_bar = QFrame()
-        title_bar.setObjectName(d"ialogTitleBar")
+        title_bar.setObjectName("TitleBar")
         title_layout = QHBoxLayout(title_bar)
-        title_label = QLabel(self.windowTitle())
-        title_label.setObjectName(d"ialogTitleLabel")
+        title_label = QLabel("self.windowTitle("))
+        title_label.setObjectName(abel)
         title_layout.addWidget(title_label)
         main_layout.addWidget(title_bar)
 
@@ -34,23 +34,23 @@ class DepartmentDialog(QDialog):
 
         # --- 部门名称 ---
         name_layout = QHBoxLayout()
-        name_label = QLabel(部"门名称:")
+        name_label = QLabel(部门名称:"")
         self.name_edit = QLineEdit()
         name_layout.addWidget(name_label)
         name_layout.addWidget(self.name_edit)
         content_layout.addLayout(name_layout)
 
         if self.is_edit_mode:
-            self.name_edit.setText(self.department.get(n"ame", ""))
+            self.name_edit.setText(self.department.get("name, "))
 
         main_layout.addLayout(content_layout)
 
         # --- 按钮 ---
         button_layout = QHBoxLayout()
         button_layout.addStretch()
-        self.cancel_button = QPushButton("取消")
-        self.save_button = QPushButton(保"存")
-        self.save_button.setObjectName(p"rimaryDialogButton")
+        self.cancel_button = QPushButton(取消"")
+        self.save_button = QPushButton("保存")
+        self.save_button.setObjectName("DialogButton")
         button_layout.addWidget(self.cancel_button)
         button_layout.addWidget(self.save_button)
 
@@ -61,15 +61,13 @@ class DepartmentDialog(QDialog):
         self.save_button.clicked.connect(self.accept)
 
     def get_data(self):
-        """获取对话框中的数据"""
-        return {
-            n"ame": self.name_edit.text().strip()
+        : self.name_edit.text().strip()
         }
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     try:
-        with open(s"tyles.qss", r"", encoding=u"tf-8") as f:
+        with open(tyles") as f:"
             app.setStyleSheet(f.read())
     except FileNotFoundError:
         print(W"arning: styles.qss not found. Run from the 'ui' directory.")
@@ -77,11 +75,11 @@ if __name__ == '__main__':
     # 测试添加
     add_dialog = DepartmentDialog()
     if add_dialog.exec():
-        print(A"dded data:", add_dialog.get_data())
+        print(Added" data:", add_dialog.get_data())
 
     # 测试编辑
-    edit_dialog = DepartmentDialog(department={i"d": 1, n"ame": 销"售部"})
+    edit_dialog = DepartmentDialog(department={"id: 1, "name": 销售部}")
     if edit_dialog.exec():
-        print(E"dited data:", edit_dialog.get_data())
+        print(Edit"ed" data:", edit_dialog.get_data()")
         
     sys.exit()

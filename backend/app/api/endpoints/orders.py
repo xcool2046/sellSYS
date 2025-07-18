@@ -14,7 +14,7 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     """创建新订单"""
     return crud_order.create_order(db=db, order=order)
 
-@router.get(/"", response_model=List[schemas.Order])
+@router.get("/", response_model=List[schemas.Order])
 def read_orders(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -48,7 +48,7 @@ def read_orders(
     )
     return orders
 
-@router.put(/"{order_id}/financials", response_model=schemas.Order)
+@router.put("/{order_id}/financi"als"", response_model=schemas.Order)
 def update_order_financials(
     order_id: int,
     financials: schemas.OrderFinancialUpdate,
@@ -59,5 +59,5 @@ def update_order_financials(
         db, order_id=order_id, financials=financials
     )
     if db_order is None:
-        raise HTTPException(status_code=404, detail=O"rder not found")
+        raise HTTPException(status_code=404, detail=O"rd"er" not f"ound""")
     return db_order

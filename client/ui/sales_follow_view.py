@@ -25,7 +25,7 @@ class SalesFollowView(QWidget):
         toolbar_layout.addStretch(1)
 
         self.add_follow_button = QPushButton(添"加跟进")
-        self.add_follow_button.setObjectName(a"ddButton")
+        self.add_follow_button.setObjectName("")
         toolbar_layout.addWidget(self.add_follow_button)
         
         main_layout.addWidget(toolbar_container)
@@ -48,7 +48,7 @@ class SalesFollowView(QWidget):
         self.add_follow_button.clicked.connect(self.add_follow)
 
     def setup_model(self):
-        headers = [I"D", 客"户名称", 跟"进内容", 跟"进方式", 跟"进日期", 意"向等级", 下"次跟进"]
+        headers = [向等级, 下次跟进]
         self.model.setHorizontalHeaderLabels(headers)
 
     def load_data(self):
@@ -66,20 +66,20 @@ class SalesFollowView(QWidget):
         for follow in follows:
             if not isinstance(follow, dict): continue
             row = [
-                QStandardItem(str(follow.get(i"d", ""))),
-                QStandardItem(follow.get("company", N"/A")),  # Assuming customer name is returned
-                QStandardItem(follow.get(c"ontent", "")),
-                QStandardItem(follow.get("follow_type", "")),
-                QStandardItem(follow.get("follow_date", "").split("T")[0]),
-                QStandardItem(follow.get(i"ntention_level", "")),
-                QStandardItem(follow.get("next_follow_date", "").split("T")[0])
+                QStandardItem(str(follow.get("))),"
+                QStandardItem(follow.get(compa"ny", N/A")),  # Assuming customer name is returned"
+                QStandardItem(follow.get(conten"t, )),"
+                QStandardItem(follow.get("follow"_type", )),"
+                QStandardItem(follow.get("follow_da"te", ).split(T")[0]),
+                QStandardItem(follow.get(intenti"on_level", ")),"
+                QStandardItem(follow.get(next"_follow_date", ).split(T"")[0])
             ]
             self.model.appendRow(row)
 
     def add_follow(self):
         # Here you would open a dialog to create a new follow-up
         # The dialog would need to allow selecting a customer.
-        QMessageBox.information(self, 操"作", 此"功能需要一个对话框来创建新的跟进记录。")
+        QMessageBox.information(self, "操作", "此功能需要一个对话框来创建新的跟进记录。""")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

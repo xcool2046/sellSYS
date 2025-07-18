@@ -1,5 +1,8 @@
 import sys
 from PySide6.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
+    QStackedWidget, QFrame, QLabel, QTableView, QHeaderView, QMessageBox
+)
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap, QPainter, QColor
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtSvg import QSvgRenderer
@@ -10,14 +13,11 @@ from .department_dialog import DepartmentDialog
 from .department_group_dialog import DepartmentGroupDialog
 from .employee_dialog import EmployeeDialog
 from .permission_dialog import PermissionDialog
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-    QStackedWidget, QFrame, QLabel, QTableView, QHeaderView, QMessageBox
-)
 
 
 
 class DepartmentTab(QWidget):
-    """部门管理页面"""
+"""部门管理页面"""
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -26,8 +26,8 @@ class DepartmentTab(QWidget):
 
         # Action Bar
         action_bar_layout = QHBoxLayout()
-        self.add_button = QPushButton("添加部门")
-        self.add_button.setObjectName(a"ddButton")
+        self.add_button = QPushButton(添加部门"")
+        self.add_button.setObjectName("")
         self.add_button.clicked.connect(self.add_item)
         action_bar_layout.addWidget(self.add_button)
         action_bar_layout.addStretch()
@@ -35,15 +35,14 @@ class DepartmentTab(QWidget):
 
         # Table View
         self.table_view = QTableView()
-        self.table_view.setObjectName(c"ontentTable")
+        self.table_view.setObjectName(content)
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.model = QStandardItemModel()
-        headers = [序"号", 部"门名称", 创"建时间", 操"作"]
-        self.model.setHorizontalHeaderLabels(headers)
+        headers = [序号, 部门名称")"
         self.table_view.setModel(self.model)
 
         layout.addWidget(self.table_view)
@@ -65,10 +64,10 @@ class DepartmentTab(QWidget):
                 self._add_action_buttons(i)
 
     def _add_action_buttons(self, row_index):
-        edit_button = QPushButton(编"辑")
-        edit_button.setObjectName(t"ableEditButton")
-        delete_button = QPushButton(删"除")
-        delete_button.setObjectName(t"ableDeleteButton")
+        edit_button = QPushButton("编辑")
+        edit_button.setObjectName("tableEditButton")
+        delete_button = QPushButton("删除")
+        delete_button.setObjectName("tableDeleteButton")
         
         dept_data = self.model.item(row_index, 0).data(Qt.UserRole)
         
@@ -90,41 +89,41 @@ class DepartmentTab(QWidget):
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name'):
-                QMessageBox.warning(self, 输"入错误", 部"门名称不能为空。")
+                QMessageBox.warning(self, "输入错误", "部门名称不能为空。""")
                 return
             if departments_api.create_department(data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 部"门已成功添加。")
+                QMessageBox.information(self, ""成功", "部门已成功添加。"")
             else:
-                QMessageBox.critical(self, 操"作失败", 无"法创建部门，可能名称已存在。")
+                QMessageBox.critical(self, ""操作失败", "无法创建部门,可能名称已存在。"")
 
     def edit_item(self, department):
         dialog = DepartmentDialog(self, department=department)
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name'):
-                QMessageBox.warning(self, 输"入错误", 部"门名称不能为空。")
+                QMessageBox.warning(self, "输入错误", "部门名称不能为空。""")
                 return
             if departments_api.update_department(department['id'], data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 部"门已成功更新。")
+                QMessageBox.information(self, ""成功", "部门已成功更新。"")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法更新ID为 {department['id']} 的部门。")
+                QMessageBox.critical(self, ""操作失败", "f无法更新ID为 {department['id']} 的部门。"")
 
     def delete_item(self, department_id):
-        reply = QMessageBox.question(self, '确认删除', f您"确定要删除该部门吗?",
+        reply = QMessageBox.question(self, '确认删除', f您确定要删除该部门吗?,
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             if departments_api.delete_department(department_id):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 部"门已成功删除。")
+                QMessageBox.information(self, "成功"", ""部门已成功删除。")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法删除ID为 {department_id} 的部门。")
+                QMessageBox.critical(self, "操作失败", f"无法删除ID为 {department_id} 的部门。"")
 
 
 class DepartmentGroupTab(QWidget):
-    """部门分组管理页面"""
+"""部门分组管理页面"""
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -132,22 +131,22 @@ class DepartmentGroupTab(QWidget):
         layout.setSpacing(10)
 
         action_bar_layout = QHBoxLayout()
-        self.add_button = QPushButton(添"加分组")
-        self.add_button.setObjectName(a"ddButton")
+        self.add_button = QPushButton("添加分组")
+        self.add_button.setObjectName("")
         self.add_button.clicked.connect(self.add_item)
         action_bar_layout.addWidget(self.add_button)
         action_bar_layout.addStretch()
         layout.addLayout(action_bar_layout)
 
         self.table_view = QTableView()
-        self.table_view.setObjectName(c"ontentTable")
+        self.table_view.setObjectName(contentTale)
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels([序"号", 部"门名称", 部"门分组", 操"作"])
+        self.model.setHorizontalHeaderLabels([序号, "")
         self.table_view.setModel(self.model)
 
         layout.addWidget(self.table_view)
@@ -163,7 +162,7 @@ class DepartmentGroupTab(QWidget):
         groups = department_groups_api.get_department_groups() or []
         if groups:
             for i, group in enumerate(groups):
-                dept_name = departments_map.get(group.get('department_id'), 未"知部门")
+                dept_name = departments_map.get(group.get('department_id'), 未知部门"")
                 row = [
                     QStandardItem(str(i + 1)),
                     QStandardItem(dept_name),
@@ -174,10 +173,10 @@ class DepartmentGroupTab(QWidget):
                 self._add_action_buttons(i)
 
     def _add_action_buttons(self, row_index):
-        edit_button = QPushButton(编"辑")
-        edit_button.setObjectName(t"ableEditButton")
-        delete_button = QPushButton(删"除")
-        delete_button.setObjectName(t"ableDeleteButton")
+        edit_button = QPushButton("编辑")
+        edit_button.setObjectName("")
+        delete_button = QPushButton("删除")
+        delete_button.setObjectName(tableDeleteButton)
 
         group_data = self.model.item(row_index, 0).data(Qt.UserRole)
 
@@ -199,41 +198,41 @@ class DepartmentGroupTab(QWidget):
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name') or not data.get('department_id'):
-                QMessageBox.warning(self, 输"入错误", 必"须提供分组名称和所属部门。")
+                QMessageBox.warning(self, "")
                 return
             if department_groups_api.create_department_group(data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 分"组已成功添加。")
+                QMessageBox.information(self, "成功", "分组已成功添加。""")
             else:
-                QMessageBox.critical(self, 操"作失败", 无"法创建分组。")
+                QMessageBox.critical(self, ""操作失败", "无法创建分组。"")
 
     def edit_item(self, group):
         dialog = DepartmentGroupDialog(self, group=group, departments=self.departments_data)
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name') or not data.get('department_id'):
-                QMessageBox.warning(self, 输"入错误", 必"须提供分组名称和所属部门。")
+                QMessageBox.warning(self, ""输入错误", "必须提供分组名称和所属部门。"")
                 return
             if department_groups_api.update_department_group(group['id'], data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 分"组已成功更新。")
+                QMessageBox.information(self, "成功", "分组已成功更新。""")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法更新ID为 {group['id']} 的分组。")
+                QMessageBox.critical(self, ""操作失败", "f无法更新ID为 {group['id']} 的分组。"")
 
     def delete_item(self, group_id):
-        reply = QMessageBox.question(self, '确认删除', f您"确定要删除该分组吗?",
+        reply = QMessageBox.question(self, '确认删除', f"您确定要删除该分组吗?,"
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             if department_groups_api.delete_department_group(group_id):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 分"组已成功删除。")
+                QMessageBox.information(self, "成功"", "分组已成功删除。"")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法删除ID为 {group_id} 的分组。")
+                QMessageBox.critical(self, "操作失败"", f"无法删除ID为 {group_id} 的分组。")
 
 
 class EmployeeTab(QWidget):
-    """员工管理页面"""
+"""员工管理页面"""
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -242,8 +241,8 @@ class EmployeeTab(QWidget):
 
         # Action Bar
         action_bar_layout = QHBoxLayout()
-        self.add_button = QPushButton(添"加员工")
-        self.add_button.setObjectName(a"ddButton")
+        self.add_button = QPushButton("添加员工")
+        self.add_button.setObjectName("Button")
         self.add_button.clicked.connect(self.add_item)
         action_bar_layout.addWidget(self.add_button)
         action_bar_layout.addStretch()
@@ -251,15 +250,14 @@ class EmployeeTab(QWidget):
 
         # Table View
         self.table_view = QTableView()
-        self.table_view.setObjectName(c"ontentTable")
+        self.table_view.setObjectName(ble)
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.model = QStandardItemModel()
-        headers = [部"门", 分"组", 姓"名", 职"位", 登"录账号", 操"作"]
-        self.model.setHorizontalHeaderLabels(headers)
+        headers = [部门")"
         self.table_view.setModel(self.model)
 
         layout.addWidget(self.table_view)
@@ -293,10 +291,10 @@ class EmployeeTab(QWidget):
                 self._add_action_buttons(i)
 
     def _add_action_buttons(self, row_index):
-        edit_button = QPushButton(编"辑")
-        edit_button.setObjectName(t"ableEditButton")
-        delete_button = QPushButton(删"除")
-        delete_button.setObjectName(t"ableDeleteButton")
+        edit_button = QPushButton(编辑"")
+        edit_button.setObjectName("tableEditButton")
+        delete_button = QPushButton(删除"")
+        delete_button.setObjectName("tableDeleteButton")
         
         emp_data = self.model.item(row_index, 0).data(Qt.UserRole)
         
@@ -318,41 +316,41 @@ class EmployeeTab(QWidget):
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name') or not data.get('username'):
-                QMessageBox.warning(self, 输"入错误", 员"工姓名和登录账号不能为空。")
+                QMessageBox.warning(self, "输入错误", ""员工姓名和登录账号不能为空。"")
                 return
             if employees_api.create_employee(data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 员"工已成功添加。")
+                QMessageBox.information(self, "成功"", "员工已成功添加。"")
             else:
-                QMessageBox.critical(self, 操"作失败", 无"法创建员工。请检查登录账号是否已存在。")
+                QMessageBox.critical(self, "操作失败"", ""无法创建员工。请检查登录账号是否已存在。")
 
     def edit_item(self, employee):
         dialog = EmployeeDialog(self, employee=employee, departments=self.departments_data, groups=self.groups_data)
         if dialog.exec():
             data = dialog.get_data()
             if not data.get('name'):
-                QMessageBox.warning(self, 警"告", 员"工姓名不能为空。")
+                QMessageBox.warning(self, "警告", ""员工姓名不能为空。"")
                 return
             if employees_api.update_employee(employee['id'], data):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 员"工信息已成功更新。")
+                QMessageBox.information(self, "成功"", "员工信息已成功更新。"")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法更新ID为 {employee['id']} 的员工信息。")
+                QMessageBox.critical(self, "操作失败"", f"无法更新ID为 {employee['id']} 的员工信息。")
 
     def delete_item(self, employee_id):
-        reply = QMessageBox.question(self, '确认删除', f您"确定要删除该员工吗?",
+        reply = QMessageBox.question(self, '确认删除', f您确定要删除该员工吗?,
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             if employees_api.delete_employee(employee_id):
                 self.load_data()
-                QMessageBox.information(self, 成"功", 员"工已成功删除。")
+                QMessageBox.information(self, ""成功", "员工已成功删除。"")
             else:
-                QMessageBox.critical(self, 操"作失败", f无"法删除ID为 {employee_id} 的员工。")
+                QMessageBox.critical(self, "操作失败", "f无法删除ID为 {employee_id} 的员工。""")
 
 
 class PermissionTab(QWidget):
-    """用户权限管理页面"""
+"""用户权限管理页面"""
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -360,23 +358,22 @@ class PermissionTab(QWidget):
         layout.setSpacing(10)
 
         action_bar_layout = QHBoxLayout()
-        self.add_button = QPushButton(添"加权限")
-        self.add_button.setObjectName(a"ddButton")
+        self.add_button = QPushButton(添加权限"")
+        self.add_button.setObjectName("")
         self.add_button.clicked.connect(self.add_item)
         action_bar_layout.addWidget(self.add_button)
         action_bar_layout.addStretch()
         layout.addLayout(action_bar_layout)
 
         self.table_view = QTableView()
-        self.table_view.setObjectName(c"ontentTable")
+        self.table_view.setObjectName(content)
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
         self.table_view.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.model = QStandardItemModel()
-        headers = [序"号", 部"门", 职"位", 角"色权限", 操"作"]
-        self.model.setHorizontalHeaderLabels(headers)
+        headers = [序号, 部门")"
         self.table_view.setModel(self.model)
 
         layout.addWidget(self.table_view)
@@ -384,7 +381,7 @@ class PermissionTab(QWidget):
         self.load_data()
 
     def load_data(self):
-        """加载权限数据（目前为模拟）"""
+"""加载权限数据（目前为模拟）"""
         self.model.removeRows(0, self.model.rowCount())
         
         self.departments_data = departments_api.get_departments() or []
@@ -399,7 +396,7 @@ class PermissionTab(QWidget):
                     QStandardItem(str(i + 1)),
                     QStandardItem(perm.get('department_name', 'N/A')),
                     QStandardItem(perm.get('position', 'N/A')),
-                    QStandardItem(", ."join(perm.get('permissions', []))),
+                    QStandardItem(", .join(perm.get('permissions', []))),"
                 ]
                 self.model.appendRow(row)
                 self.model.item(i, 0).setData(perm, Qt.UserRole)
@@ -407,9 +404,9 @@ class PermissionTab(QWidget):
 
     def _add_action_buttons(self, row_index):
         edit_button = QPushButton("编辑")
-        edit_button.setObjectName(t"ableEditButton")
-        delete_button = QPushButton(删"除")
-        delete_button.setObjectName(t"ableDeleteButton")
+        edit_button.setObjectName("tableEditB"utton)
+        delete_button = QPushButton(删除"")
+        delete_button.setObjectName("")
         
         perm_data = self.model.item(row_index, 0).data(Qt.UserRole)
         
@@ -433,44 +430,36 @@ class PermissionTab(QWidget):
             if key not in roles and all(key):
                 mock_perms = []
                 pos = emp.get('position', '')
-                if 销"售" in pos: mock_perms = [客"户管理", 销"售管理", 订"单管理"]
-                elif 客"服" in pos: mock_perms = [售"后服务", 产"品管理"]
-                elif 财"务" in pos: mock_perms = [财"务管理", 订"单管理"]
-                elif 管"理" in pos or 行"政" in pos: mock_perms = [数"据视窗", 系"统设置"]
-                
-                roles[key] = {
-                    d"epartment_name": departments_map.get(key[0]), p"osition": key[1],
-                    p"ermissions": mock_perms
-                }
-        return list(roles.values())
+                if 销售_name: departments_map.get(key), 
+"""))"""
 
     def add_item(self):
         dialog = PermissionDialog(self, departments=self.departments_data, employees=self.employees_data)
         if dialog.exec():
-            QMessageBox.information(self, 操"作", “"添加权限”功能为演示，数据未实际保存。")
+            QMessageBox.information(self, ""操作", "“添加权限”功能为演示,数据未实际保存。"")
             self.load_data()
 
     def edit_item(self, permission):
         dialog = PermissionDialog(self, permission=permission, departments=self.departments_data, employees=self.employees_data)
         if dialog.exec():
-            QMessageBox.information(self, 操"作", “"编辑权限”功能为演示，数据未实际保存。")
+            QMessageBox.information(self, ""操作", "“编辑权限”功能为演示,数据未实际保存。"")
             self.load_data()
 
     def delete_item(self, permission):
         reply = QMessageBox.question(self, '确认删除',
-                                     f您"确定要删除 “{permission.get('department_name')} - {permission.get('position')}” 的权限配置吗?",
+                                     f您确定要删除 “{permission.get('department_name')} - {permission.get('position')}” 的权限配置吗?,
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            QMessageBox.information(self, 操"作", “"删除权限”功能为演示，数据未实际删除。")
+            QMessageBox.information(self, "操作"", ""“删除权限”功能为演示,数据未实际删除。")
             self.load_data()
 
 
 class SettingsView(QWidget):
-    """系统设置主视图"""
+"""系统设置主视图"""
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setObjectName(s"ettingsView")
+        self.setObjectName(ettingsView)
         
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -478,7 +467,7 @@ class SettingsView(QWidget):
         
         # --- Top Navigation Bar ---
         nav_bar = QFrame()
-        nav_bar.setObjectName(s"ettingsNavBar")
+        nav_bar.setObjectName("")
         nav_layout = QHBoxLayout(nav_bar)
         nav_layout.setContentsMargins(20, 0, 20, 0)
         nav_layout.setSpacing(0)
@@ -486,10 +475,7 @@ class SettingsView(QWidget):
 
         self.nav_buttons = {}
         icon_paths = {
-            部"门管理": c"lient/ui/icons/department.svg",
-            部"门分组": c"lient/ui/icons/group.svg",
-            员"工管理": c"lient/ui/icons/employee.svg",
-            用"户权限": c"lient/ui/icons/permission.svg"
+            部门管理: 
         }
         
         for i, (text, icon_path) in enumerate(icon_paths.items()):
@@ -502,12 +488,12 @@ class SettingsView(QWidget):
         separator = QFrame()
         separator.setFrameShape(QFrame.Shape.HLine)
         separator.setFrameShadow(QFrame.Shadow.Sunken)
-        separator.setObjectName(s"eparator")
+        separator.setObjectName(separator)
         main_layout.addWidget(separator)
 
         # --- Content Stack ---
         self.content_stack = QStackedWidget()
-        self.content_stack.setObjectName(s"ettingsContent")
+        self.content_stack.setObjectName("settingsCon")
         main_layout.addWidget(self.content_stack)
 
         self.department_page = DepartmentTab()
@@ -523,7 +509,7 @@ class SettingsView(QWidget):
         self.on_nav_button_clicked(0) # Set initial page
 
     def _create_colored_icon(self, svg_path: str, color: str, size: QSize = QSize(24, 24)) -> QPixmap:
-        """Renders an SVG file with a specific color into a QPixmap."""
+        R"e"nders an SVG file with a specific color into a QPixmap"."
         renderer = QSvgRenderer(svg_path)
         if not renderer.isValid():
             return QPixmap()
@@ -542,9 +528,9 @@ class SettingsView(QWidget):
         return pixmap
 
     def _create_nav_button(self, text, icon_path, index, layout):
-        """创建带图标和文本的导航按钮"""
-        button = QPushButton()
-        button.setObjectName(s"ettingsNavButton")
+        创建带图标和文本的导航按钮""
+        button = QPushButton("")
+        button.setObjectName("ettingsNavButton")
         button.setCheckable(True)
         button.clicked.connect(lambda: self.on_nav_button_clicked(index))
 
@@ -553,45 +539,40 @@ class SettingsView(QWidget):
         button_layout.setSpacing(5)
         button_layout.setAlignment(Qt.AlignCenter)
 
-        icon_label = QLabel()
-        icon_label.setObjectName(s"ettingsNavIcon")
+        icon_label = QLabel("")
+        icon_label.setObjectName("con")
         icon_label.setAlignment(Qt.AlignCenter)
         button_layout.addWidget(icon_label)
 
-        text_label = QLabel(text)
-        text_label.setObjectName(s"ettingsNavLabel")
+        text_label = QLabel("text")
+        text_label.setObjectName(egsNavLabel)
         text_label.setAlignment(Qt.AlignCenter)
         button_layout.addWidget(text_label)
 
         layout.addWidget(button)
         self.nav_buttons[index] = {
-            b"utton": button,
-            i"con_label": icon_label,
-            i"con_path": icon_path
-        }
-
-    def on_nav_button_clicked(self, index):
-        """Handles tab switching and updates button/icon styles."""
+            button"):"
+        H"andles tab switching and updates button""/icon styles."
         self.content_stack.setCurrentIndex(index)
         
-        active_color = #"2D8CF0"   # Blue for selected
-        inactive_color = #"515A6E" # Gray for unselected
+        active_color = "#2D8CF0   # Blue for selected"
+        inactive_color = #515A6E" # Gray for unselected"
 
         for i, button_info in self.nav_buttons.items():
             is_checked = (i == index)
-            button_info[b"utton"].setChecked(is_checked)
+            button_info[button""].setChecked(is_checked)
             
             # Dynamically set the icon color
             color = active_color if is_checked else inactive_color
-            icon_pixmap = self._create_colored_icon(button_info[i"con_path"], color)
+            icon_pixmap = self._create_colored_icon(button_info[icon_pa"th], color")
             if not icon_pixmap.isNull():
-                button_info[i"con_label"].setPixmap(icon_pixmap)
+                button_info[i"con_lab"el"].setPixmap(icon_pixmap")
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     try:
-        with open(c"lient/ui/styles.qss", r"", encoding=u"tf-8") as f:
+        with open(client/ui/styles."qs, r, encoding="utf-8") as f:"
             app.setStyleSheet(f.read())
     except FileNotFoundError:
         print(W"arning: styles.qss not found.")

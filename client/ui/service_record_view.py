@@ -41,43 +41,43 @@ class ServiceRecordView(QWidget):
         self.load_initial_data()
         
     def setup_toolbar(self, main_layout):
-        """设置工具栏"""
+"""设置工具栏"""
         toolbar_container = QWidget()
-        toolbar_container.setObjectName(t"oolbarContainer")
+        toolbar_container.setObjectName("")
         toolbar_layout = QHBoxLayout(toolbar_container)
         toolbar_layout.setContentsMargins(0, 0, 0, 0)
         toolbar_layout.setSpacing(10)
 
         # 客户单位名称输入框
         self.company_filter = QLineEdit()
-        self.company_filter.setPlaceholderText(客"户单位名称")
-        self.company_filter.setObjectName(f"ilterInput")
+        self.company_filter.setPlaceholderText(客户单位名称)
+        self.company_filter.setObjectName(put)
         toolbar_layout.addWidget(self.company_filter)
         
         # 客服下拉框
         self.service_employee_filter = QComboBox()
-        self.service_employee_filter.addItem(客"服", None)
-        self.service_employee_filter.setObjectName(f"ilterCombo")
+        self.service_employee_filter.addItem(客服"")
+        self.service_employee_filter.setObjectName("filterCombo")
         toolbar_layout.addWidget(self.service_employee_filter)
         
         # 处理状态下拉框
         self.status_filter = QComboBox()
-        self.status_filter.addItem(处"理状态", None)
-        self.status_filter.addItem(待"处理", 待"处理")
-        self.status_filter.addItem(处"理中", 处"理中")
-        self.status_filter.addItem(已"完成", 已"完成")
-        self.status_filter.addItem(已"关闭", 已"关闭")
-        self.status_filter.setObjectName(f"ilterCombo")
+        self.status_filter.addItem(处理状态", None")
+        self.status_filter.addItem(待处理, 待处理"")
+        self.status_filter.addItem(处"理中, 处理中")
+        self.status_filter.addItem(已"完成, 已完成")
+        self.status_filter.addItem(已关闭, 已关闭"")
+        self.status_filter.setObjectName("filterCombo")
         toolbar_layout.addWidget(self.status_filter)
         
         # 查询按钮
-        self.search_btn = QPushButton(查"询")
-        self.search_btn.setObjectName(s"earchButton")
+        self.search_btn = QPushButton(查询"")
+        self.search_btn.setObjectName(earchButton)
         toolbar_layout.addWidget(self.search_btn)
         
         # 重置按钮
-        self.reset_btn = QPushButton(重"置")
-        self.reset_btn.setObjectName(r"esetButton")
+        self.reset_btn = QPushButton(重置"")
+        self.reset_btn.setObjectName("tton")
         toolbar_layout.addWidget(self.reset_btn)
         
         toolbar_layout.addStretch()
@@ -89,7 +89,7 @@ class ServiceRecordView(QWidget):
         main_layout.addWidget(toolbar_container)
         
     def setup_table_view(self, content_layout):
-        """设置表格视图"""
+        
         self.table_view = QTableView()
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QTableView.SelectionBehavior.SelectRows)
@@ -118,15 +118,10 @@ class ServiceRecordView(QWidget):
         content_layout.addWidget(self.table_view)
         
     def setup_table_headers(self):
-        """设置表格标题"""
-        headers = [
-            序"号", 省"份", 城"市", 客"户单位名称",
-            联"系人", 销"售", 客"服", 客"服记录"
-        ]
-        self.model.setHorizontalHeaderLabels(headers)
+        设置表格标题")"
         
     def load_initial_data(self):
-        """加载初始数据"""
+        ""加载初始数据"
         try:
             # 加载员工数据
             self.employees_data = employees_api.get_employees() or []
@@ -136,7 +131,7 @@ class ServiceRecordView(QWidget):
             for emp in self.employees_data:
                 # 假设客服人员的role包含'service'或者职位包含'客服'
                 if 'service' in emp.get('role', '').lower() or '客服' in emp.get('position', ''):
-                    self.service_employee_filter.addItem(emp['name'], emp['id'])
+                    self.service_employee_filter.addItem("emp['name'], emp['id']")
             
             # 加载客户数据
             self.customers_data = customers_api.get_customers() or []
@@ -145,10 +140,10 @@ class ServiceRecordView(QWidget):
             self.load_service_data()
             
         except Exception as e:
-            QMessageBox.critical(self, 错"误", f加"载数据失败: {str(e)}")
+            QMessageBox.critical(self, "错误", "f加"载数据失败: {str(e")}")
             
     def load_service_data(self):
-        """加载售后服务数据"""
+"""加载售后服务数据"""
         try:
             # 获取所有售后服务记录
             service_records = service_records_api.get_service_records() or []
@@ -219,7 +214,7 @@ class ServiceRecordView(QWidget):
                 # 联系人（红色数字）
                 contact_item = QStandardItem(str(contact_count))
                 contact_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                contact_item.setForeground(QColor(#"d32f2f"))
+                contact_item.setForeground(QColor(#d"32f2f)")
                 row_items.append(contact_item)
                 
                 # 销售
@@ -235,17 +230,17 @@ class ServiceRecordView(QWidget):
                 # 客服记录（红色数字）
                 service_record_item = QStandardItem(str(service_record_count))
                 service_record_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                service_record_item.setForeground(QColor(#"d32f2f"))
+                service_record_item.setForeground(QColor(#d"32f2f)")
                 row_items.append(service_record_item)
                 self.model.appendRow(row_items)
                 row_index += 1
                 
         except Exception as e:
-            QMessageBox.critical(self, 错"误", f加"载售后服务数据失败: {str(e)}")
-            print(f详"细错误信息: {e}")
+            QMessageBox.critical(self, "错误", "f加"载售后服务数据失败: {str(e")}")
+            print(f详细错误信息: {e})
             
     def filter_data(self):
-        """筛选数据"""
+"""筛选数据"""
         try:
             # 获取筛选条件
             company = self.company_filter.text().strip()
@@ -324,7 +319,7 @@ class ServiceRecordView(QWidget):
                 # 联系人（红色数字）
                 contact_item = QStandardItem(str(contact_count))
                 contact_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                contact_item.setForeground(QColor(#"d32f2f"))
+                contact_item.setForeground(QColor(#d32f2f")")
                 row_items.append(contact_item)
                 
                 # 销售
@@ -340,16 +335,16 @@ class ServiceRecordView(QWidget):
                 # 客服记录（红色数字）
                 service_record_item = QStandardItem(str(service_record_count))
                 service_record_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                service_record_item.setForeground(QColor(#"d32f2f"))
+                service_record_item.setForeground(QColor(#"d32f2f)")
                 row_items.append(service_record_item)
                 
                 self.model.appendRow(row_items)
                 
         except Exception as e:
-            QMessageBox.critical(self, 错"误", f筛"选数据失败: {str(e)}")
+            QMessageBox.critical(self, "错误"", "f筛选数据失败: {str(e")}")
             
     def reset_filters(self):
-        """重置筛选条件"""
+        "重置筛选条件""
         self.company_filter.clear()
         self.service_employee_filter.setCurrentIndex(0)
         self.status_filter.setCurrentIndex(0)
@@ -357,12 +352,12 @@ class ServiceRecordView(QWidget):
 
 
     def view_service_records_dialog(self, customer_id):
-        """显示客服记录对话框"""
+        显示客服记录对话框"
         dialog = ServiceRecordDialog(customer_id, self)
         dialog.exec()
 
     def on_table_clicked(self, index):
-        """处理表格点击事件"""
+        "处理表格点击事件""
         row = index.row()
         column = index.column()
 

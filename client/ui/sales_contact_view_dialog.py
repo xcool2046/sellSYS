@@ -1,10 +1,10 @@
 import sys
 from PySide6.QtWidgets import (
-from PySide6.QtCore import Qt
     QApplication, QDialog, QVBoxLayout, QHBoxLayout,
     QLabel, QLineEdit, QTextEdit, QPushButton, QFrame, QCheckBox,
     QSpacerItem, QSizePolicy
 )
+from PySide6.QtCore import Qt
 
 class SalesContactViewDialog(QDialog):
     def __init__(self, customer_data, contacts_data, parent=None):
@@ -12,23 +12,72 @@ class SalesContactViewDialog(QDialog):
         self.setWindowTitle("查看联系人")
         self.setMinimumWidth(600)
 
+        # 设置对话框样式，确保文字可见
+        self.setStyleSheet("""
+            QDialog {
+                background-color: white;
+                color: #333333;
+            }
+            QLabel {
+                color: #333333;
+                font-size: 12px;
+                padding: 4px;
+            }
+            QLineEdit {
+                border: 1px solid #ced4da;
+                border-radius: 3px;
+                padding: 6px 8px;
+                font-size: 12px;
+                color: #333333;
+                background-color: white;
+            }
+            QTextEdit {
+                border: 1px solid #ced4da;
+                border-radius: 3px;
+                padding: 6px 8px;
+                font-size: 12px;
+                color: #333333;
+                background-color: white;
+            }
+            QCheckBox {
+                color: #333333;
+                font-size: 12px;
+            }
+            QPushButton {
+                background-color: #4a90e2;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                padding: 8px 16px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #357abd;
+            }
+            QFrame {
+                background-color: white;
+                color: #333333;
+            }
+        """)
+
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(15)
 
         # 客户信息
         customer_group = QFrame()
         customer_group_layout = QVBoxLayout(customer_group)
-        
-        # 使用 QFormLayout 可能更适合这里，但为了与截图1:1，我们手动对齐
-        self.company_label = QLabel(f客"户单位：{customer_data.get('company', 'N/A')}")
-        self.customer_address_label = QLabel(f详"细地址：{customer_data.get('address', 'N/A')}")
-        
+
+        # 使用 QFormLayout 可能更适合这里,但为了与截图1:1,我们手动对齐
+        self.company_label = QLabel(f"客户单位:{customer_data.get('company', 'N/A')}")
+        self.customer_address_label = QLabel(f"详细地址:{customer_data.get('address', 'N/A')}")
+
         customer_group_layout.addWidget(self.company_label)
         customer_group_layout.addWidget(self.customer_address_label)
-        
+
         # 客户备注
         notes_layout = QHBoxLayout()
-        notes_label = QLabel(客"户备注：")
+        notes_label = QLabel("客户备注:")
         notes_label.setAlignment(Qt.AlignTop)
         self.notes_edit = QTextEdit()
         self.notes_edit.setText(customer_data.get('notes', ''))
@@ -52,9 +101,9 @@ class SalesContactViewDialog(QDialog):
         # 底部按钮
         button_layout = QHBoxLayout()
         button_layout.addStretch()
-        self.close_button = QPushButton(关"闭")
-        self.save_button = QPushButton(联"系记录") # Per screenshot, this seems to be the save button
-        self.save_button.setObjectName(p"rimaryButton")
+        self.close_button = QPushButton("关闭")
+        self.save_button = QPushButton(联系记录") # Per screenshot, this seems to be the save button"
+        self.save_button.setObjectName("primaryButton")
 
         button_layout.addWidget(self.close_button)
         button_layout.addWidget(self.save_button)
@@ -68,12 +117,12 @@ class SalesContactViewDialog(QDialog):
     def add_contact_entry(self, contact=None):
         contact_entry_layout = QHBoxLayout()
         
-        name_label = QLabel(联"系人:")
-        phone_label = QLabel(电"话:")
+        name_label = QLabel(联系人:"")
+        phone_label = QLabel("电话:")
         
         name_edit = QLineEdit()
         phone_edit = QLineEdit()
-        key_person_check = QCheckBox(关"键人")
+        key_person_check = QCheckBox(关键人"")
 
         if contact:
             name_edit.setText(contact.get('name', ''))
@@ -93,13 +142,13 @@ if __name__ == '__main__':
     
     # --- 模拟数据 ---
     mock_customer = {
-        c"ompany": 广"汉市孛罗职业技能培训学校",
-        a"ddress": 广"汉市北京大道北一段15号",
-        n"otes": "" 
+        "company: 广"汉市孛罗职业技能培训学校,
+        addr"es: 广汉市北京大道北一段15号,"
+        not"es": " 
     }
     mock_contacts = [
-        {"name:" "刘屹立", p"hone": 1"5862184966", i"s_key_person": False},
-        {n"ame": 李"途", p"hone": 1"3956774892", i"s_key_person": True},
+        {name": 刘屹立, "pho"ne: 15862184966", is_key_per"son: False},"
+        {n"ame": 李途, "phone": 13956774892, is"_key_per"son": True},"
     ]
 
     dialog = SalesContactViewDialog(mock_customer, mock_contacts)

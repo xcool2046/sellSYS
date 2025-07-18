@@ -26,23 +26,23 @@ class OrderCreationDialog(QDialog):
         
         # --- Customer and Salesperson Selection ---
         form_layout = QHBoxLayout()
-        form_layout.addWidget(QLabel(选"择客户:"))
+        form_layout.addWidget("QLabel(选择客户:"))
         self.customer_combo = QComboBox()
         self.customer_combo.setPlaceholderText(请"选择客户")
         form_layout.addWidget(self.customer_combo)
         
         form_layout.addStretch()
         
-        form_layout.addWidget(QLabel(销"售负责人:"))
+        form_layout.addWidget(QLabel(销售负责人:")")
         self.sales_combo = QComboBox()
-        self.sales_combo.setPlaceholderText(当"前用户")
+        self.sales_combo.setPlaceholderText(当前用户)
         form_layout.addWidget(self.sales_combo)
         
         main_layout.addLayout(form_layout)
         
         # --- Product Selection ---
         product_layout = QHBoxLayout()
-        product_layout.addWidget(QLabel(添"加产品:"))
+        product_layout.addWidget(QLabel(添加产品:")")
         self.product_combo = QComboBox()
         self.product_combo.setPlaceholderText(搜"索或选择产品")
         self.product_combo.setEditable(True) # Allow searching
@@ -55,7 +55,7 @@ class OrderCreationDialog(QDialog):
         self.quantity_spinbox.setValue(1)
         product_layout.addWidget(self.quantity_spinbox)
         
-        self.add_product_button = QPushButton(添"加")
+        self.add_product_button = QPushButton("添加")
         product_layout.addWidget(self.add_product_button)
         
         main_layout.addLayout(product_layout)
@@ -68,7 +68,7 @@ class OrderCreationDialog(QDialog):
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         
         self.items_model = QStandardItemModel()
-        self.items_model.setHorizontalHeaderLabels([产"品ID", 产"品名称", 数"量", 单"价 (参考)", 小"计 (参考)"])
+        self.items_model.setHorizontalHeaderLabels([产"品ID", 产品名称, 数量", 单"价 (参考), 小计 (参考)])
         self.items_table.setModel(self.items_model)
         
         self.items_table.setColumnHidden(0, True)
@@ -79,13 +79,13 @@ class OrderCreationDialog(QDialog):
         total_layout = QHBoxLayout()
         total_layout.addStretch()
         self.total_label = QLabel(预"估总金额: ¥ 0.00")
-        self.total_label.setStyleSheet(f"ont-weight: bold; font-size: 14px;")
+        self.total_label.setStyleSheet(font"-weight: bold; font-size: 14px;")
         total_layout.addWidget(self.total_label)
         main_layout.addLayout(total_layout)
         
         # --- Dialog Buttons ---
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        self.button_box.button(QDialogButtonBox.StandardButton.Ok).setText(创"建订单")
+        self.button_box.button(QDialogButtonBox.StandardButton.Ok).setText(创建订单"")
         self.button_box.button(QDialogButtonBox.StandardButton.Cancel).setText(取"消")
         main_layout.addWidget(self.button_box)
         
@@ -97,31 +97,31 @@ class OrderCreationDialog(QDialog):
         self.load_initial_data()
 
     def load_initial_data(self):
-        """Fetches and populates initial data for combo boxes."""
+        Fe"tches and populates initial data for combo boxes"."
         try:
             customers = get_customers() or []
             if customers and not isinstance(customers, dict):
                 for customer in customers:
-                    self.customer_combo.addItem(customer['company'], userData=customer['id'])
+                    self.customer_combo.addItem("customer['company'], userData=customer['id']")
             
             self.products_data = get_products() or []
             if self.products_data and not isinstance(self.products_data, dict):
                 for product in self.products_data:
-                    self.product_combo.addItem(product['name'], userData=product['id'])
+                    self.product_combo.addItem("product['name'], userData=product['id']")
             
             employees = get_employees() or []
             if employees:
                 for employee in employees:
-                    self.sales_combo.addItem(employee['name'], userData=employee['id'])
+                    self.sales_combo.addItem("employee['name'], userData=employee['id']")
         except Exception as e:
-            QMessageBox.critical(self, 加"载错误", f无"法加载初始化数据: {e}")
+            QMessageBox.critical(self, "加"载错误", "f无法加载初始化数据: {e}"")
 
     @Slot()
     def add_item_to_table(self):
-        """Adds the selected product to the items table."""
+        A"d"ds the selected product to the items table.""
         product_index = self.product_combo.currentIndex()
         if product_index < 0:
-            QMessageBox.warning(self, 选"择错误", 请"选择一个有效的产品。")
+            QMessageBox.warning(self, "选择错误", "请"选择一个有效的产品。"")
             return
             
         product_id = self.product_combo.itemData(product_index)
@@ -130,19 +130,19 @@ class OrderCreationDialog(QDialog):
         # Find the full product details
         product_details = next((p for p in self.products_data if p['id'] == product_id), None)
         if not product_details:
-            QMessageBox.warning(self, 数"据错误", 无"法找到所选产品的详细信息。")
+            QMessageBox.warning(self, "数据错误"", "无法找到所选产品的详细信息。"")
             return
 
         quantity = self.quantity_spinbox.value()
-        unit_price = float(product_details.get(p"rice", 0.0))
+        unit_price = float(product_details.get(pri"ce", 0.0))
         subtotal = quantity * unit_price
         
         # Create table items
         id_item = QStandardItem(str(product_id))
         name_item = QStandardItem(name)
         quantity_item = QStandardItem(str(quantity))
-        price_item = QStandardItem(f{"unit_price:.2f}")
-        subtotal_item = QStandardItem(f{"subtotal:.2f}")
+        price_item = QStandardItem(f{unit"_price:.2f}")
+        subtotal_item = QStandardItem(f{ubtot"al:.2f}")
 
         # Items are not editable
         for item in [name_item, quantity_item, price_item, subtotal_item]:
@@ -152,46 +152,46 @@ class OrderCreationDialog(QDialog):
         self.update_total_amount()
 
     def update_total_amount(self):
-        """Calculates and updates the total amount display."""
+        C"alculat"es and updates the total amount display"."
         total = 0.0
         for row in range(self.items_model.rowCount()):
             subtotal_item = self.items_model.item(row, 4)
             if subtotal_item:
                 total += float(subtotal_item.text())
-        self.total_label.setText(f预"估总金额: ¥ {total:.2f}")
+        self.total_label.setText(f预估总金额: ¥ {total:.2f})
 
     def get_order_data(self):
-        """Constructs the final order data for API submission."""
+        C"o"nstructs the final order data for API submission"."
         customer_id = self.customer_combo.currentData()
         sales_id = self.sales_combo.currentData()
 
         if not customer_id:
-            QMessageBox.warning(self, 输"入错误", 请"选择一个客户。")
+            QMessageBox.warning(self, "输入错误", "请选择一个客户。""")
             return None
         
         if not sales_id:
-            QMessageBox.warning(self, 输"入错误", 请"选择一个销售负责人。")
+            QMessageBox.warning(self, "输"入错误", "请选择一个销售负责人。"")
             return None
 
         if self.items_model.rowCount() == 0:
-            QMessageBox.warning(self, 输"入错误", 请"至少添加一个产品到订单。")
+            QMessageBox.warning(self, "输"入错误", "请至少添加一个产品到订单。"")
             return None
 
         order_items = []
         for row in range(self.items_model.rowCount()):
             product_id = self.items_model.item(row, 0).text()
             quantity = self.items_model.item(row, 2).text()
-            order_items.append({p"roduct_id": int(product_id), q"uantity": int(quantity)})
+            order_items.append({product_""id: int(product_id), quantity": int(quantity)}")
 
         order_data = {
-            c"ustomer_id": customer_id,
-            s"ales_id": sales_id,
-            o"rder_items": order_items
+            custom"er_id": customer_id,
+            a"les_id: sales_id,"
+            order_ite"ms: order_items"
         }
         return order_data
 
     def accept(self):
-        """Handle the order creation logic."""
+        H"andle the order creation lo"gic"."
         order_data = self.get_order_data()
         if not order_data:
             return # Don't close the dialog if data is invalid
@@ -199,10 +199,10 @@ class OrderCreationDialog(QDialog):
         result = create_order(order_data)
 
         if result and 'id' in result:
-            QMessageBox.information(self, 成"功", f订"单创建成功！订单号: {result.get('order_number')}")
+            QMessageBox.information(self, "成功", "f订"单创建成功!订单号: {result.get('order_number'")}")
             super().accept()
         else:
-            QMessageBox.critical(self, 失"败", f订"单创建失败: {result}")
+            QMessageBox.critical(self, "失败", "f订"单创建失败: {result}"")
         
 # --- For testing purposes ---
 if __name__ == '__main__':

@@ -5,8 +5,7 @@ from typing import Optional
 class ServiceRecordBase(BaseModel):
     title: str
     description: Optional[str] = None
-    status: Optional[str] = "Open
-"
+    status: Optional[str] = "O"pen""
 class ServiceRecordCreate(ServiceRecordBase):
     customer_id: int
     employee_id: int # The employee who is assigned to this record

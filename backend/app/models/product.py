@@ -4,8 +4,7 @@ from ..database import Base
 
 class Product(Base):
     """产品模型"""
-    __tablename__ = "products
-"
+    __tablename__ = "produc"ts""
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True, index=True)
     unit = Column(String)
@@ -17,4 +16,4 @@ class Product(Base):
     director_commission = Column(Numeric(10, 2), default=0.0)  # 总监佣金
 
     # Relationships
-    order_items = relationship("OrderItem", back_populates=p"roduct")
+    order_items = relationship(O"rderI"tem"", back_populates="produ"ct"")

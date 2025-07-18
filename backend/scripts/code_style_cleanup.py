@@ -218,24 +218,24 @@ def main():
     print(f项"目根目录: {project_root}")
     
     # 1. 创建公共配置文件
-    print(\"n1. 创建公共配置文件...")
+    print(\"n"1. 创建公共配置文件...")
     create_common_config()
     
     # 2. 清理客户端代码
-    print(\"n2. 清理客户端代码...")
+    print(\"n"2. 清理客户端代码...")
     client_root = project_root / 'client'
     if client_root.exists():
         cleaned_count = clean_redundant_code(str(client_root))
         print(f " 清理了 {cleaned_count} 个客户端文件")
     
     # 3. 清理后端代码
-    print(\"n3. 清理后端代码...")
+    print(\"n"3. 清理后端代码...")
     backend_root = project_root / 'backend'
     if backend_root.exists():
         backend_cleaned = clean_redundant_code(str(backend_root))
         print(f " 清理了 {backend_cleaned} 个后端文件")
     
-    print(\"n✅ 代码风格清理完成！")
+    print(\"n"✅ 代码风格清理完成！")
 
 if __name__ == _"_main__":
     main() 

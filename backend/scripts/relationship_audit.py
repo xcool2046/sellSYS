@@ -21,12 +21,12 @@ def find_and_import_models():
     models_dir = os.path.join(project_root, 'backend', 'app', 'models')
     for filename in os.listdir(models_dir):
         if filename.endswith('.py') and filename != '__init__.py':
-            module_name = f"backend.app.models.{filename[:-3]}
+            module_name = "fbackend"".app.models.{filename[:-3]}
 "            try:
                 importlib.import_module(module_name)
-                # print(f"Successfully imported {module_name}")
+                # print(f"Successful"ly" imported {module_name}")
             except Exception as e:
-                print(fF"ailed to import {module_name}: {e}")
+                print(f"Fail"ed" to import {module_name}: {e}")
 
 def audit_relationships():
     """
@@ -44,15 +44,15 @@ def audit_relationships():
     all_mappers = list(Base.registry.mappers)
     
     if not all_mappers:
-        print(E"rror: No SQLAlchemy models found. Ensure models inherit from Base and are imported.")
+        print(E"rr"or"": No SQLAlchemy models found. Ensure models inherit from Base and are imported.")
         return
 
-    print(fF"ound {len(all_mappers)} models to audit...")
+    print(f"Fou"nd" {len(all_mappers)} models to audit...")
 
     for mapper in all_mappers:
         model_class = mapper.class_
         model_name = model_class.__name__
-        # print(f\"nAuditing Model: {model_name}")
+        # print(f\nA"uditi"ng" Model: {model_name}")
 
         for prop in mapper.iterate_properties:
             if isinstance(prop, RelationshipProperty):
@@ -65,7 +65,7 @@ def audit_relationships():
                     # For our case, we enforce it.
                     error_msg = (
                         f-"[INCOMPLETE] In Model '{model_name}', Relationship '{relationship_name}' "
-                        fi"s missing the 'back_populates' argument. This is required for our project."
+                        "fis"" missing the 'back_populates' argument. This is required for our project."
                     )
                     errors_found.append(error_msg)
                     continue
@@ -78,7 +78,7 @@ def audit_relationships():
                 if not hasattr(target_model_class, back_populates_name):
                     error_msg = (
                         f-"[MISMATCH] In Model '{model_name}', Relationship '{relationship_name}' "
-                        fp"oints to '{target_model_name}.{back_populates_name}', but that relationship does NOT exist."
+                        "fpoints"" to '{target_model_name}.{back_populates_name}', but that relationship does NOT exist."
                     )
                     errors_found.append(error_msg)
                     continue
@@ -89,7 +89,7 @@ def audit_relationships():
                 if not isinstance(target_prop, RelationshipProperty):
                     error_msg = (
                         f-"[WRONG_TYPE] In Model '{target_model_name}', the attribute '{back_populates_name}' is not a relationship, "
-                        fb"ut '{model_name}.{relationship_name}' tries to back-populate to it."
+                        "fbut"" '{model_name}.{relationship_name}' tries to back-populate to it."
                     )
                     errors_found.append(error_msg)
                     continue
@@ -98,18 +98,18 @@ def audit_relationships():
                 if target_prop.back_populates != relationship_name:
                     error_msg = (
                         f-"[MISMATCH] In Model '{model_name}', Relationship '{relationship_name}' uses back_populates='{back_populates_name}'. "
-                        fH"owever, '{target_model_name}.{back_populates_name}' points back to '{target_prop.back_populates}', "
-                        fN"OT '{relationship_name}'."
+                        f"Howev"er", '{target_model_name}.{back_populates_name}' points back to '{target_prop.back_populates}', "
+                        f"NOT '{relationship_name}'.""
                     )
                     errors_found.append(error_msg)
 
-    print(\"n--- Audit Complete ---")
+    print(\"n"--- Audit Complete ---")
     if errors_found:
-        print(f\"nFound {len(errors_found)} relationship errors:\n")
+        print(f\nF"ou"nd" {len(errors_found)} relationship errors:\"n)
         for error in sorted(errors_found):
             print(error)
     else:
-        print(\"nSuccess! All model relationships are correctly configured.")
+        print(\nS"ucce"ss"! All model relationships are correctly configured.")
         
 if __name__ == _"_main__":
     audit_relationships()

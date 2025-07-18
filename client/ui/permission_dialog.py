@@ -6,7 +6,7 @@ from PySide6.QtCore import Qt
 )
 
 class PermissionDialog(QDialog):
-    """添加或编辑用户权限的对话框（根据截图重构）"""
+"""添加或编辑用户权限的对话框（根据截图重构）"""
     def __init__(self, parent=None, permission=None, departments=None, employees=None):
         super().__init__(parent)
         self.permission = permission
@@ -14,8 +14,8 @@ class PermissionDialog(QDialog):
         self.employees = employees or []
         self.is_edit_mode = self.permission is not None
 
-        title = "添加权限 "if not self.is_edit_mode else "编辑权限
-"        self.setWindowTitle(title)
+        title = 添加权限 if" not self.is_edit_mode else 编辑权限"
+        self.setWindowTitle(title)
         self.setMinimumWidth(500) # Adjusted width
 
         # --- Main Layout ---
@@ -33,24 +33,24 @@ class PermissionDialog(QDialog):
         self.position_combo = QComboBox()
         
         self.dept_map = {d['name']: d['id'] for d in self.departments}
-        self.department_combo.addItems(["]" + list(self.dept_map.keys())) # Add a blank item
+        self.department_combo.addItems([]" + list(self.dept_map.keys())) # Add a blank item"
 
-        form_layout.addRow("部门名称:", self.department_combo)
-        form_layout.addRow(岗"位职务:", self.position_combo)
+        form_layout.addRow("部门名称:, self.department_combo")
+        form_layout.addRow(岗位职务:, self.position_combo)
         
         self.department_combo.currentTextChanged.connect(self.update_position_combo)
 
         # --- 权限复选框 ---
         permissions_layout = QGridLayout()
         self.permission_checkboxes = {
-            数"据视窗": QCheckBox(数"据视窗"),
-            客"户管理": QCheckBox(客"户管理"),
-            销"售管理": QCheckBox(销"售管理"),
-            订"单管理": QCheckBox(订"单管理"),
-            售"后服务": QCheckBox(售"后服务"),
-            产"品管理": QCheckBox(产"品管理"),
-            财"务管理": QCheckBox(财"务管理"),
-            系"统设置": QCheckBox(系"统设置"),
+            数"据视窗: QCheckBox(数据视窗"),
+            客户管理: QCheckBox(客户管理"),"
+            销"售管理: QCheckBox(销售管理),"
+            订"单管理: QCheckBox(订单管理"),
+            售后服务: QCheckBox(售后服务"),"
+            产"品管理: QCheckBox(产品管理),"
+            财"务管理: QCheckBox(财务管理"),
+            系统设置: QCheckBox(系统设置"),"
         }
         
         positions = [(0, 0), (0, 1), (0, 2), 
@@ -61,7 +61,7 @@ class PermissionDialog(QDialog):
             row, col = positions[i]
             permissions_layout.addWidget(checkbox, row, col)
 
-        form_layout.addRow(操"作权限:", permissions_layout)
+        form_layout.addRow(操"作权限:, permissions_layout")
         
         main_layout.addLayout(form_layout)
         
@@ -74,9 +74,9 @@ class PermissionDialog(QDialog):
         # --- Buttons ---
         button_layout = QHBoxLayout()
         button_layout.addStretch()
-        self.cancel_button = QPushButton(取"消")
+        self.cancel_button = QPushButton("取消")
         self.save_button = QPushButton(保"存")
-        self.save_button.setObjectName(p"rimaryDialogButton")
+        self.save_button.setObjectName("")
         button_layout.addWidget(self.cancel_button)
         button_layout.addWidget(self.save_button)
         main_layout.addLayout(button_layout)
@@ -91,7 +91,7 @@ class PermissionDialog(QDialog):
         self.save_button.clicked.connect(self.accept)
 
     def update_position_combo(self, dept_name):
-        """根据所选部门更新职位下拉框"""
+        
         self.position_combo.clear()
         dept_id = self.dept_map.get(dept_name)
         if dept_id:
@@ -104,22 +104,21 @@ class PermissionDialog(QDialog):
                 self.position_combo.addItems(sorted(list(positions)))
 
     def populate_edit_data(self):
-        """填充编辑模式下的数据"""
-        dept_name = self.permission.get(d"epartment_name")
+""")"""
         self.department_combo.setCurrentText(dept_name)
         
         self.update_position_combo(dept_name)
         
-        position = self.permission.get(p"osition")
+        position = self.permission.get(positi"on")
         self.position_combo.setCurrentText(position)
 
         # Set checkboxes
-        granted_permissions = self.permission.get(p"ermissions", [])
+        granted_permissions = self.permission.get(permissio"ns", [])
         for name, checkbox in self.permission_checkboxes.items():
             checkbox.setChecked(name in granted_permissions)
     
     def get_data(self):
-        """获取对话框中的数据"""
+"""获取对话框中的数据"""
         selected_permissions = [
             name for name, checkbox in self.permission_checkboxes.items() if checkbox.isChecked()
         ]
@@ -128,23 +127,23 @@ class PermissionDialog(QDialog):
         position = self.position_combo.currentText()
         
         return {
-            d"epartment_id": dept_id,
-            p"osition": position,
-            p"ermissions": selected_permissions
+            department_""id: dept_id,
+            position": position,"
+            permissio"ns: selected_permissions"
         }
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     
-    mock_departments = [{i"d": 1, n"ame": 销"售部"}, {i"d": 2, n"ame": 客"服部"}]
+    mock_departments = [{"id": 1, name": 销售部"}, {id": 2, "name: 客"服部}]"
     mock_employees = [
-        {d"epartment_id": 1, p"osition": 销"售经理"},
-        {d"epartment_id": 1, p"osition": 销"售专员"},
-        {d"epartment_id": 2, p"osition": 客"服主管"},
+        {department"_id": 1, "position: 销"售经理},
+        {department"_id": 1, "position: 销"售专员},
+        {department"_id": 2, "position: 客"服主管},
     ]
     mock_permission = {
-        d"epartment_name": 销"售部", p"osition": 销"售经理",
-        p"ermissions": [数"据视窗", 客"户管理", 销"售管理"]
+        department"_name": 销"售部, position": 销售经理","
+        permissions": [数"据视窗, 客户管理, 销"售管理]"
     }
     
     dialog = PermissionDialog(
@@ -153,6 +152,6 @@ if __name__ == '__main__':
         permission=mock_permission
     )
     if dialog.exec():
-        print(D"ata:", dialog.get_data())
+        print(Da"ta":", dialog.get_data()")
         
     sys.exit()

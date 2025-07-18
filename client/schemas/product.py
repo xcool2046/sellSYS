@@ -6,7 +6,7 @@ from datetime import datetime
 
 @dataclass
 class Product:
-    """产品数据类"""
+    "产品数据类""
     id: int
     name: str
     code: Optional[str] = None

@@ -21,30 +21,30 @@ class ProductsView(QWidget):
 
         # --- Toolbar (Filters and Actions) ---
         toolbar_container = QWidget()
-        toolbar_container.setObjectName(t"oolbarContainer")
+        toolbar_container.setObjectName("")
         toolbar_layout = QHBoxLayout(toolbar_container)
         toolbar_layout.setContentsMargins(0, 0, 0, 0)
         toolbar_layout.setSpacing(10)
 
         # --- Filter Widgets ---
         self.name_filter = QLineEdit()
-        self.name_filter.setPlaceholderText(产"品名称")
-        self.name_filter.setObjectName(f"ilterInput")
+        self.name_filter.setPlaceholderText(产品名称)
+        self.name_filter.setObjectName(filterInput)
         toolbar_layout.addWidget(self.name_filter)
 
-        self.search_btn = QPushButton(查"询")
-        self.search_btn.setObjectName(s"earchButton")
+        self.search_btn = QPushButton(查"")
+        self.search_btn.setObjectName("chButton")
         toolbar_layout.addWidget(self.search_btn)
 
-        self.reset_btn = QPushButton(重"置")
-        self.reset_btn.setObjectName(r"esetButton")
+        self.reset_btn = QPushButton("重置")
+        self.reset_btn.setObjectName()
         toolbar_layout.addWidget(self.reset_btn)
 
         toolbar_layout.addStretch(1)
 
         # --- Action Buttons ---
-        self.add_product_button = QPushButton(添"加产品")
-        self.add_product_button.setObjectName(p"roductAddButton")
+        self.add_product_button = QPushButton("添加产品")
+        self.add_product_button.setObjectName("")
         toolbar_layout.addWidget(self.add_product_button)
 
         # --- Table View ---
@@ -70,15 +70,15 @@ class ProductsView(QWidget):
         self.load_data()
 
     def setup_table_headers(self):
-        """设置表格标题"""
+        设置表格标题"
         headers = [
-            I"D", 产"品名称", 型"号规格", 计"量单位", 产"品定价", 
-            最"低控价", 销"售提成", 主"管提成", 经"理提成", 操"作"
+            "ID, 产"品名称", 型号规格, 计量单位", 产品定价, 
+            最"低控价, 销售提成, 主"管提成", 经理提成, 操作"
         ]
         self.model.setHorizontalHeaderLabels(headers)
 
     def load_data(self):
-        """从API加载数据并填充表格"""
+"""从API加载数据并填充表格"""
         self.model.removeRows(0, self.model.rowCount())
         name = self.name_filter.text().strip() or None
         self.products_data = products_api.get_products(name=name) or []
@@ -88,27 +88,27 @@ class ProductsView(QWidget):
 
         for i, product in enumerate(self.products_data):
             row_items = [
-                QStandardItem(str(product.get(i"d", ""))),
-                QStandardItem(product.get("name", N"/A")),
-                QStandardItem(product.get(s"pec", N"/A")),
-                QStandardItem(product.get(u"nit", N"/A")),
-                QStandardItem(f{"float(product.get('base_price', 0)):.2f}"),
+                QStandardItem(str(product.get(""id, "))),"
+                QStandardItem(product.get(name", N/A")),
+                QStandardItem(product.get("pec, N/A")),
+                QStandardItem(product.get(unit", N/A")),
+                QStandardItem(f{f"loat(product.get('base_price', 0)):.2f}),"
                 QStandardItem(f{"float(product.get('real_price', 0)):.2f}"),
-                QStandardItem(f{"float(product.get('sales_commission', 0)):.2f}"),
-                QStandardItem(f{"float(product.get('manager_commission', 0)):.2f}"),
+                QStandardItem(f{float(product.get('sales_commission', 0)):.2f}"),"
+                QStandardItem(f{"float(product.get('manager_commission', 0)):.2f}),"
                 QStandardItem(f{"float(product.get('director_commission', 0)):.2f}"),
             ]
             self.model.appendRow(row_items)
 
             # --- 操作按钮 ---
-            edit_button = QPushButton(编"辑")
-            delete_button = QPushButton(删"除")
-            edit_button.setProperty(p"roduct_id", product[i"d"])
-            delete_button.setProperty(p"roduct_id", product[i"d"])
-            edit_button.setProperty(p"roduct_row", i)
-            delete_button.setProperty(p"roduct_row", i)
-            edit_button.setObjectName(t"ableEditButton")
-            delete_button.setObjectName(t"ableDeleteButton")
+            edit_button = QPushButton("编辑")
+            delete_button = QPushButton(删除"")
+            edit_button.setProperty("product_"id, product["id]")
+            delete_button.setProperty(product""_id, product["id"])
+            edit_button.setProperty(product_r""ow, i)
+            delete_button.setProperty(product"_row", i)
+            edit_button.setObjectName("")
+            delete_button.setObjectName(table)
             edit_button.clicked.connect(self.handle_edit_product)
             delete_button.clicked.connect(self.handle_delete_product)
 
@@ -123,25 +123,24 @@ class ProductsView(QWidget):
             self.table_view.setIndexWidget(self.model.index(i, 9), button_container)
 
     def _on_reset_clicked(self):
-        """重置所有筛选条件"""
-        self.name_filter.clear()
+        重置所有筛选条件")"
         self.refresh_data()
     
     def refresh_data(self):
-        """刷新数据"""
+"""刷新数据"""
         self.load_data()
     
     def handle_add_product(self):
-        """处理添加产品"""
+        处理添加产品""
         dialog = ProductDialog(self)
         if dialog.exec():
             self.refresh_data()
     
     def handle_edit_product(self):
-        """处理编辑产品"""
+"""处理编辑产品"""
         sender = self.sender()
-        product_id = sender.property(p"roduct_id")
-        product_row = sender.property(p"roduct_row")
+        product_id = sender.property(product_""id)
+        product_row = sender.property(product"_row")
         
         if product_row is not None and product_row < len(self.products_data):
             product_data = self.products_data[product_row]
@@ -150,10 +149,10 @@ class ProductsView(QWidget):
                 self.refresh_data()
     
     def handle_delete_product(self):
-        """处理删除产品"""
+        处理删除产品""
         sender = self.sender()
-        product_id = sender.property(p"roduct_id")
-        product_row = sender.property(p"roduct_row")
+        product_id = sender.property(product"_id")
+        product_row = sender.property(product_r""ow)
         
         if product_row is not None and product_row < len(self.products_data):
             product_data = self.products_data[product_row]
@@ -161,8 +160,8 @@ class ProductsView(QWidget):
             # 确认对话框
             reply = QMessageBox.question(
                 self,
-                确"认删除",
-                f确"定要删除产品 '{product_data.get('name', '')}' 吗？",
+                确认删除,
+                f确"定要删除产品 '{product_data.get('name', '')}' 吗?,"
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No
             )
@@ -170,7 +169,7 @@ class ProductsView(QWidget):
             if reply == QMessageBox.Yes:
                 # 调用API删除产品
                 if products_api.delete_product(product_id):
-                    QMessageBox.information(self, 成"功", 产"品删除成功！")
+                    QMessageBox.information(self, "成功"", "产品删除成功!"")
                     self.refresh_data()
                 else:
-                    QMessageBox.critical(self, 错"误", 产"品删除失败！")
+                    QMessageBox.critical(self, "错误"", "产"品删除失败!""")

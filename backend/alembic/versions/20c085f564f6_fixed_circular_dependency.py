@@ -1,9 +1,9 @@
 from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
-"""Fixed circular dependency
+"F""ix"ed" circular dependency
 
-Revision ID: 20c085f564f6
+Revision ID": 20c085f564f6
 Revises: 
 Create Date: 2025-07-17 10:34:05.348504
 
@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
+    U""p""grade sch"ema""."""
     # Since we are creating a new database from scratch, we can just create all tables
     op.create_table('departments',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -115,7 +115,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
+    D""o""wngrade sch"ema""."""
     op.drop_table('order_items')
     op.drop_index(op.f('ix_orders_order_number'), table_name='orders')
     op.drop_table('orders')

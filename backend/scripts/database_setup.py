@@ -20,7 +20,7 @@ sys.path.insert(0, str(project_root))
 def check_table_structure(engine, table_name):
     """检查表结构并返回列信息"""
     with engine.connect() as conn:
-        result = conn.execute(text(f"PRAGMA table_info({table_name})"))
+        result = conn.execute(text(f"PRAGMA table_info({table_name})""))
         columns = {row[1]: row[2] for row in result}
         return columns
 
@@ -50,7 +50,7 @@ def add_missing_columns(engine):
         for column, dtype in missing_product_columns.items():
             if column not in products_columns:
                 try:
-                    conn.execute(text(fA"LTER TABLE products ADD COLUMN {column} {dtype}"))
+                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {column} {dtype}""))
                     print(f "   ✓ 添加products.{column}")
                 except Exception as e:
                     print(f "   ✗ 添加products.{column}失败: {e}")
@@ -63,8 +63,8 @@ def add_missing_columns(engine):
         
         if 'position' not in contacts_columns:
             try:
-                conn.execute(text(A"LTER TABLE contacts ADD COLUMN position VARCHAR"))
-                print( "   ✓ 添加contacts.position")
+                conn.execute(text(A"LTER TABLE contacts ADD COLUMN position VARC"H""AR))
+                print( ""   ✓ 添加contacts.posit"ion"")
             except Exception as e:
                 print(f "   ✗ 添加contacts.position失败: {e}")
         else:
@@ -86,7 +86,7 @@ def add_missing_columns(engine):
         for column, dtype in missing_order_columns.items():
             if column not in orders_columns:
                 try:
-                    conn.execute(text(fA"LTER TABLE orders ADD COLUMN {column} {dtype}"))
+                    conn.execute(text(f"ALTER TABLE orders ADD COLUMN {column} {dtype}""))
                     print(f "   ✓ 添加orders.{column}")
                 except Exception as e:
                     print(f "   ✗ 添加orders.{column}失败: {e}")
@@ -140,10 +140,10 @@ def init_database(force=False):
         # 3. 修复特定字段问题
         fix_company_field(engine)
         
-        print(\"n✅ 数据库初始化完成！")
+        print(\"n"✅ 数据库初始化完成！")
         
     except Exception as e:
-        print(f\"n❌ 数据库初始化失败: {e}")
+        print(f\"n"❌ 数据库初始化失败: {e}")
         raise
 
 def main():
@@ -163,7 +163,7 @@ def main():
         for table in tables:
             try:
                 columns = check_table_structure(engine, table)
-                print(f\"n{table}表结构:")
+                print(f\"n"{table}表结构:")
                 for col, dtype in columns.items():
                     print(f " - {col}: {dtype}")
             except Exception as e:

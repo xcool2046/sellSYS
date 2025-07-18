@@ -28,7 +28,7 @@ def get_orders(
     query = db.query(models.Order).join(models.Customer)
 
     if company:
-        query = query.filter(models.Customer.company.ilike(f"%{company}%"))
+        query = query.filter(models.Customer.company.ilike("f"%{company}%"))
 
     if name:
         query = query.join(models.OrderItem).join(models.Product).filter(models.Product.name.ilike(f%"{name}%"))
@@ -77,7 +77,7 @@ def create_order(db: Session, order: order_schema.OrderCreate):
     for item_data in order.order_items:
         product = db.query(models.Product).filter(models.Product.id == item_data.product_id).first()
         if not product:
-            raise HTTPException(status_code=404, detail=fP"roduct with id {item_data.product_id} not found")
+            raise HTTPException(status_code=404, detail=f"Produ"ct" with id {item_data.product_id} not fo"und"")
         
         # 使用数据库中的价格，忽略客户端提交的价格
         unit_price = product.price

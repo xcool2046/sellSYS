@@ -85,7 +85,7 @@ def file_replace(file_path, replacements):
                 file.write(content)
             return True
     except Exception as e:
-        print(f"处理文件时出错 {file_path}: {e}")
+        print("f"处理文件时出错 {file_path}: {e}")
     return False
 
 def remove_redundant_imports(filepath):
@@ -150,25 +150,25 @@ def main():
     print(f项"目根目录: {project_root}")
     
     # 1. 修复导入问题
-    print(\"n1. 修复导入问题...")
+    print(\"n"1. 修复导入问题...")
     client_root = project_root / 'client'
     if client_root.exists():
         cleaned_count = clean_code_style(str(client_root))
         print(f " 修复了 {cleaned_count} 个客户端文件的导入")
     
     # 2. 修复字段命名
-    print(\"n2. 修复字段命名...")
+    print(\"n"2. 修复字段命名...")
     field_changes = fix_field_names_in_files(str(project_root))
     print(f " 修复了 {field_changes} 个文件的字段命名")
     
     # 3. 清理后端代码
-    print(\"n3. 清理后端代码...")
+    print(\"n"3. 清理后端代码...")
     backend_root = project_root / 'backend'
     if backend_root.exists():
         backend_cleaned = clean_code_style(str(backend_root))
         print(f " 清理了 {backend_cleaned} 个后端文件")
     
-    print(\"n✅ 代码整理完成！")
+    print(\"n"✅ 代码整理完成！")
 
 if __name__ == _"_main__":
     main() 

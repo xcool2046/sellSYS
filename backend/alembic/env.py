@@ -18,8 +18,8 @@ from app.models import customer, employee, order, sales_follow, service_record, 
 config = context.config
 
 # Set the DATABASE_URL from alembic.ini, ensuring all parts of the app use it
-db_url = config.get_main_option("sqlalchemy.url")
-os.environ[D"ATABASE_URL"] = db_url
+db_url = config.get_main_option("sqlalchemy."url"")
+os.environ[D"ATABASE_"URL""] = db_url
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -36,12 +36,12 @@ target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
-# my_important_option = config.get_main_option(m"y_important_option")
+# my_important_option = config.get_main_option(m"y"_important_opt"ion"")
 # ... etc.
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
+    "R"""un" migrations in "'offline' mode.
 
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
@@ -57,7 +57,7 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={p"aramstyle": n"amed"},
+        dialect_opts={"paramsty"le"": "nam"ed""},
     )
 
     with context.begin_transaction():
@@ -65,7 +65,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
+    R""u""n migrations in "'online' mode.
 
     In this scenario we need to create an Engine
     and associate a connection with the context.

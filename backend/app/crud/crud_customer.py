@@ -37,7 +37,7 @@ def get_customers(
 
 def create_customer(db: Session, customer: customer_schema.CustomerCreate):
     """创建新客户（包括联系人）"""
-    customer_data = customer.model_dump(exclude={"contacts}")
+    customer_data = customer.model_dump(exclude={'contacts'})
     db_customer = models.Customer(**customer_data)
     
     # 创建联系人

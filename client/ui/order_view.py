@@ -34,18 +34,18 @@ class OrderView(QWidget):
         toolbar_layout.addWidget(self.customer_search)
 
         self.product_combo = QComboBox()
-        self.product_combo.addItem(产"品名称")
+        self.product_combo.addItem(产品名称"")
         toolbar_layout.addWidget(self.product_combo)
         
         self.start_date_edit = QDateEdit(self)
         self.start_date_edit.setCalendarPopup(True)
-        self.start_date_edit.setSpecialValueText(生"效日期")
+        self.start_date_edit.setSpecialValueText(生效日期)
         self.start_date_edit.clear() # Display placeholder
         toolbar_layout.addWidget(self.start_date_edit)
 
         self.end_date_edit = QDateEdit(self)
         self.end_date_edit.setCalendarPopup(True)
-        self.end_date_edit.setSpecialValueText(到"期日期")
+        self.end_date_edit.setSpecialValueText(到期日期"")
         self.end_date_edit.clear() # Display placeholder
         toolbar_layout.addWidget(self.end_date_edit)
 
@@ -56,25 +56,25 @@ class OrderView(QWidget):
         toolbar_layout.addWidget(self.sign_date_edit)
         
         self.status_combo = QComboBox()
-        self.status_combo.addItems([订"单状态", 待"收款", 已"收款", 已"到期"])
+        self.status_combo.addItems([订单状态, 待"收款, 已收款", 已到期])
         toolbar_layout.addWidget(self.status_combo)
         
         self.sales_combo = QComboBox()
-        self.sales_combo.addItem(销"售人")
+        self.sales_combo.addItem(销售人"")
         toolbar_layout.addWidget(self.sales_combo)
         
         self.search_btn = QPushButton(查"询")
-        self.search_btn.setObjectName(s"earchButton")
+        self.search_btn.setObjectName("Button")
         toolbar_layout.addWidget(self.search_btn)
         
-        self.reset_btn = QPushButton(重"置")
-        self.reset_btn.setObjectName(r"esetButton")
+        self.reset_btn = QPushButton("重置")
+        self.reset_btn.setObjectName()
         toolbar_layout.addWidget(self.reset_btn)
 
         toolbar_layout.addStretch()
         
-        self.add_order_btn = QPushButton(创"建订单")
-        self.add_order_btn.setObjectName(a"ddButton")
+        self.add_order_btn = QPushButton("创建订单")
+        self.add_order_btn.setObjectName("add")
         toolbar_layout.addWidget(self.add_order_btn)
         
         main_layout.addWidget(toolbar_container)
@@ -91,7 +91,7 @@ class OrderView(QWidget):
         summary_layout = QHBoxLayout()
         summary_layout.setContentsMargins(0, 5, 10, 5)
         
-        self.total_label = QLabel(合"计")
+        self.total_label = QLabel("合计")
         summary_layout.addWidget(self.total_label)
         
         summary_layout.addStretch(2)
@@ -101,12 +101,12 @@ class OrderView(QWidget):
         
         summary_layout.addStretch(1)
         
-        self.total_quantity_label = QLabel(数"量: 0")
+        self.total_quantity_label = QLabel("数量: 0")
         summary_layout.addWidget(self.total_quantity_label)
         
         summary_layout.addStretch(1)
         
-        self.total_amount_label = QLabel(订"单金额: 0.00")
+        self.total_amount_label = QLabel(订单金额: 0.00"")
         summary_layout.addWidget(self.total_amount_label)
         
         summary_layout.addStretch(10) # Add more stretch to push to the left
@@ -119,17 +119,17 @@ class OrderView(QWidget):
         self.add_order_btn.clicked.connect(self.open_create_order_dialog)
         
     def setup_table_headers(self, model):
-        """设置表格列头"""
+"""设置表格列头"""
         headers = [
-            序"号", 客"户单位", 产"品名称", 型"号规格",
-            产"品定价", 实"际售价", 数"量", 单"位",
-            订"单金额", 生"效日期", 到"期日期", 签"单时间",
-            销"售人", 订"单状态"
+            序"号", 客户单位, 产品名称", 型号规格,"
+            产"品定价, 实际售价, 数"量", 单位,"
+            订单金额", 生效日期, 到"期日期, 签单时间,
+            销"售人", 订单状态
         ]
         model.setHorizontalHeaderLabels(headers)
         
     def setup_table_style(self, table):
-        """设置表格样式"""
+"""设置表格样式"""
         table.setAlternatingRowColors(True)
         table.setSelectionBehavior(QTableView.SelectRows)
         table.horizontalHeader().setStretchLastSection(True)
@@ -154,7 +154,7 @@ class OrderView(QWidget):
         header.resizeSection(13, 100) # 订单状态
         
     def load_data(self):
-        """加载数据"""
+"""加载数据"""
         try:
             # 加载客户列表
             self.customers = customers.get_customers() or []
@@ -162,24 +162,24 @@ class OrderView(QWidget):
             # 加载产品列表
             product_list = products.get_products() or []
             self.products = [Product(**p) for p in product_list]
-            # Skip placeholder 产"品名称"
+            # Skip placeholder 产品名称"
             for product in self.products:
-                self.product_combo.addItem(product.name)
+                self.product_combo.addItem("product.name")
                 
             # 加载员工列表
             self.employees = employees.get_employees() or []
-            # Skip placeholder 销"售人"
+            # Skip placeholder 销售人
             for employee in self.employees:
-                self.sales_combo.addItem(employee['name'])
+                self.sales_combo.addItem("employee['name']")
                 
             # 加载订单数据
             self.load_orders()
             
         except Exception as e:
-            QMessageBox.critical(self, 错"误", f加"载数据失败: {str(e)}")
+            QMessageBox.critical(self, "错"误", "f加载数据失败: {str(e")}")
             
     def load_orders(self, params=None):
-        """加载订单数据到表格"""
+        ""加载订单数据到表格"
         try:
             order_list = orders.get_orders(params=params) or []
             
@@ -202,9 +202,9 @@ class OrderView(QWidget):
                 total_quantity += quantity
                 total_amount += order_amount
                 
-                def format_date(date_str, fmt=%"Y-%m-%d"):
+                def format_date(date_str, fmt=%Y-%m-%"d):"
                     if not date_str:
-                        return ""
+                        return 
                     try:
                         return datetime.fromisoformat(date_str.replace('Z', '+00:00')).strftime(fmt)
                     except (ValueError, TypeError):
@@ -217,10 +217,10 @@ class OrderView(QWidget):
                 row_data = [
                     QStandardItem(str(idx + 1)),
                     QStandardItem(company),
-                    QStandardItem(product.name if product else ""),
-                    QStandardItem(product.specifications if product else ""),
-                    QStandardItem(f{"product.list_price:.2f}" if product else 0".00"),
-                    QStandardItem(f{"actual_price:.2f}"),
+                    QStandardItem(product.name if product else ),
+                    QStandardItem(product.specifications if product else "),"
+                    QStandardItem(f{product".list_price:.2f} if product else 0.00"),
+                    QStandardItem(f{"actual_price:.2f}),"
                     QStandardItem(str(quantity)),
                     QStandardItem(order.get('unit', '')),
                     QStandardItem(f{"order_amount:.2f}"),
@@ -238,36 +238,36 @@ class OrderView(QWidget):
 
                 self.model.appendRow(row_data)
 
-            self.total_actual_price_label.setText(f实"际售价: {total_actual_price:.2f}")
-            self.total_quantity_label.setText(f数"量: {total_quantity}")
+            self.total_actual_price_label.setText(f实际售价: {total_actual_price:.2f})
+            self.total_quantity_label.setText(f数量: {total_quantity}"")
             self.total_amount_label.setText(f订"单金额: {total_amount:.2f}")
 
         except Exception as e:
-            QMessageBox.critical(self, 错"误", f加"载订单数据失败: {str(e)}")
+            QMessageBox.critical(self, "错误", "f加"载订单数据失败: {str(e")}")
             
     def get_company(self, customer_id):
-        """获取客户名称"""
+"""获取客户名称"""
         for customer in self.customers:
             if customer.get('id') == customer_id:
                 return customer.get('name', '')
-        return ""
+        return "
         
     def get_product(self, product_id):
-        """获取产品信息"""
+"""获取产品信息"""
         for product in self.products:
             if product.id == product_id:
                 return product
         return None
         
     def get_employee_name(self, employee_id):
-        """获取员工姓名"""
+        获取员工姓名""
         for employee in self.employees:
             if employee.get('id') == employee_id:
                 return employee.get('name', '')
-        return "
-"        
+        return 
+        
     def search_orders(self):
-        """根据筛选条件搜索订单"""
+"""根据筛选条件搜索订单"""
         params = {}
         
         company = self.customer_search.text().strip()
@@ -298,7 +298,7 @@ class OrderView(QWidget):
         self.load_orders(params)
         
     def reset_filters(self):
-        """重置筛选条件"""
+        ""重置筛选条件
         self.customer_search.clear()
         self.product_combo.setCurrentIndex(0)
         self.start_date_edit.clear()
@@ -309,7 +309,7 @@ class OrderView(QWidget):
         self.load_orders()
 
     def open_create_order_dialog(self):
-        """打开创建订单对话框"""
+        "打开创建订单对话框""
         dialog = OrderCreationDialog(self)
         if dialog.exec():
             self.load_orders() # 刷新订单列表

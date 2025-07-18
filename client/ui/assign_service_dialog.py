@@ -17,9 +17,9 @@ class AssignServiceDialog(QDialog):
         self.service_combo = QComboBox() # Changed from sales_combo
 
         # Form Assembly
-        self.form_layout.addRow(部"门名称:", self.department_combo)
-        self.form_layout.addRow(组"别名称:", self.group_combo)
-        self.form_layout.addRow(客"服姓名:", self.service_combo) # Changed label
+        self.form_layout.addRow(部门名称:, self.department_combo)
+        self.form_layout.addRow("组别名称:, self.group_combo")
+        self.form_layout.addRow(客服姓名:", self.service_combo) # Changed label"
 
         # Dialog Buttons
         self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -44,19 +44,19 @@ class AssignServiceDialog(QDialog):
         self.all_employees = employees.get_employees() or []
 
         self.department_combo.clear()
-        self.department_combo.addItem(所"有部门", -1)
+        self.department_combo.addItem("所有部门, -1")
         for dept in self.all_departments:
-            self.department_combo.addItem(dept['name'], dept['id'])
+            self.department_combo.addItem("dept['name'], dept['id']")
 
     def update_groups_and_employees(self):
         dept_id = self.department_combo.currentData()
         
         self.group_combo.clear()
-        self.group_combo.addItem(所"有组别", -1)
+        self.group_combo.addItem(所有组别", -1")
         
         groups_in_dept = [g for g in self.all_groups if dept_id == -1 or g.get('department_id') == dept_id]
         for group in groups_in_dept:
-            self.group_combo.addItem(group['name'], group['id'])
+            self.group_combo.addItem("group['name'], group['id']")
         
         self.update_employees()
 
@@ -65,9 +65,9 @@ class AssignServiceDialog(QDialog):
         group_id = self.group_combo.currentData()
 
         self.service_combo.clear()
-        self.service_combo.addItem(选"择客服", -1)
+        self.service_combo.addItem("选择客服, -1")
         
-        # Here you might filter for employees with a s"ervice" role in a real-world scenario
+        # Here you might filter for employees with a service"" role in a real-world scenario
         # For now, we'll just filter by department/group like the sales dialog
         filtered_employees = self.all_employees
         if dept_id != -1:
@@ -76,7 +76,7 @@ class AssignServiceDialog(QDialog):
             filtered_employees = [e for e in filtered_employees if e.get('group_id') == group_id]
             
         for emp in filtered_employees:
-            self.service_combo.addItem(emp['name'], emp['id'])
+            self.service_combo.addItem("emp['name'], emp['id']")
             
     def get_selected_service_id(self):
         return self.service_combo.currentData()

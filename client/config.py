@@ -30,4 +30,4 @@ API_BASE_URL = API_CONFIG['base_url']
 API_TIMEOUT = API_CONFIG['timeout']
 
 print(f"[配置] 当前环境: {ENV}")
-print(f["配置] API地址: {API_BASE_URL}")
+print(f"[配置] API地址: {API_BASE_URL}")
